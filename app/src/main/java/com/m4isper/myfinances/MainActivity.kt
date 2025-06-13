@@ -1,5 +1,6 @@
 package com.m4isper.myfinances
 
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -16,10 +17,12 @@ import com.m4isper.myfinances.ui.theme.MyFinancesTheme
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LOCKED
+
         enableEdgeToEdge()
         setContent {
             MyFinancesTheme {
-
+                AppRoot()
             }
         }
     }
