@@ -27,9 +27,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.m4isper.myfinances.domain.expensesDemo
+import com.m4isper.myfinances.domain.incomeDemo
 import com.m4isper.myfinances.ui.screens.AccountScreen
 import com.m4isper.myfinances.ui.screens.CategoriesScreen
 import com.m4isper.myfinances.ui.screens.ExpensesScreen
+import com.m4isper.myfinances.ui.screens.HistoryScreen
 import com.m4isper.myfinances.ui.screens.IncomeScreen
 import com.m4isper.myfinances.ui.screens.LottieSplashScreen
 import com.m4isper.myfinances.ui.screens.SettingsScreen
@@ -40,13 +43,22 @@ enum class Destination(
     val route: String,
     val label: String,
     val iconId: Int,
-    val contentDescription: String
+    val contentDescription: String,
+    val showInBottomBar: Boolean = true
 ) {
     EXPENSES("expenses", "Расходы", R.drawable.ic_expenses, "Expenses"),
     INCOME("income", "Доходы", R.drawable.ic_income, "Income"),
     ACCOUNT("account", "Счет", R.drawable.ic_account, "Account"),
     CATEGORIES("categories", "Статьи", R.drawable.ic_categories, "Categories"),
     SETTINGS("settings", "Настройки", R.drawable.ic_settings, "Settings"),
+
+//    HISTORY("history", "История", R.drawable.ic_history, "History", showInBottomBar = false)
+}
+
+fun resolveCurrentTopLevelDestination(currentRoute: String?): Destination? {
+    return Destination.entries.firstOrNull { destination ->
+        currentRoute?.startsWith(destination.route) == true
+    }
 }
 
 @Composable
@@ -62,14 +74,19 @@ fun AppNavHost(
         Destination.entries.forEach { destination ->
             composable(destination.route) {
                 when(destination) {
-                    Destination.EXPENSES -> ExpensesScreen(modifier)
-                    Destination.INCOME -> IncomeScreen(modifier)
+                    Destination.EXPENSES -> ExpensesScreen(modifier, navController)
+                    Destination.INCOME -> IncomeScreen(modifier, navController)
                     Destination.ACCOUNT -> AccountScreen(modifier)
                     Destination.CATEGORIES -> CategoriesScreen(modifier)
                     Destination.SETTINGS -> SettingsScreen(modifier)
+
+//                    Destination.HISTORY -> HistoryScreen(modifier, navController)
                 }
             }
         }
+
+        composable("income/history") { HistoryScreen(modifier, navController, incomeDemo) }
+        composable("expenses/history") { HistoryScreen(modifier, navController, expensesDemo) }
     }
 }
 
@@ -90,11 +107,13 @@ fun AppRoot() {
 @Composable
 fun MainNavigationBar(modifier: Modifier = Modifier) {
     val navController = rememberNavController()
+//    val mainDestinations = Destination.entries.filter { it.showInBottomBar }
     val startDestination = Destination.EXPENSES
 //    var selectedDestination by rememberSaveable { mutableIntStateOf(startDestination.ordinal) }
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
+    val currentTopLevelDestination = resolveCurrentTopLevelDestination(currentRoute)
 
     Scaffold(
         modifier = modifier,
@@ -110,12 +129,16 @@ fun MainNavigationBar(modifier: Modifier = Modifier) {
 //                windowInsets = NavigationBarDefaults.windowInsets
             ) {
                 Destination.entries.forEachIndexed { index, destination ->
-                    val isSelected = destination.route == currentRoute
+                    val isSelected = destination == currentTopLevelDestination
                     NavigationBarItem(
                         selected = isSelected,
                         onClick = {
-                            if (destination.route != currentRoute) {
+                            if (!isSelected) {
                                 navController.navigate(destination.route) {
+                                    popUpTo(startDestination.route) {
+                                        inclusive = true
+                                        saveState = true
+                                    }
                                     launchSingleTop = true
                                     restoreState = true
                                 }

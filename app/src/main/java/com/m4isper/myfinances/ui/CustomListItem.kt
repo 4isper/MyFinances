@@ -55,7 +55,8 @@ fun CustomListItem(
         }
 
         Row(
-            horizontalArrangement = Arrangement.spacedBy(13.dp, Alignment.End)
+            horizontalArrangement = Arrangement.spacedBy(13.dp, Alignment.End),
+            verticalAlignment = Alignment.CenterVertically
         ) {
             if (trail != null) {
                 trail()
