@@ -30,6 +30,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import com.m4isper.myfinances.Destination
 import com.m4isper.myfinances.ui.theme.MyFinancesTheme
 import com.m4isper.myfinances.R
 import com.m4isper.myfinances.domain.expensesDemo
@@ -37,7 +39,10 @@ import com.m4isper.myfinances.ui.CustomListItem
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ExpensesScreen(modifier: Modifier = Modifier) {
+fun ExpensesScreen(
+    modifier: Modifier = Modifier,
+    navController: NavController
+) {
     Box(
         modifier = modifier
             .fillMaxSize(),
@@ -50,7 +55,9 @@ fun ExpensesScreen(modifier: Modifier = Modifier) {
                     containerColor = MaterialTheme.colorScheme.primary
                 ),
                 actions = {
-                    IconButton(onClick = { /* doSomething() */ }) {
+                    IconButton(onClick = {
+                        navController.navigate("expenses/history")
+                    }) {
                         Icon(
                             imageVector = ImageVector.vectorResource(R.drawable.ic_history),
                             contentDescription = "History",
@@ -120,7 +127,7 @@ fun ExpensesScreen(modifier: Modifier = Modifier) {
 @Composable
 private fun MyIncomeScreen() {
     MyFinancesTheme {
-        ExpensesScreen()
+//        ExpensesScreen()
     }
 }
 
