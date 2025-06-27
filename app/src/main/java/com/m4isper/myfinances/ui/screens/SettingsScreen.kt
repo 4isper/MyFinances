@@ -24,8 +24,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
-import androidx.compose.ui.graphics.Color
-import com.m4isper.myfinances.ui.CustomListItem
+import com.m4isper.myfinances.ui.components.CustomListItem
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

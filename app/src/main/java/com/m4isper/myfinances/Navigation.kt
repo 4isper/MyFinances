@@ -18,7 +18,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.vectorResource
@@ -27,13 +26,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.m4isper.myfinances.domain.expensesDemo
-import com.m4isper.myfinances.domain.incomeDemo
-import com.m4isper.myfinances.ui.screens.AccountScreen
-import com.m4isper.myfinances.ui.screens.CategoriesScreen
-import com.m4isper.myfinances.ui.screens.ExpensesScreen
-import com.m4isper.myfinances.ui.screens.HistoryScreen
-import com.m4isper.myfinances.ui.screens.IncomeScreen
+import com.m4isper.myfinances.ui.screens.accountScreen.AccountScreen
+import com.m4isper.myfinances.ui.screens.categoriesScreen.CategoriesScreen
+import com.m4isper.myfinances.ui.screens.expensesScreen.ExpensesScreen
+import com.m4isper.myfinances.ui.screens.historyScreen.HistoryScreen
+import com.m4isper.myfinances.ui.screens.incomeScreen.IncomeScreen
 import com.m4isper.myfinances.ui.screens.LottieSplashScreen
 import com.m4isper.myfinances.ui.screens.SettingsScreen
 import kotlin.collections.forEach
@@ -44,15 +41,12 @@ enum class Destination(
     val label: String,
     val iconId: Int,
     val contentDescription: String,
-    val showInBottomBar: Boolean = true
 ) {
     EXPENSES("expenses", "Расходы", R.drawable.ic_expenses, "Expenses"),
     INCOME("income", "Доходы", R.drawable.ic_income, "Income"),
     ACCOUNT("account", "Счет", R.drawable.ic_account, "Account"),
     CATEGORIES("categories", "Статьи", R.drawable.ic_categories, "Categories"),
     SETTINGS("settings", "Настройки", R.drawable.ic_settings, "Settings"),
-
-//    HISTORY("history", "История", R.drawable.ic_history, "History", showInBottomBar = false)
 }
 
 fun resolveCurrentTopLevelDestination(currentRoute: String?): Destination? {
@@ -79,14 +73,12 @@ fun AppNavHost(
                     Destination.ACCOUNT -> AccountScreen(modifier)
                     Destination.CATEGORIES -> CategoriesScreen(modifier)
                     Destination.SETTINGS -> SettingsScreen(modifier)
-
-//                    Destination.HISTORY -> HistoryScreen(modifier, navController)
                 }
             }
         }
 
-        composable("income/history") { HistoryScreen(modifier, navController, incomeDemo) }
-        composable("expenses/history") { HistoryScreen(modifier, navController, expensesDemo) }
+        composable("income/history") { HistoryScreen(modifier, navController, "income") }
+        composable("expenses/history") { HistoryScreen(modifier, navController, "expenses") }
     }
 }
 
@@ -107,9 +99,7 @@ fun AppRoot() {
 @Composable
 fun MainNavigationBar(modifier: Modifier = Modifier) {
     val navController = rememberNavController()
-//    val mainDestinations = Destination.entries.filter { it.showInBottomBar }
     val startDestination = Destination.EXPENSES
-//    var selectedDestination by rememberSaveable { mutableIntStateOf(startDestination.ordinal) }
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
@@ -126,7 +116,6 @@ fun MainNavigationBar(modifier: Modifier = Modifier) {
                     bottom = NavigationBarDefaults.windowInsets.getBottom(LocalDensity.current)
                 ),
                 containerColor = MaterialTheme.colorScheme.surfaceContainer
-//                windowInsets = NavigationBarDefaults.windowInsets
             ) {
                 Destination.entries.forEachIndexed { index, destination ->
                     val isSelected = destination == currentTopLevelDestination

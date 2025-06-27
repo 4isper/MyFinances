@@ -1,35 +1,51 @@
-package com.m4isper.myfinances.ui.screens
+package com.m4isper.myfinances.ui.screens.accountScreen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Edit
-import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.KeyboardArrowRight
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.m4isper.myfinances.domain.accountDemo
-import com.m4isper.myfinances.ui.CustomListItem
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.m4isper.myfinances.BuildConfig
+import com.m4isper.myfinances.domain.utils.formatWithSpaces
+import com.m4isper.myfinances.domain.utils.toCleanDecimal
+import com.m4isper.myfinances.ui.components.AddButton
+import com.m4isper.myfinances.ui.components.CustomListItem
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AccountScreen(modifier: Modifier = Modifier) {
+fun AccountScreen(
+    modifier: Modifier = Modifier,
+    viewModel: AccountViewModel = hiltViewModel()
+) {
+    val accounts by viewModel.accounts.collectAsState()
+    val error by viewModel.error.collectAsState()
+
+    LaunchedEffect(Unit) {
+        viewModel.loadAccounts()
+    }
+
+    val accountId = BuildConfig.ID_ACCOUNT
+    val account = accounts.find { it.id == accountId }
+
     Box(
         modifier = modifier
             .fillMaxSize(),
@@ -68,7 +84,7 @@ fun AccountScreen(modifier: Modifier = Modifier) {
                 title = "Баланс",
                 trail = {
                     Text(
-                        text = accountDemo.balance + " " + accountDemo.currency,
+                        text = account?.balance.toCleanDecimal().formatWithSpaces(),
                         color = MaterialTheme.colorScheme.onSurface)
                     Icon(
                         imageVector = Icons.Rounded.KeyboardArrowRight,
@@ -83,7 +99,7 @@ fun AccountScreen(modifier: Modifier = Modifier) {
                     .background(MaterialTheme.colorScheme.secondary),
                 title = "Валюта",
                 trail = {
-                    Text(accountDemo.currency, color = MaterialTheme.colorScheme.onSurface)
+                    Text("₽", color = MaterialTheme.colorScheme.onSurface)
                     Icon(
                         imageVector = Icons.Rounded.KeyboardArrowRight,
                         contentDescription = "",
@@ -91,20 +107,15 @@ fun AccountScreen(modifier: Modifier = Modifier) {
                     )
                 }
             )
+
+            if (error != null) {
+                Text("Ошибка: $error", color = MaterialTheme.colorScheme.error)
+            }
         }
-        FloatingActionButton(
-            onClick = {},
-            shape = CircleShape,
-            containerColor = MaterialTheme.colorScheme.primary,
-            elevation = FloatingActionButtonDefaults.elevation(0.dp),
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(16.dp)
-        ) {
-            Icon(Icons.Rounded.Add, "",
-                tint = MaterialTheme.colorScheme.surface,
-                modifier = Modifier.size(30.dp),
-                )
-        }
+
+        AddButton(
+            modifier = Modifier.align(Alignment.BottomEnd),
+            onClick = {}
+        )
     }
 }
