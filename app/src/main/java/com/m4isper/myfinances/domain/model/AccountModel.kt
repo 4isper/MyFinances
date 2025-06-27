@@ -1,4 +1,4 @@
-package com.m4isper.myfinances.domain.models
+package com.m4isper.myfinances.domain.model
 
 data class AccountModel(
     val id: Int,

@@ -1,4 +1,4 @@
-package com.m4isper.myfinances.ui.screens
+package com.m4isper.myfinances.ui.screens.categoriesScreen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -18,15 +18,32 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.m4isper.myfinances.domain.categoriesDemo
-import com.m4isper.myfinances.ui.CustomListItem
+import com.m4isper.myfinances.domain.utils.DateUtils
+import com.m4isper.myfinances.domain.utils.calculateSumOfTransactions
+import com.m4isper.myfinances.ui.components.CustomListItem
+import com.m4isper.myfinances.ui.screens.expensesScreen.ExpensesViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CategoriesScreen(modifier: Modifier = Modifier) {
+fun CategoriesScreen(
+    modifier: Modifier = Modifier,
+    viewModel: CategoriesViewModel = hiltViewModel()
+) {
+    val categories by viewModel.categories.collectAsState()
+    val error by viewModel.error.collectAsState()
+
+    LaunchedEffect(Unit) {
+        viewModel.loadCategories()
+    }
+
     Box(
         modifier = modifier
             .fillMaxSize(),
@@ -52,8 +69,12 @@ fun CategoriesScreen(modifier: Modifier = Modifier) {
                 }
             )
 
+            if (error != null) {
+                Text("Ошибка: $error", color = MaterialTheme.colorScheme.error)
+            }
+
             LazyColumn {
-                items (categoriesDemo) { item ->
+                items (categories) { item ->
                     CustomListItem(
                         modifier = Modifier
                             .background(MaterialTheme.colorScheme.surface)
@@ -66,8 +87,7 @@ fun CategoriesScreen(modifier: Modifier = Modifier) {
                                 contentAlignment = Alignment.Center,
                             ) {
                                 Text(
-                                    text = item.emoji.toString(),
-//                                    fontSize = if (item.emoji.toString().isEmoji()) 13.sp else 10.sp
+                                    text = item.emoji,
                                 )
                             }
                         },
