@@ -1,6 +1,6 @@
 package com.m4isper.myfinances.domain.usecase
 
-import com.m4isper.myfinances.data.repository.CategoriesRepository
+import com.m4isper.myfinances.domain.repository.CategoriesRepository
 import com.m4isper.myfinances.domain.model.CategoryModel
 import com.m4isper.myfinances.domain.utils.Result
 import javax.inject.Inject

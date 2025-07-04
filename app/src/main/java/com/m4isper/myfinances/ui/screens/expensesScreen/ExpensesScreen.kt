@@ -55,6 +55,8 @@ fun ExpensesScreen(
     val expenses by viewModel.expenses.collectAsState()
     val error by viewModel.error.collectAsState()
 
+    val currency by viewModel.currency.collectAsState(initial = "₽")
+
     val sumOfExpenses = calculateSumOfTransactions(expenses)
 
     LaunchedEffect(Unit) {
@@ -94,7 +96,8 @@ fun ExpensesScreen(
                 modifier = Modifier
                     .background(MaterialTheme.colorScheme.secondary),
                 title = "Всего",
-                trail = { Text(sumOfExpenses, color = MaterialTheme.colorScheme.onSurface) }
+                trail = { Text(sumOfExpenses + " " + currency,
+                    color = MaterialTheme.colorScheme.onSurface) }
             )
 
             if (error != null) {
@@ -121,7 +124,7 @@ fun ExpensesScreen(
                         subtitle = item.comment,
                         trail = {
                             Text(
-                                text = item.amount.toCleanDecimal().formatWithSpaces(),
+                                text = item.amount.toCleanDecimal().formatWithSpaces()+ " " +item.currency,
                                 color = MaterialTheme.colorScheme.onSurface
                             )
                             Icon(

@@ -10,6 +10,9 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import com.m4isper.myfinances.domain.utils.Result
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 
 
 @HiltViewModel
@@ -21,6 +24,13 @@ class CategoriesViewModel @Inject constructor(
 
     private val _error = MutableStateFlow<String?>(null)
     val error = _error.asStateFlow()
+
+    val searchQuery = MutableStateFlow("")
+
+    val filteredCategories = combine(categories, searchQuery) { list, query ->
+        if (query.isBlank()) list
+        else list.filter { it.name.contains(query, ignoreCase = true) }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     fun loadCategories() {
         viewModelScope.launch {

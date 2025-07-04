@@ -1,4 +1,4 @@
-package com.m4isper.myfinances.data.repository
+package com.m4isper.myfinances.domain.repository
 
 import com.m4isper.myfinances.domain.model.CategoryModel
 import com.m4isper.myfinances.domain.utils.Result

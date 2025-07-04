@@ -1,4 +1,4 @@
-package com.m4isper.myfinances
+package com.m4isper.myfinances.app
 
 import android.app.Application
 import dagger.hilt.android.HiltAndroidApp

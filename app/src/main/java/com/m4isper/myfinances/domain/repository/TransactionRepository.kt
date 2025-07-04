@@ -1,7 +1,7 @@
-package com.m4isper.myfinances.data.repository
+package com.m4isper.myfinances.domain.repository
 
-import com.m4isper.myfinances.domain.utils.Result
 import com.m4isper.myfinances.domain.model.TransactionModel
+import com.m4isper.myfinances.domain.utils.Result
 
 interface TransactionRepository {
     suspend fun getTransactions(accountId: Int, startDate: String, endDate: String): Result<List<TransactionModel>>

@@ -21,3 +21,4 @@ val GreyLight100 = Color(0xFFCAC4D0)
 
 val Black = Color(0xFF1D1B20)
 val White = Color(0xFFFEF7FF)
+val Red = Color(0xFFE46962)

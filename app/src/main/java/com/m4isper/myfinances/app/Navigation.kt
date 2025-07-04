@@ -1,4 +1,4 @@
-package com.m4isper.myfinances
+package com.m4isper.myfinances.app
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
@@ -26,6 +26,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.m4isper.myfinances.R
 import com.m4isper.myfinances.ui.screens.accountScreen.AccountScreen
 import com.m4isper.myfinances.ui.screens.categoriesScreen.CategoriesScreen
 import com.m4isper.myfinances.ui.screens.expensesScreen.ExpensesScreen
@@ -33,6 +34,7 @@ import com.m4isper.myfinances.ui.screens.historyScreen.HistoryScreen
 import com.m4isper.myfinances.ui.screens.incomeScreen.IncomeScreen
 import com.m4isper.myfinances.ui.screens.LottieSplashScreen
 import com.m4isper.myfinances.ui.screens.SettingsScreen
+import com.m4isper.myfinances.ui.screens.accountScreen.EditAccountScreen
 import kotlin.collections.forEach
 import kotlin.collections.forEachIndexed
 
@@ -70,7 +72,7 @@ fun AppNavHost(
                 when(destination) {
                     Destination.EXPENSES -> ExpensesScreen(modifier, navController)
                     Destination.INCOME -> IncomeScreen(modifier, navController)
-                    Destination.ACCOUNT -> AccountScreen(modifier)
+                    Destination.ACCOUNT -> AccountScreen(modifier, navController)
                     Destination.CATEGORIES -> CategoriesScreen(modifier)
                     Destination.SETTINGS -> SettingsScreen(modifier)
                 }
@@ -79,6 +81,7 @@ fun AppNavHost(
 
         composable("income/history") { HistoryScreen(modifier, navController, "income") }
         composable("expenses/history") { HistoryScreen(modifier, navController, "expenses") }
+        composable("account/edit") { EditAccountScreen(modifier, navController) }
     }
 }
 
@@ -99,7 +102,7 @@ fun AppRoot() {
 @Composable
 fun MainNavigationBar(modifier: Modifier = Modifier) {
     val navController = rememberNavController()
-    val startDestination = Destination.EXPENSES
+    val startDestination = Destination.ACCOUNT
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
