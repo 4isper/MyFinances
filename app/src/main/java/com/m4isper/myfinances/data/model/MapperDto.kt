@@ -11,14 +11,15 @@ fun TransactionDto.toDomain(): TransactionModel = TransactionModel(
     amount = amount,
     transactionDate = transactionDate,
     comment = comment,
-    emoji = category.emoji
+    emoji = category.emoji,
+    currency = account.currency.toCurrencySymbol()
 )
 
 fun AccountDto.toDomain(): AccountModel = AccountModel(
     id = id,
     name = name,
     balance = balance,
-    currency = currency
+    currency = currency.toCurrencySymbol()
 )
 
 fun CategoryDto.toDomain(): CategoryModel {
@@ -29,3 +30,10 @@ fun CategoryDto.toDomain(): CategoryModel {
         isIncome = isIncome
     )
 }
+
+fun AccountResponseDto.toDomain(): AccountModel = AccountModel(
+    id = id,
+    name = name,
+    balance = balance,
+    currency = currency
+)

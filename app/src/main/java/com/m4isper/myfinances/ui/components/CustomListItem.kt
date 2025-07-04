@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.sp
 fun CustomListItem(
     modifier: Modifier = Modifier,
     lead: @Composable (() -> Unit)? = null,
-    title: String,
+    title: String?,
     subtitle: String? = null,
     trail: @Composable (() -> Unit)? = null
 ) {
@@ -39,10 +39,12 @@ fun CustomListItem(
                 lead()
             }
             Column {
-                Text(
-                    text = title,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
+                if (title != null) {
+                    Text(
+                        text = title,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                }
                 if (subtitle != null)
                     Text(
                         text = subtitle,

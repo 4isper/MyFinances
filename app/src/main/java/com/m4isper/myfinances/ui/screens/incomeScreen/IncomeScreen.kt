@@ -51,6 +51,8 @@ fun IncomeScreen(
     val income by viewModel.income.collectAsState()
     val error by viewModel.error.collectAsState()
 
+    val currency by viewModel.currency.collectAsState(initial = "₽")
+
     val sumOfIncome = calculateSumOfTransactions(income)
 
     LaunchedEffect(Unit) {
@@ -94,7 +96,9 @@ fun IncomeScreen(
                 modifier = Modifier
                     .background(MaterialTheme.colorScheme.secondary),
                 title = "Всего",
-                trail = { Text(sumOfIncome, color = MaterialTheme.colorScheme.onSurface) }
+                trail = { Text(
+                    "$sumOfIncome $currency",
+                    color = MaterialTheme.colorScheme.onSurface) }
             )
 
             if (error != null) {

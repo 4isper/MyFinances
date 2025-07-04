@@ -1,9 +1,11 @@
 package com.m4isper.myfinances.data.repository
 
+import com.m4isper.myfinances.data.model.AccountDto
 import com.m4isper.myfinances.data.model.toDomain
 import com.m4isper.myfinances.data.remote.SHMRFinanceApi
 import com.m4isper.myfinances.data.utils.safeApiCall
 import com.m4isper.myfinances.domain.model.AccountModel
+import com.m4isper.myfinances.domain.repository.AccountsRepository
 import com.m4isper.myfinances.domain.utils.Result
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -20,6 +22,46 @@ class AccountsRepositoryImpl @Inject constructor(
         when (result) {
             is Result.Success -> {
                 val data = result.data.map { it.toDomain()}
+                Result.Success(data)
+            }
+            is Result.Failure -> result
+        }
+    }
+
+    override suspend fun getAccountById(accountId: Int): Result<AccountModel> = withContext(Dispatchers.IO) {
+        val result = safeApiCall {
+            api.getAccountById(accountId)
+        }
+
+        when (result) {
+            is Result.Success -> {
+                val data = result.data.toDomain()
+                Result.Success(data)
+            }
+            is Result.Failure -> result
+        }
+    }
+
+    override suspend fun updateAccount(
+        accountId: Int,
+        name: String,
+        balance: String,
+        currency: String
+    ): Result<AccountModel> = withContext(Dispatchers.IO) {
+        val dto = AccountDto(
+            id = accountId,
+            name = name,
+            balance = balance,
+            currency = currency
+        )
+
+        val result = safeApiCall {
+            api.updateAccount(accountId, dto)
+        }
+
+        when (result) {
+            is Result.Success -> {
+                val data = result.data.toDomain()
                 Result.Success(data)
             }
             is Result.Failure -> result

@@ -3,5 +3,7 @@
 
     <style name="Theme.MyFinances" parent="android:Theme.Material.Light.NoActionBar" >
 <!--    <item name="android:windowBackground">@android:color/background_light</item>-->
+        <item name="android:windowBackground">@drawable/splash_background</item>
+        <!-- Для Android 12+ -->
     </style>
 </resources>

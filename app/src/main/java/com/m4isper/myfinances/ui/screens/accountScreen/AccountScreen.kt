@@ -24,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.m4isper.myfinances.BuildConfig
 import com.m4isper.myfinances.domain.utils.formatWithSpaces
 import com.m4isper.myfinances.domain.utils.toCleanDecimal
@@ -34,17 +35,15 @@ import com.m4isper.myfinances.ui.components.CustomListItem
 @Composable
 fun AccountScreen(
     modifier: Modifier = Modifier,
+    navController: NavController,
     viewModel: AccountViewModel = hiltViewModel()
 ) {
-    val accounts by viewModel.accounts.collectAsState()
+    val account by viewModel.account.collectAsState()
     val error by viewModel.error.collectAsState()
 
     LaunchedEffect(Unit) {
-        viewModel.loadAccounts()
+        viewModel.loadAccounts(BuildConfig.ID_ACCOUNT)
     }
-
-    val accountId = BuildConfig.ID_ACCOUNT
-    val account = accounts.find { it.id == accountId }
 
     Box(
         modifier = modifier
@@ -58,10 +57,10 @@ fun AccountScreen(
                     containerColor = MaterialTheme.colorScheme.primary
                 ),
                 actions = {
-                    IconButton(onClick = { /* doSomething() */ }) {
+                    IconButton(onClick = { navController.navigate("account/edit") }) {
                         Icon(
                             Icons.Outlined.Edit,
-                            contentDescription = "History",
+                            contentDescription = "Edit",
                             tint = MaterialTheme.colorScheme.onSurface
                         )
                     }
@@ -81,16 +80,16 @@ fun AccountScreen(
                         Text(text = "\uD83D\uDCB0")
                     }
                 },
-                title = "Баланс",
+                title = account?.name,
                 trail = {
                     Text(
-                        text = account?.balance.toCleanDecimal().formatWithSpaces(),
+                        text = account?.balance.toCleanDecimal().formatWithSpaces() + " " + account?.currency,
                         color = MaterialTheme.colorScheme.onSurface)
-                    Icon(
-                        imageVector = Icons.Rounded.KeyboardArrowRight,
-                        contentDescription = "",
-                        tint = MaterialTheme.colorScheme.tertiary
-                    )
+//                    Icon(
+//                        imageVector = Icons.Rounded.KeyboardArrowRight,
+//                        contentDescription = "",
+//                        tint = MaterialTheme.colorScheme.tertiary
+//                    )
                 }
             )
 
@@ -99,12 +98,12 @@ fun AccountScreen(
                     .background(MaterialTheme.colorScheme.secondary),
                 title = "Валюта",
                 trail = {
-                    Text("₽", color = MaterialTheme.colorScheme.onSurface)
-                    Icon(
-                        imageVector = Icons.Rounded.KeyboardArrowRight,
-                        contentDescription = "",
-                        tint = MaterialTheme.colorScheme.tertiary
-                    )
+                    account?.currency?.let { Text(it, color = MaterialTheme.colorScheme.onSurface) }
+//                    Icon(
+//                        imageVector = Icons.Rounded.KeyboardArrowRight,
+//                        contentDescription = "",
+//                        tint = MaterialTheme.colorScheme.tertiary
+//                    )
                 }
             )
 

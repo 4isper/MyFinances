@@ -3,6 +3,7 @@ package com.m4isper.myfinances.ui.screens.incomeScreen
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.m4isper.myfinances.domain.model.TransactionModel
+import com.m4isper.myfinances.domain.repository.CurrencyRepository
 import com.m4isper.myfinances.domain.usecase.GetIncomeTransactionsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,10 +14,12 @@ import com.m4isper.myfinances.domain.utils.Result
 
 @HiltViewModel
 class IncomeViewModel @Inject constructor(
-    private val getIncomeTransactionsUseCase: GetIncomeTransactionsUseCase
+    private val getIncomeTransactionsUseCase: GetIncomeTransactionsUseCase,
+    currencyRepository: CurrencyRepository
 ) : ViewModel() {
     private val _income = MutableStateFlow<List<TransactionModel>>(emptyList())
     val income = _income.asStateFlow()
+    val currency = currencyRepository.currency
 
     private val _error = MutableStateFlow<String?>(null)
     val error = _error.asStateFlow()

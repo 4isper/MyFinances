@@ -26,5 +26,5 @@ fun BigDecimal.formatWithSpaces(): String {
         groupingSeparator = ' '
     }
     val format = DecimalFormat("#,###", symbols)
-    return format.format(this) + " ₽"
+    return format.format(this)
 }

@@ -60,7 +60,6 @@ dependencies {
     implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.retrofit)
     implementation(libs.retrofit.gson)
-
     ksp(libs.hilt.android.compiler)
     implementation(libs.lottie.compose)
     implementation(libs.androidx.core.splashscreen)

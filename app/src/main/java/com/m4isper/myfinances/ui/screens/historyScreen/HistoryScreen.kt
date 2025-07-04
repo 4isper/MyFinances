@@ -57,6 +57,8 @@ fun HistoryScreen(
     val transactions by viewModel.transactions.collectAsState()
     val error by viewModel.error.collectAsState()
 
+    val currency by viewModel.currency.collectAsState(initial = "₽")
+
     val today = remember { LocalDate.now() }
     val monthStart = remember { today.withDayOfMonth(1) }
 
@@ -123,7 +125,9 @@ fun HistoryScreen(
                 modifier = Modifier
                     .background(MaterialTheme.colorScheme.secondary),
                 title = "Сумма",
-                trail = { Text(sumOfTransactions, color = MaterialTheme.colorScheme.onSurface) }
+                trail = { Text(
+                    "$sumOfTransactions $currency",
+                    color = MaterialTheme.colorScheme.onSurface) }
             )
 
             if (error != null) {
@@ -154,7 +158,8 @@ fun HistoryScreen(
                             Column(
                                 horizontalAlignment = Alignment.End
                             ) {
-                                Text(text = item.amount.toCleanDecimal().formatWithSpaces(),
+                                Text(text = item.amount.toCleanDecimal().formatWithSpaces()
+                                        + " "+ item.currency,
                                     color = MaterialTheme.colorScheme.onSurface)
                                 Text(
                                     text = extractTime(item.transactionDate),

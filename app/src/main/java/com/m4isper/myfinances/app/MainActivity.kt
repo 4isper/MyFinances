@@ -1,12 +1,10 @@
-package com.m4isper.myfinances
+package com.m4isper.myfinances.app
 
 import android.content.pm.ActivityInfo
-import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.m4isper.myfinances.ui.theme.MyFinancesTheme
 import dagger.hilt.android.AndroidEntryPoint
 
