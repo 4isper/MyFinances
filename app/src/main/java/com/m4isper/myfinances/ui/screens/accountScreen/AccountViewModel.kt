@@ -8,14 +8,11 @@ import com.m4isper.myfinances.domain.usecase.GetAccountByIdUseCase
 import com.m4isper.myfinances.domain.usecase.GetAccountsUseCase
 import com.m4isper.myfinances.domain.usecase.UpdateAccountUseCase
 import com.m4isper.myfinances.domain.utils.Result
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
-class AccountViewModel @Inject constructor(
+class AccountViewModel (
     private val getAccountByIdUseCase: GetAccountByIdUseCase,
     private val updateAccountUseCase: UpdateAccountUseCase,
     private val currencyRepository: CurrencyRepository

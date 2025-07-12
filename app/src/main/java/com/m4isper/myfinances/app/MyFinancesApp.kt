@@ -1,7 +1,16 @@
 package com.m4isper.myfinances.app
 
 import android.app.Application
-import dagger.hilt.android.HiltAndroidApp
+import com.m4isper.myfinances.di.AppComponent
+import com.m4isper.myfinances.di.DaggerAppComponent
 
-@HiltAndroidApp
-class MyFinancesApp : Application()
+class MyFinancesApp : Application() {
+    lateinit var appComponent: AppComponent
+//        private set
+
+    override fun onCreate() {
+        super.onCreate()
+
+        appComponent = DaggerAppComponent.factory().create(this)
+    }
+}

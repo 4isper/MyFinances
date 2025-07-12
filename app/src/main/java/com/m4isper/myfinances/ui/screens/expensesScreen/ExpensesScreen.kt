@@ -1,6 +1,7 @@
 package com.m4isper.myfinances.ui.screens.expensesScreen
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -33,7 +34,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.m4isper.myfinances.BuildConfig
 import com.m4isper.myfinances.ui.theme.MyFinancesTheme
@@ -50,8 +52,10 @@ import com.m4isper.myfinances.ui.components.CustomListItem
 fun ExpensesScreen(
     modifier: Modifier = Modifier,
     navController: NavController,
-    viewModel: ExpensesViewModel = hiltViewModel()
+    viewModelFactory: ViewModelProvider.Factory
 ) {
+    val viewModel: ExpensesViewModel = viewModel(factory = viewModelFactory)
+
     val expenses by viewModel.expenses.collectAsState()
     val error by viewModel.error.collectAsState()
 
@@ -108,6 +112,10 @@ fun ExpensesScreen(
                 items (expenses) { item ->
                     CustomListItem(
                         modifier = Modifier
+                            .clickable(onClick = {
+                                navController.navigate("transaction/${item.id}")
+                            }
+                            )
                             .background(MaterialTheme.colorScheme.surface)
                             .padding(vertical = 10.dp),
                         lead = {

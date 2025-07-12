@@ -4,8 +4,9 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
-    alias(libs.plugins.hilt)
-    alias(libs.plugins.ksp)
+//    alias(libs.plugins.hilt)
+//    alias(libs.plugins.ksp)
+    id("org.jetbrains.kotlin.kapt")
 }
 
 fun getLocalProperty(key: String): String {
@@ -56,11 +57,17 @@ android {
 }
 
 dependencies {
-    implementation(libs.hilt.android)
+    implementation(libs.dagger)
+    kapt(libs.dagger.compiler)
+//    implementation(libs.dagger.android)
+//    implementation(libs.dagger.android.support)
+//    kapt(libs.dagger.android.processor)
+
+//    implementation(libs.hilt.android)
     implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.retrofit)
     implementation(libs.retrofit.gson)
-    ksp(libs.hilt.android.compiler)
+//    ksp(libs.hilt.android.compiler)
     implementation(libs.lottie.compose)
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.core.ktx)

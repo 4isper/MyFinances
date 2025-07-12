@@ -18,6 +18,12 @@ object DateUtils {
     fun parseDate(dateString: String): ZonedDateTime =
         ZonedDateTime.parse(dateString, DateTimeFormatter.ISO_DATE_TIME)
 
+    fun extractDate(dateString: String): String {
+        val zonedDateTime = parseDate(dateString)
+        val timeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
+        return zonedDateTime.format(timeFormatter)
+    }
+
     fun extractTime(dateString: String): String {
         val zonedDateTime = ZonedDateTime.parse(dateString, DateTimeFormatter.ISO_DATE_TIME)
         val timeFormatter = DateTimeFormatter.ofPattern("HH:mm")

@@ -32,6 +32,22 @@ class TransactionRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun getTransactionById(
+        transactionId: Int
+    ): Result<TransactionModel> = withContext(Dispatchers.IO) {
+        val result = safeApiCall {
+            api.getTransactionById(transactionId)
+        }
+
+        when (result) {
+            is Result.Success -> {
+                val data = result.data.toDomain()
+                Result.Success(data)
+            }
+            is Result.Failure -> result
+        }
+    }
+
     override suspend fun getIncomeTransactions(
         accountId: Int,
         startDate: String,

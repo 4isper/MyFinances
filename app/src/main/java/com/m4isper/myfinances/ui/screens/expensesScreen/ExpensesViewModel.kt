@@ -5,16 +5,13 @@ import androidx.lifecycle.viewModelScope
 import com.m4isper.myfinances.domain.model.TransactionModel
 import com.m4isper.myfinances.domain.repository.CurrencyRepository
 import com.m4isper.myfinances.domain.usecase.GetExpenseTransactionsUseCase
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 import com.m4isper.myfinances.domain.utils.Result
 import com.m4isper.myfinances.domain.utils.calculateSumOfTransactions
 
-@HiltViewModel
-class ExpensesViewModel @Inject constructor(
+class ExpensesViewModel (
     private val getExpenseTransactionsUseCase: GetExpenseTransactionsUseCase,
     currencyRepository: CurrencyRepository
 ) : ViewModel() {

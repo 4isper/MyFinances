@@ -6,16 +6,13 @@ import com.m4isper.myfinances.domain.model.TransactionModel
 import com.m4isper.myfinances.domain.repository.CurrencyRepository
 import com.m4isper.myfinances.domain.usecase.GetExpenseTransactionsUseCase
 import com.m4isper.myfinances.domain.usecase.GetIncomeTransactionsUseCase
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import javax.inject.Inject
 import com.m4isper.myfinances.domain.utils.Result
 import com.m4isper.myfinances.domain.utils.DateUtils.parseDate
 import kotlinx.coroutines.launch
 
-@HiltViewModel
-class HistoryViewModel @Inject constructor(
+class HistoryViewModel (
     private val getIncomeTransactionsUseCase: GetIncomeTransactionsUseCase,
     private val getExpenseTransactionsUseCase: GetExpenseTransactionsUseCase,
     currencyRepository: CurrencyRepository

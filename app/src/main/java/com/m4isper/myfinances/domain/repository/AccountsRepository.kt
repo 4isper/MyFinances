@@ -1,7 +1,6 @@
 package com.m4isper.myfinances.domain.repository
 
 import com.m4isper.myfinances.domain.model.AccountModel
-import com.m4isper.myfinances.domain.model.TransactionModel
 import com.m4isper.myfinances.domain.utils.Result
 
 interface AccountsRepository {
