@@ -13,15 +13,13 @@ import com.m4isper.myfinances.domain.usecase.GetAccountsUseCase
 import com.m4isper.myfinances.domain.usecase.GetCategoriesUseCase
 import com.m4isper.myfinances.domain.usecase.GetExpenseTransactionsUseCase
 import com.m4isper.myfinances.domain.usecase.GetIncomeTransactionsUseCase
+import com.m4isper.myfinances.domain.usecase.GetTransactionByIdUseCase
 import com.m4isper.myfinances.domain.usecase.UpdateAccountUseCase
 import dagger.Module
 import dagger.Provides
-import dagger.hilt.InstallIn
-import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
 @Module
-@InstallIn(SingletonComponent::class)
 object AppModule {
 
     @Provides
@@ -78,4 +76,9 @@ object AppModule {
     fun provideGetExpenseTransactionsUseCase(
         repository: TransactionRepository
     ): GetExpenseTransactionsUseCase = GetExpenseTransactionsUseCase(repository)
+
+    @Provides
+    fun provideGetTransactionByIdUseCase(
+        repository: TransactionRepository
+    ): GetTransactionByIdUseCase = GetTransactionByIdUseCase(repository)
 }

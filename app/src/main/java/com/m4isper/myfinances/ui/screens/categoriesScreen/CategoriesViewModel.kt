@@ -4,19 +4,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.m4isper.myfinances.domain.model.CategoryModel
 import com.m4isper.myfinances.domain.usecase.GetCategoriesUseCase
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 import com.m4isper.myfinances.domain.utils.Result
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 
-
-@HiltViewModel
-class CategoriesViewModel @Inject constructor(
+class CategoriesViewModel (
     private val getCategoriesUseCase: GetCategoriesUseCase
 ) : ViewModel() {
     private val _categories = MutableStateFlow<List<CategoryModel>>(emptyList())

@@ -11,8 +11,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.input.TextFieldLineLimits
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -34,19 +32,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
-import com.m4isper.myfinances.domain.categoriesDemo
-import com.m4isper.myfinances.domain.utils.DateUtils
-import com.m4isper.myfinances.domain.utils.calculateSumOfTransactions
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.m4isper.myfinances.ui.components.CustomListItem
-import com.m4isper.myfinances.ui.screens.expensesScreen.ExpensesViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CategoriesScreen(
     modifier: Modifier = Modifier,
-    viewModel: CategoriesViewModel = hiltViewModel()
+    viewModelFactory: ViewModelProvider.Factory
 ) {
+    val viewModel: CategoriesViewModel = viewModel(factory = viewModelFactory)
+
     val searchQuery by viewModel.searchQuery.collectAsState()
     val categories by viewModel.filteredCategories.collectAsState()
     val error by viewModel.error.collectAsState()

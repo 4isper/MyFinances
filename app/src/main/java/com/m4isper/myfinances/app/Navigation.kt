@@ -15,10 +15,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.vectorResource
 import androidx.navigation.NavHostController
@@ -35,6 +37,7 @@ import com.m4isper.myfinances.ui.screens.incomeScreen.IncomeScreen
 import com.m4isper.myfinances.ui.screens.LottieSplashScreen
 import com.m4isper.myfinances.ui.screens.SettingsScreen
 import com.m4isper.myfinances.ui.screens.accountScreen.EditAccountScreen
+import com.m4isper.myfinances.ui.screens.transactionScreen.TransactionScreen
 import kotlin.collections.forEach
 import kotlin.collections.forEachIndexed
 
@@ -63,6 +66,14 @@ fun AppNavHost(
     startDestination: Destination,
     modifier: Modifier = Modifier
 ) {
+    val context = LocalContext.current
+    val activityComponent = remember {
+        (context.applicationContext as MyFinancesApp)
+            .appComponent
+            .activityComponent()
+            .create()
+    }
+
     NavHost(
         navController = navController,
         startDestination = startDestination.route
@@ -70,18 +81,53 @@ fun AppNavHost(
         Destination.entries.forEach { destination ->
             composable(destination.route) {
                 when(destination) {
-                    Destination.EXPENSES -> ExpensesScreen(modifier, navController)
-                    Destination.INCOME -> IncomeScreen(modifier, navController)
-                    Destination.ACCOUNT -> AccountScreen(modifier, navController)
-                    Destination.CATEGORIES -> CategoriesScreen(modifier)
+                    Destination.EXPENSES -> {
+                        val factory = activityComponent.provideExpensesViewModelFactory()
+                        ExpensesScreen(modifier, navController, factory)
+                    }
+                    Destination.INCOME -> {
+                        val factory = activityComponent.provideIncomeViewModelFactory()
+                        IncomeScreen(modifier, navController,  factory)
+                    }
+                    Destination.ACCOUNT -> {
+                        val factory = activityComponent.provideAccountViewModelFactory()
+                        AccountScreen(modifier, navController,  factory)
+                    }
+                    Destination.CATEGORIES -> {
+                        val factory = activityComponent.provideCategoriesViewModelFactory()
+                        CategoriesScreen(modifier,  factory)
+                    }
                     Destination.SETTINGS -> SettingsScreen(modifier)
                 }
             }
         }
 
-        composable("income/history") { HistoryScreen(modifier, navController, "income") }
-        composable("expenses/history") { HistoryScreen(modifier, navController, "expenses") }
-        composable("account/edit") { EditAccountScreen(modifier, navController) }
+        composable("income/history") {
+            val factory = activityComponent.provideHistoryViewModelFactory()
+            HistoryScreen(modifier, navController, type = "income", viewModelFactory = factory)
+        }
+
+        composable("expenses/history") {
+            val factory = activityComponent.provideHistoryViewModelFactory()
+            HistoryScreen(modifier, navController, type = "expenses", viewModelFactory = factory)
+        }
+
+        composable("account/edit") {
+            val factory = activityComponent.provideAccountViewModelFactory()
+            EditAccountScreen(modifier, navController, factory)
+        }
+
+        composable("transaction/{id}") { backStackEntry ->
+            val transactionId = backStackEntry.arguments?.getString("id")?.toIntOrNull()
+            transactionId?.let {
+                val factory = activityComponent
+                    .transactionComponent()
+                    .create(it)
+                    .transactionViewModelFactory()
+
+                TransactionScreen(modifier, navController, factory)
+            }
+        }
     }
 }
 

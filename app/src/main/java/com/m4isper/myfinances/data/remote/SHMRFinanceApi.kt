@@ -29,6 +29,11 @@ interface SHMRFinanceApi {
         @Body accountDto: AccountDto
     ): Response<AccountResponseDto>
 
+    @GET("transactions/{transactionId}")
+    suspend fun getTransactionById(
+        @Path("transactionId") transactionId: Int
+    ): Response<TransactionDto>
+
     @GET("transactions/account/{accountId}/period")
     suspend fun getTransactions(
         @Path("accountId") accountId: Int,

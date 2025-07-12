@@ -5,15 +5,12 @@ import androidx.lifecycle.viewModelScope
 import com.m4isper.myfinances.domain.model.TransactionModel
 import com.m4isper.myfinances.domain.repository.CurrencyRepository
 import com.m4isper.myfinances.domain.usecase.GetIncomeTransactionsUseCase
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 import com.m4isper.myfinances.domain.utils.Result
 
-@HiltViewModel
-class IncomeViewModel @Inject constructor(
+class IncomeViewModel (
     private val getIncomeTransactionsUseCase: GetIncomeTransactionsUseCase,
     currencyRepository: CurrencyRepository
 ) : ViewModel() {

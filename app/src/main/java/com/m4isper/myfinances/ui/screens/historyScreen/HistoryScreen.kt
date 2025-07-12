@@ -33,7 +33,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.m4isper.myfinances.BuildConfig
 import com.m4isper.myfinances.R
@@ -52,8 +53,10 @@ fun HistoryScreen(
     modifier: Modifier = Modifier,
     navController: NavController,
     type: String,
-    viewModel: HistoryViewModel = hiltViewModel()
+    viewModelFactory: ViewModelProvider.Factory
 ) {
+    val viewModel: HistoryViewModel = viewModel(factory = viewModelFactory)
+
     val transactions by viewModel.transactions.collectAsState()
     val error by viewModel.error.collectAsState()
 
@@ -141,7 +144,10 @@ fun HistoryScreen(
                             if (item.emoji != ""){
                                 Box(
                                     modifier = Modifier
-                                        .background(MaterialTheme.colorScheme.secondary, shape = CircleShape)
+                                        .background(
+                                            MaterialTheme.colorScheme.secondary,
+                                            shape = CircleShape
+                                        )
                                         .size(24.dp),
                                     contentAlignment = Alignment.Center,
                                 ) {
@@ -150,6 +156,10 @@ fun HistoryScreen(
                             }
                         },
                         modifier = Modifier
+                            .clickable(onClick = {
+                                navController.navigate("transaction/${item.id}")
+                            }
+                            )
                             .background(MaterialTheme.colorScheme.surface)
                             .padding(vertical = 10.dp),
                         title = item.categoryName,

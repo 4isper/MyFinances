@@ -23,7 +23,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.m4isper.myfinances.BuildConfig
 import com.m4isper.myfinances.domain.utils.formatWithSpaces
@@ -36,8 +37,10 @@ import com.m4isper.myfinances.ui.components.CustomListItem
 fun AccountScreen(
     modifier: Modifier = Modifier,
     navController: NavController,
-    viewModel: AccountViewModel = hiltViewModel()
+    viewModelFactory: ViewModelProvider.Factory
 ) {
+    val viewModel: AccountViewModel = viewModel(factory = viewModelFactory)
+
     val account by viewModel.account.collectAsState()
     val error by viewModel.error.collectAsState()
 
