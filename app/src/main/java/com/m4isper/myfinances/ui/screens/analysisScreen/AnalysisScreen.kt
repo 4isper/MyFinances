@@ -1,5 +1,6 @@
-package com.m4isper.myfinances.ui.screens.historyScreen
+package com.m4isper.myfinances.ui.screens.analysisScreen
 
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -44,18 +45,19 @@ import com.m4isper.myfinances.domain.utils.formatWithSpaces
 import com.m4isper.myfinances.domain.utils.toCleanDecimal
 import com.m4isper.myfinances.ui.components.CustomListItem
 import com.m4isper.myfinances.ui.components.DatePickerListItem
+import com.m4isper.myfinances.ui.components.DatePickerWithChipListItem
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HistoryScreen(
+fun AnalysisScreen(
     modifier: Modifier = Modifier,
     navController: NavController,
     type: String,
     viewModelFactory: ViewModelProvider.Factory
 ) {
-    val viewModel: HistoryViewModel = viewModel(factory = viewModelFactory)
+    val viewModel: AnalysisScreenViewModel = viewModel(factory = viewModelFactory)
 
     val transactions by viewModel.transactions.collectAsState()
     val error by viewModel.error.collectAsState()
@@ -98,41 +100,30 @@ fun HistoryScreen(
                         )
                     }
                 },
-                title = { Text("Моя история", color = MaterialTheme.colorScheme.onSurface) },
+                title = { Text("Анализ", color = MaterialTheme.colorScheme.onSurface) },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary
+                    containerColor = MaterialTheme.colorScheme.surface
                 ),
-                actions = {
-                    IconButton(onClick = {
-                        navController.navigate("${type}/analysis")
-                    }) {
-                        Icon(
-                            imageVector = ImageVector.vectorResource(R.drawable.ic_analysis),
-                            contentDescription = "Period",
-                            tint = MaterialTheme.colorScheme.onSurface
-                        )
-                    }
-                },
             )
 
-            DatePickerListItem(
+            DatePickerWithChipListItem(
                 modifier = Modifier
-                    .background(MaterialTheme.colorScheme.secondary),
-                title = "Начало",
+                    .background(MaterialTheme.colorScheme.surface),
+                title = "Период: начало",
                 initialDate = fromDate,
                 onDateChange = { fromDate = it }
             )
-            DatePickerListItem(
+            DatePickerWithChipListItem(
                 modifier = Modifier
-                    .background(MaterialTheme.colorScheme.secondary),
-                title = "Конец",
+                    .background(MaterialTheme.colorScheme.surface),
+                title = "Период: конец",
                 initialDate = toDate,
                 onDateChange = { toDate = it }
             )
 
             CustomListItem(
                 modifier = Modifier
-                    .background(MaterialTheme.colorScheme.secondary),
+                    .background(MaterialTheme.colorScheme.surface),
                 title = "Сумма",
                 trail = { Text(
                     "$sumOfTransactions $currency",
@@ -177,11 +168,6 @@ fun HistoryScreen(
                                 Text(text = item.amount.toCleanDecimal().formatWithSpaces()
                                         + " "+ item.currency,
                                     color = MaterialTheme.colorScheme.onSurface)
-                                Text(
-                                    text = extractTime(item.transactionDate)
-                                        .format(DateTimeFormatter.ofPattern("HH:mm")),
-                                    color = MaterialTheme.colorScheme.onSurface
-                                )
                             }
                             Icon(
                                 imageVector = Icons.Rounded.KeyboardArrowRight,

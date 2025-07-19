@@ -1,6 +1,7 @@
 package com.m4isper.myfinances.di
 
 import android.app.Application
+import android.content.Context
 import dagger.BindsInstance
 import dagger.Component
 import javax.inject.Singleton
@@ -17,6 +18,9 @@ interface AppComponent {
 
     @Component.Factory
     interface Factory {
-        fun create(@BindsInstance application: Application): AppComponent
+        fun create(
+            @BindsInstance context: Context,
+            appModule: AppModule
+        ): AppComponent
     }
 }

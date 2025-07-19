@@ -12,31 +12,31 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import java.time.LocalDate
+import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
 @Composable
-fun DatePickerListItem(
+fun TimePickerListItem(
     modifier: Modifier = Modifier,
     title: String,
-    initialDate: LocalDate = LocalDate.now(),
-    onDateChange: (LocalDate) -> Unit,
-    dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy"),
+    initialTime: LocalTime = LocalTime.now(),
+    onTimeChange: (LocalTime) -> Unit,
+    timeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm")
 ) {
     var showDialog by remember { mutableStateOf(false) }
-    var selectedDate by rememberSaveable { mutableStateOf(initialDate) }
+    var selectedTime by rememberSaveable { mutableStateOf(initialTime) }
 
-    LaunchedEffect(initialDate) {
-        selectedDate = initialDate
+    LaunchedEffect(initialTime) {
+        selectedTime = initialTime
     }
 
-    DatePickerLauncher(
+    TimePickerLauncher(
         showDialog = showDialog,
-        initialDate = selectedDate,
+        initialTime = selectedTime,
         onDismiss = { showDialog = false },
-        onDateSelected = {
-            selectedDate = it
-            onDateChange(it)
+        onTimeSelected = {
+            selectedTime = it
+            onTimeChange(it)
         }
     )
 
@@ -44,13 +44,9 @@ fun DatePickerListItem(
         modifier = modifier,
         title = title,
         trail = {
-            Box(
-                modifier = Modifier
-                    .clickable { showDialog = true }
-            ) {
+            Box(modifier = Modifier.clickable { showDialog = true }) {
                 Text(
-                    text = selectedDate.format(dateFormatter)
-                        .replaceFirstChar { it.titlecase() },
+                    text = selectedTime.format(timeFormatter),
                     color = MaterialTheme.colorScheme.onSurface
                 )
             }

@@ -1,8 +1,8 @@
 package com.m4isper.myfinances.ui.components
 
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SuggestionChip
+import androidx.compose.material3.SuggestionChipDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -16,7 +16,7 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 @Composable
-fun DatePickerListItem(
+fun DatePickerWithChipListItem(
     modifier: Modifier = Modifier,
     title: String,
     initialDate: LocalDate = LocalDate.now(),
@@ -44,16 +44,21 @@ fun DatePickerListItem(
         modifier = modifier,
         title = title,
         trail = {
-            Box(
-                modifier = Modifier
-                    .clickable { showDialog = true }
-            ) {
-                Text(
-                    text = selectedDate.format(dateFormatter)
-                        .replaceFirstChar { it.titlecase() },
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-            }
+            SuggestionChip(
+                onClick = {showDialog = true},
+                shape = MaterialTheme.shapes.extraLarge,
+                colors = SuggestionChipDefaults.suggestionChipColors(
+                    MaterialTheme.colorScheme.primary
+                ),
+                border = null,
+                label = {
+                    Text(
+                        text = selectedDate.format(dateFormatter)
+                            .replaceFirstChar { it.titlecase() },
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                }
+            )
         }
     )
 }

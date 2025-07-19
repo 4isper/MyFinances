@@ -1,6 +1,7 @@
 package com.m4isper.myfinances.ui.components
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.LocalTextStyle
@@ -15,35 +16,41 @@ import androidx.compose.ui.text.style.TextAlign
 
 @Composable
 fun CustomBasicTextField(
-    text: String,
+    text: String?,
     onValueChange: (String) -> Unit,
     textPlaceholder: String,
     modifier: Modifier = Modifier,
+    textAlign: TextAlign = TextAlign.End,
+    trail: @Composable (() -> Unit)? = null
 ) {
     Box(
         modifier = modifier,
         contentAlignment = Alignment.CenterEnd
     ) {
-        BasicTextField(
-            value = text,
-            onValueChange = onValueChange,
-            modifier = Modifier.fillMaxWidth(),
-            singleLine = true,
-            textStyle = LocalTextStyle.current.copy(
-                textAlign = TextAlign.End,
-                color = MaterialTheme.colorScheme.onSurface
-            ),
-            decorationBox = { innerTextField ->
-                if (text.isEmpty()) {
-                    Text(
-                        text = textPlaceholder,
-                        modifier = Modifier.fillMaxWidth(),
-                        textAlign = TextAlign.End,
-                        color = MaterialTheme.colorScheme.outlineVariant
-                    )
+        Row {
+            BasicTextField(
+                value = text.orEmpty(),
+                onValueChange = onValueChange,
+//            modifier = Modifier.fillMaxWidth(),
+                singleLine = true,
+                textStyle = LocalTextStyle.current.copy(
+                    textAlign = textAlign,
+                    color = MaterialTheme.colorScheme.onSurface
+                ),
+                decorationBox = { innerTextField ->
+                    if (text.isNullOrEmpty()) {
+                        Text(
+                            text = textPlaceholder,
+//                        modifier = Modifier.fillMaxWidth(),
+                            textAlign = textAlign,
+                            color = MaterialTheme.colorScheme.outlineVariant
+                        )
+                    }
+                    innerTextField()
                 }
-                innerTextField()
-            }
-        )
+            )
+
+            trail?.invoke()
+        }
     }
 }

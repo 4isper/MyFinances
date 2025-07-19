@@ -162,7 +162,13 @@ fun EditAccountScreen(
                     CustomBasicTextField(
                         text = balance,
                         onValueChange = { balance = it },
-                        textPlaceholder = "Введите сумму баланса"
+                        textPlaceholder = "Введите сумму баланса",
+                        trail = {
+                            Text(
+                                text = " $currency",
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
+                        }
                     )
                 }
             )
