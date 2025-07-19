@@ -68,10 +68,6 @@ fun IncomeScreen(
         )
     }
 
-    income.forEach {
-        Log.d("INCOME_ITEM", "${it.comment}: isIncome=${it.isIncome}")
-    }
-
     Box(
         modifier = modifier
             .fillMaxSize(),
@@ -132,7 +128,8 @@ fun IncomeScreen(
                         title = item.categoryName,
                         subtitle = item.comment,
                         trail = {
-                            Text(text = item.amount.toCleanDecimal().formatWithSpaces(),
+                            Text(
+                                text = item.amount.toCleanDecimal().formatWithSpaces()+ " " +item.currency,
                                 color = MaterialTheme.colorScheme.onSurface)
                             Icon(
                                 imageVector = Icons.Rounded.KeyboardArrowRight,
@@ -146,7 +143,9 @@ fun IncomeScreen(
         }
         AddButton(
             modifier = Modifier.align(Alignment.BottomEnd),
-            onClick = {}
+            onClick = {
+                navController.navigate("transaction/-1")
+            }
         )
     }
 }

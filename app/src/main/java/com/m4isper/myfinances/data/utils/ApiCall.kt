@@ -19,10 +19,11 @@ suspend fun <T> safeApiCall(
 
             if (response.isSuccessful) {
                 val body = response.body()
+                @Suppress("UNCHECKED_CAST")
                 return if (body != null) {
                     Result.Success(body)
                 } else {
-                    Result.Failure(Exception("Пустой ответ от сервера"))
+                    Result.Success(Unit as T)
                 }
             }
 

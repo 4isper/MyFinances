@@ -37,6 +37,7 @@ import com.m4isper.myfinances.ui.screens.incomeScreen.IncomeScreen
 import com.m4isper.myfinances.ui.screens.LottieSplashScreen
 import com.m4isper.myfinances.ui.screens.SettingsScreen
 import com.m4isper.myfinances.ui.screens.accountScreen.EditAccountScreen
+import com.m4isper.myfinances.ui.screens.analysisScreen.AnalysisScreen
 import com.m4isper.myfinances.ui.screens.transactionScreen.TransactionScreen
 import kotlin.collections.forEach
 import kotlin.collections.forEachIndexed
@@ -110,6 +111,16 @@ fun AppNavHost(
         composable("expenses/history") {
             val factory = activityComponent.provideHistoryViewModelFactory()
             HistoryScreen(modifier, navController, type = "expenses", viewModelFactory = factory)
+        }
+
+        composable("income/analysis") {
+            val factory = activityComponent.provideAnalysisViewModelFactory()
+            AnalysisScreen(modifier, navController, type = "income", viewModelFactory = factory)
+        }
+
+        composable("expenses/analysis") {
+            val factory = activityComponent.provideAnalysisViewModelFactory()
+            AnalysisScreen(modifier, navController, type = "expenses", viewModelFactory = factory)
         }
 
         composable("account/edit") {

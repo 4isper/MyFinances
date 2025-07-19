@@ -2,6 +2,7 @@ package com.m4isper.myfinances.di
 
 import com.m4isper.myfinances.app.MainActivity
 import com.m4isper.myfinances.ui.screens.accountScreen.AccountViewModelFactory
+import com.m4isper.myfinances.ui.screens.analysisScreen.AnalysisScreenViewModelFactory
 import com.m4isper.myfinances.ui.screens.categoriesScreen.CategoriesViewModelFactory
 import com.m4isper.myfinances.ui.screens.expensesScreen.ExpensesViewModelFactory
 import com.m4isper.myfinances.ui.screens.historyScreen.HistoryViewModelFactory
@@ -17,6 +18,7 @@ interface ActivityComponent {
     fun provideIncomeViewModelFactory(): IncomeViewModelFactory
     fun provideExpensesViewModelFactory(): ExpensesViewModelFactory
     fun provideHistoryViewModelFactory(): HistoryViewModelFactory
+    fun provideAnalysisViewModelFactory(): AnalysisScreenViewModelFactory
     fun provideCategoriesViewModelFactory(): CategoriesViewModelFactory
     fun transactionComponent(): TransactionComponent.Factory
 

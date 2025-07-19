@@ -1,6 +1,8 @@
 package com.m4isper.myfinances.domain.utils
 
 import java.time.LocalDate
+import java.time.LocalTime
+import java.time.ZoneOffset
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
@@ -18,15 +20,16 @@ object DateUtils {
     fun parseDate(dateString: String): ZonedDateTime =
         ZonedDateTime.parse(dateString, DateTimeFormatter.ISO_DATE_TIME)
 
-    fun extractDate(dateString: String): String {
-        val zonedDateTime = parseDate(dateString)
-        val timeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
-        return zonedDateTime.format(timeFormatter)
+    fun extractDate(dateString: String): LocalDate =
+        parseDate(dateString).toLocalDate()
+
+    fun extractTime(dateString: String): LocalTime {
+        val zonedDateTime = ZonedDateTime.parse(dateString, DateTimeFormatter.ISO_DATE_TIME)
+        return zonedDateTime.toLocalTime()
     }
 
-    fun extractTime(dateString: String): String {
-        val zonedDateTime = ZonedDateTime.parse(dateString, DateTimeFormatter.ISO_DATE_TIME)
-        val timeFormatter = DateTimeFormatter.ofPattern("HH:mm")
-        return zonedDateTime.format(timeFormatter)
+    fun combineDateTimeToIsoUtc(date: LocalDate, time: LocalTime): String {
+        val zonedDateTime = ZonedDateTime.of(date, time, ZoneOffset.UTC)
+        return DateTimeFormatter.ISO_INSTANT.format(zonedDateTime.toInstant())
     }
 }

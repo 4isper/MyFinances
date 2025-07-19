@@ -100,7 +100,8 @@ fun ExpensesScreen(
                 modifier = Modifier
                     .background(MaterialTheme.colorScheme.secondary),
                 title = "Всего",
-                trail = { Text(sumOfExpenses + " " + currency,
+                trail = { Text(
+                    "$sumOfExpenses $currency",
                     color = MaterialTheme.colorScheme.onSurface) }
             )
 
@@ -147,7 +148,9 @@ fun ExpensesScreen(
         }
         AddButton(
             modifier = Modifier.align(Alignment.BottomEnd),
-            onClick = {}
+            onClick = {
+                navController.navigate("transaction/-1")
+            }
         )
     }
 }
