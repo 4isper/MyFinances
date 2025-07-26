@@ -1,21 +1,10 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
-    alias(libs.plugins.ksp)
     id("org.jetbrains.kotlin.kapt")
-}
-
-private fun getLocalProperty(key: String): String {
-    val properties = Properties()
-    val localPropertiesFile = project.rootProject.file("local.properties")
-    if (localPropertiesFile.exists()) {
-        properties.load(localPropertiesFile.inputStream())
-    }
-    return properties.getProperty(key, "")
 }
 
 android {
@@ -30,8 +19,6 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        buildConfigField("String", "API_TOKEN", "\"${getLocalProperty("API_TOKEN")}\"")
-        buildConfigField("int", "ID_ACCOUNT", getLocalProperty("ID_ACCOUNT"))
     }
 
     buildTypes {
@@ -62,12 +49,37 @@ kotlin {
     }
 }
 
+kapt {
+    arguments {
+//        arg("dagger.reflectBindingGraphWritePath", layout.buildDirectory.dir("reports/dagger").get().asFile.absolutePath)
+        arg("dagger.fullBindingGraphValidation", "WARNING")
+    }
+}
+
 dependencies {
+    implementation(project(":core:ui"))
+    implementation(project(":data:repository"))
+    implementation(project(":data:remote"))
+    implementation(project(":domain"))
+    implementation(project(":core:di"))
+    implementation(project(":feature:account"))
+    implementation(project(":feature:analysis"))
+    implementation(project(":feature:categories"))
+    implementation(project(":feature:expenses"))
+    implementation(project(":feature:history"))
+    implementation(project(":feature:income"))
+    implementation(project(":feature:splash"))
+    implementation(project(":feature:transaction"))
+    implementation(project(":feature:settings"))
+    implementation(project(":core:resources"))
+
     implementation(libs.dagger)
     kapt(libs.dagger.compiler)
+    implementation(libs.dagger.spi)
+
     implementation(libs.retrofit)
     implementation(libs.retrofit.gson)
-    implementation(libs.lottie.compose)
+
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -85,8 +97,4 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-
-    implementation(libs.androidx.room.runtime)
-    ksp(libs.androidx.room.compiler)
-    implementation(libs.androidx.room.ktx)
 }

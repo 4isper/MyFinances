@@ -1,12 +1,14 @@
 package com.m4isper.myfinances.di
 
+import com.m4isper.account.AccountViewModelFactory
+import com.m4isper.analysis.AnalysisScreenViewModelFactory
+import com.m4isper.categories.CategoriesViewModelFactory
+import com.m4isper.di.TransactionComponent
+import com.m4isper.expenses.ExpensesViewModelFactory
+import com.m4isper.history.HistoryViewModelFactory
+import com.m4isper.income.IncomeViewModelFactory
 import com.m4isper.myfinances.app.MainActivity
-import com.m4isper.myfinances.ui.screens.accountScreen.AccountViewModelFactory
-import com.m4isper.myfinances.ui.screens.analysisScreen.AnalysisScreenViewModelFactory
-import com.m4isper.myfinances.ui.screens.categoriesScreen.CategoriesViewModelFactory
-import com.m4isper.myfinances.ui.screens.expensesScreen.ExpensesViewModelFactory
-import com.m4isper.myfinances.ui.screens.historyScreen.HistoryViewModelFactory
-import com.m4isper.myfinances.ui.screens.incomeScreen.IncomeViewModelFactory
+import com.m4isper.settings.ThemeViewModelFactory
 import dagger.Subcomponent
 
 @ActivityScope
@@ -21,6 +23,8 @@ interface ActivityComponent {
     fun provideAnalysisViewModelFactory(): AnalysisScreenViewModelFactory
     fun provideCategoriesViewModelFactory(): CategoriesViewModelFactory
     fun transactionComponent(): TransactionComponent.Factory
+
+    fun provideThemeViewModelFactory(): ThemeViewModelFactory
 
     @Subcomponent.Factory
     interface Factory {

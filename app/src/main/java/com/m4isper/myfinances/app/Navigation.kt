@@ -1,5 +1,6 @@
 package com.m4isper.myfinances.app
 
+import androidx.annotation.StringRes
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.WindowInsets
@@ -22,44 +23,58 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.m4isper.myfinances.R
-import com.m4isper.myfinances.ui.screens.accountScreen.AccountScreen
-import com.m4isper.myfinances.ui.screens.categoriesScreen.CategoriesScreen
-import com.m4isper.myfinances.ui.screens.expensesScreen.ExpensesScreen
-import com.m4isper.myfinances.ui.screens.historyScreen.HistoryScreen
-import com.m4isper.myfinances.ui.screens.incomeScreen.IncomeScreen
-import com.m4isper.myfinances.ui.screens.LottieSplashScreen
-import com.m4isper.myfinances.ui.screens.SettingsScreen
-import com.m4isper.myfinances.ui.screens.accountScreen.EditAccountScreen
-import com.m4isper.myfinances.ui.screens.analysisScreen.AnalysisScreen
-import com.m4isper.myfinances.ui.screens.transactionScreen.TransactionScreen
+import com.m4isper.account.AccountScreen
+import com.m4isper.account.EditAccountScreen
+import com.m4isper.analysis.AnalysisScreen
+import com.m4isper.categories.CategoriesScreen
+import com.m4isper.expenses.ExpensesScreen
+import com.m4isper.history.HistoryScreen
+import com.m4isper.income.IncomeScreen
+import com.m4isper.resources.R
+import com.m4isper.settings.navigation.SETTINGS_GRAPH_ROUTE
+import com.m4isper.settings.navigation.settingsNavGraph
+import com.m4isper.splash.LottieSplashScreen
+import com.m4isper.transaction.TransactionScreen
 import kotlin.collections.forEach
 import kotlin.collections.forEachIndexed
 
 enum class Destination(
     val route: String,
-    val label: String,
+    @StringRes val label: Int,
     val iconId: Int,
     val contentDescription: String,
 ) {
-    EXPENSES("expenses", "Расходы", R.drawable.ic_expenses, "Expenses"),
-    INCOME("income", "Доходы", R.drawable.ic_income, "Income"),
-    ACCOUNT("account", "Счет", R.drawable.ic_account, "Account"),
-    CATEGORIES("categories", "Статьи", R.drawable.ic_categories, "Categories"),
-    SETTINGS("settings", "Настройки", R.drawable.ic_settings, "Settings"),
+    EXPENSES("expenses", R.string.expenses, R.drawable.ic_expenses, "Expenses"),
+    INCOME("income", R.string.incomes, R.drawable.ic_income, "Income"),
+    ACCOUNT("account", R.string.account, R.drawable.ic_account, "Account"),
+    CATEGORIES("categories", R.string.categories, R.drawable.ic_categories, "Categories"),
+    SETTINGS(SETTINGS_GRAPH_ROUTE, R.string.settings, R.drawable.ic_settings, "Settings"),
 }
 
-fun resolveCurrentTopLevelDestination(currentRoute: String?): Destination? {
-    return Destination.entries.firstOrNull { destination ->
-        currentRoute?.startsWith(destination.route) == true
+//private fun resolveCurrentTopLevelDestination(currentRoute: String?): Destination? {
+//    return Destination.entries.firstOrNull { destination ->
+//        currentRoute?.startsWith(destination.route) == true
+//    }
+//}
+
+@Composable
+private fun resolveCurrentTopLevelDestination(navController: NavHostController): Destination? {
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val destination = navBackStackEntry?.destination ?: return null
+
+    return Destination.entries.firstOrNull { topLevel ->
+        destination.hierarchy.any { it.route == topLevel.route }
     }
 }
+
 
 @Composable
 fun AppNavHost(
@@ -98,10 +113,20 @@ fun AppNavHost(
                         val factory = activityComponent.provideCategoriesViewModelFactory()
                         CategoriesScreen(modifier,  factory)
                     }
-                    Destination.SETTINGS -> SettingsScreen(modifier)
+                    Destination.SETTINGS -> {
+//                        val factory = activityComponent.provideThemeViewModelFactory()
+//                        settingsNavGraph(modifier, navController,factory)
+                    }
                 }
             }
         }
+
+        settingsNavGraph(
+            modifier = modifier,
+            navController = navController,
+            themeViewModelFactory = activityComponent.provideThemeViewModelFactory()
+        )
+
 
         composable("income/history") {
             val factory = activityComponent.provideHistoryViewModelFactory()
@@ -163,7 +188,7 @@ fun MainNavigationBar(modifier: Modifier = Modifier) {
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
-    val currentTopLevelDestination = resolveCurrentTopLevelDestination(currentRoute)
+    val currentTopLevelDestination = resolveCurrentTopLevelDestination(navController)
 
     Scaffold(
         modifier = modifier,
@@ -200,7 +225,7 @@ fun MainNavigationBar(modifier: Modifier = Modifier) {
                             )
                         },
                         label = {
-                            Text(destination.label)
+                            Text(stringResource(destination.label))
                         },
                         colors = NavigationBarItemDefaults.colors(
                             selectedIconColor = MaterialTheme.colorScheme.primary,
