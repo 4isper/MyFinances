@@ -1,7 +1,9 @@
 package com.m4isper.myfinances.di
 
-import android.app.Application
 import android.content.Context
+import com.m4isper.di.AppModule
+import com.m4isper.di.NetworkModule
+import com.m4isper.di.PreferencesModule
 import dagger.BindsInstance
 import dagger.Component
 import javax.inject.Singleton
@@ -9,7 +11,8 @@ import javax.inject.Singleton
 @Component(
     modules = [
         AppModule::class,
-        NetworkModule::class
+        NetworkModule::class,
+        PreferencesModule::class
     ]
 )
 @Singleton

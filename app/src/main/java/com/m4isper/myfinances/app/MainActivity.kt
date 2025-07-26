@@ -5,7 +5,11 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import com.m4isper.myfinances.ui.theme.MyFinancesTheme
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.m4isper.settings.ThemeViewModel
+import com.m4isper.ui.theme.MyFinancesTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -20,7 +24,16 @@ class MainActivity : ComponentActivity() {
 
         enableEdgeToEdge()
         setContent {
-            MyFinancesTheme {
+
+            val factory = (application as MyFinancesApp).appComponent
+                .activityComponent()
+                .create()
+                .provideThemeViewModelFactory()
+
+            val viewModel: ThemeViewModel = viewModel(factory = factory)
+            val isDarkTheme by viewModel.isDarkTheme.collectAsState()
+
+            MyFinancesTheme(isDarkTheme) {
                 AppRoot()
             }
         }
