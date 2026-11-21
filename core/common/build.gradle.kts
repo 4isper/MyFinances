@@ -10,7 +10,6 @@ android {
     defaultConfig {
         minSdk = 26
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
     }
 
@@ -30,7 +29,7 @@ android {
 }
 
 dependencies {
+    implementation(libs.kotlinx.coroutines.core)
     implementation(libs.retrofit)
     implementation(libs.retrofit.gson)
-    implementation(libs.androidx.core.ktx)
 }

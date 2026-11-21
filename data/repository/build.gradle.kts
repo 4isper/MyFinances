@@ -10,7 +10,6 @@ android {
     defaultConfig {
         minSdk = 26
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
     }
 
@@ -30,6 +29,7 @@ android {
 }
 
 dependencies {
+    implementation(libs.kotlinx.coroutines.core)
     implementation(project(":domain"))
     implementation(project(":data:local"))
     implementation(project(":data:remote"))
@@ -39,8 +39,5 @@ dependencies {
     implementation(libs.retrofit)
     implementation(libs.retrofit.gson)
 
-    implementation(libs.androidx.core.ktx)
     testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
 }

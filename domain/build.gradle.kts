@@ -21,7 +21,6 @@ android {
     defaultConfig {
         minSdk = 26
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
         buildConfigField("String", "API_TOKEN", "\"${getLocalProperty("API_TOKEN")}\"")
         buildConfigField("int", "ID_ACCOUNT", getLocalProperty("ID_ACCOUNT").ifEmpty { "0" })
@@ -47,10 +46,8 @@ android {
 }
 
 dependencies {
+    implementation(libs.kotlinx.coroutines.core)
     implementation(project(":core:common"))
     implementation(libs.javax.inject)
-    implementation(libs.androidx.core.ktx)
     testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
 }
