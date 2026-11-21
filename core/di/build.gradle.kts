@@ -1,12 +1,12 @@
 plugins {
     alias(libs.plugins.android.library)
-    alias(libs.plugins.kotlin.android)
-    id("org.jetbrains.kotlin.kapt")
+    alias(libs.plugins.ksp)
 }
 
 android {
     namespace = "com.m4isper.di"
-    compileSdk = 36
+    compileSdk = 37
+    compileSdkMinor = 2
 
     defaultConfig {
         minSdk = 26
@@ -28,24 +28,18 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
-    kotlinOptions {
-        jvmTarget = "11"
-    }
     buildFeatures {
         buildConfig = true
     }
 }
 
-kapt {
-    arguments {
-        arg("dagger.reflectBindingGraphWritePath", layout.buildDirectory.dir("reports/dagger").get().asFile.absolutePath)
-        arg("dagger.fullBindingGraphValidation", "WARNING")
-    }
+ksp {
+    arg("dagger.fullBindingGraphValidation", "WARNING")
 }
 
 dependencies {
     implementation(libs.dagger)
-    kapt(libs.dagger.compiler)
+    ksp(libs.dagger.compiler)
     implementation(project(":domain"))
 //    implementation(project(":app"))
     implementation(project(":data:repository"))

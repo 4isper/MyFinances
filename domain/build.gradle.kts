@@ -2,7 +2,6 @@ import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.library)
-    alias(libs.plugins.kotlin.android)
 }
 
 private fun getLocalProperty(key: String): String {
@@ -16,7 +15,8 @@ private fun getLocalProperty(key: String): String {
 
 android {
     namespace = "com.m4isper.domain"
-    compileSdk = 36
+    compileSdk = 37
+    compileSdkMinor = 2
 
     defaultConfig {
         minSdk = 26
@@ -24,7 +24,7 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
         buildConfigField("String", "API_TOKEN", "\"${getLocalProperty("API_TOKEN")}\"")
-        buildConfigField("int", "ID_ACCOUNT", getLocalProperty("ID_ACCOUNT"))
+        buildConfigField("int", "ID_ACCOUNT", getLocalProperty("ID_ACCOUNT").ifEmpty { "0" })
 
     }
 
@@ -41,9 +41,6 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
-    kotlinOptions {
-        jvmTarget = "11"
-    }
     buildFeatures {
         buildConfig = true
     }
@@ -51,7 +48,7 @@ android {
 
 dependencies {
     implementation(project(":core:common"))
-    implementation("javax.inject:javax.inject:1")
+    implementation(libs.javax.inject)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     testImplementation(libs.junit)

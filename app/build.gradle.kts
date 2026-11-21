@@ -1,15 +1,13 @@
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
-    id("org.jetbrains.kotlin.kapt")
+    alias(libs.plugins.ksp)
 }
 
 android {
     namespace = "com.m4isper.myfinances"
-    compileSdk = 36
+    compileSdk = 37
+    compileSdkMinor = 2
 
     defaultConfig {
         applicationId = "com.m4isper.myfinances"
@@ -34,26 +32,14 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
-//    kotlinOptions {
-//        jvmTarget = "11"
-//    }
     buildFeatures {
         compose = true
         buildConfig = true
     }
 }
 
-kotlin {
-    compilerOptions {
-        jvmTarget.set(JvmTarget.JVM_11)
-    }
-}
-
-kapt {
-    arguments {
-//        arg("dagger.reflectBindingGraphWritePath", layout.buildDirectory.dir("reports/dagger").get().asFile.absolutePath)
-        arg("dagger.fullBindingGraphValidation", "WARNING")
-    }
+ksp {
+    arg("dagger.fullBindingGraphValidation", "WARNING")
 }
 
 dependencies {
@@ -74,8 +60,7 @@ dependencies {
     implementation(project(":core:resources"))
 
     implementation(libs.dagger)
-    kapt(libs.dagger.compiler)
-    implementation(libs.dagger.spi)
+    ksp(libs.dagger.compiler)
 
     implementation(libs.retrofit)
     implementation(libs.retrofit.gson)
