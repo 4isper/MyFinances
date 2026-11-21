@@ -46,7 +46,6 @@ dependencies {
     api(libs.androidx.material.icons.core)
     implementation(libs.androidx.navigation.compose)
 
-    implementation(libs.androidx.appcompat)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

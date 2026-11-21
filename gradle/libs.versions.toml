@@ -16,7 +16,6 @@ lottieCompose = "6.7.1"
 navigationCompose = "2.10.2"
 retrofit = "3.0.0"
 roomRuntime = "2.8.5"
-appcompat = "1.8.0"
 ksp = "2.3.12"
 
 [libraries]
@@ -48,7 +47,6 @@ androidx-navigation-compose = { group = "androidx.navigation", name = "navigatio
 lottie-compose = { module = "com.airbnb.android:lottie-compose", version.ref = "lottieCompose" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 retrofit-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "retrofit" }
-androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
