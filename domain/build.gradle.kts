@@ -1,7 +1,20 @@
 import java.util.Properties
 
 plugins {
-    alias(libs.plugins.android.library)
+    id("myfinances.android.library")
+}
+
+android {
+    namespace = "com.m4isper.domain"
+
+    defaultConfig {
+        buildConfigField("String", "API_TOKEN", "\"${getLocalProperty("API_TOKEN")}\"")
+        buildConfigField("int", "ID_ACCOUNT", getLocalProperty("ID_ACCOUNT").ifEmpty { "0" })
+    }
+
+    buildFeatures {
+        buildConfig = true
+    }
 }
 
 private fun getLocalProperty(key: String): String {
@@ -13,41 +26,8 @@ private fun getLocalProperty(key: String): String {
     return properties.getProperty(key, "")
 }
 
-android {
-    namespace = "com.m4isper.domain"
-    compileSdk = 37
-    compileSdkMinor = 2
-
-    defaultConfig {
-        minSdk = 26
-
-        consumerProguardFiles("consumer-rules.pro")
-        buildConfigField("String", "API_TOKEN", "\"${getLocalProperty("API_TOKEN")}\"")
-        buildConfigField("int", "ID_ACCOUNT", getLocalProperty("ID_ACCOUNT").ifEmpty { "0" })
-
-    }
-
-    buildTypes {
-        release {
-            isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-        }
-    }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
-    }
-    buildFeatures {
-        buildConfig = true
-    }
-}
-
 dependencies {
-    implementation(libs.kotlinx.coroutines.core)
     implementation(project(":core:common"))
+    implementation(libs.kotlinx.coroutines.core)
     implementation(libs.javax.inject)
-    testImplementation(libs.junit)
 }

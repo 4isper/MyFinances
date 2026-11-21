@@ -1,22 +1,17 @@
 plugins {
-    alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.compose)
-    alias(libs.plugins.ksp)
+    id("myfinances.android.application")
+    id("myfinances.compose")
+    id("myfinances.dagger")
 }
 
 android {
     namespace = "com.m4isper.myfinances"
-    compileSdk = 37
-    compileSdkMinor = 2
 
     defaultConfig {
         applicationId = "com.m4isper.myfinances"
-        minSdk = 26
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
-
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
@@ -28,18 +23,10 @@ android {
             )
         }
     }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
-    }
+
     buildFeatures {
-        compose = true
         buildConfig = true
     }
-}
-
-ksp {
-    arg("dagger.fullBindingGraphValidation", "WARNING")
 }
 
 dependencies {
@@ -59,26 +46,11 @@ dependencies {
     implementation(project(":feature:settings"))
     implementation(project(":core:resources"))
 
-    implementation(libs.dagger)
-    ksp(libs.dagger.compiler)
-
-    implementation(libs.retrofit)
-    implementation(libs.retrofit.gson)
-
+    implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(libs.androidx.activity.compose)
-    implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.ui)
-    implementation(libs.androidx.ui.graphics)
-    implementation(libs.androidx.ui.tooling.preview)
-    implementation(libs.androidx.material3)
     implementation(libs.androidx.navigation.compose)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.ui.test.junit4)
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.gson)
     debugImplementation(libs.androidx.ui.tooling)
-    debugImplementation(libs.androidx.ui.test.manifest)
 }

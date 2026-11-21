@@ -13,3 +13,6 @@
 .externalNativeBuild
 .cxx
 local.properties
+
+# build-logic сборочные артефакты
+build-logic/**/build/

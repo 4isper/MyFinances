@@ -1,43 +1,14 @@
 plugins {
-    alias(libs.plugins.android.library)
-    alias(libs.plugins.ksp)
+    id("myfinances.android.library")
+    id("myfinances.dagger")
 }
 
 android {
     namespace = "com.m4isper.di"
-    compileSdk = 37
-    compileSdkMinor = 2
-
-    defaultConfig {
-        minSdk = 26
-
-        consumerProguardFiles("consumer-rules.pro")
-     }
-
-    buildTypes {
-        release {
-            isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-        }
-    }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
-    }
-}
-
-ksp {
-    arg("dagger.fullBindingGraphValidation", "WARNING")
 }
 
 dependencies {
-    implementation(libs.dagger)
-    ksp(libs.dagger.compiler)
     implementation(project(":domain"))
-//    implementation(project(":app"))
     implementation(project(":data:repository"))
     implementation(project(":data:remote"))
     implementation(project(":feature:account"))
@@ -51,6 +22,4 @@ dependencies {
     implementation(project(":feature:settings"))
     implementation(libs.retrofit)
     implementation(libs.retrofit.gson)
-
-    testImplementation(libs.junit)
 }
