@@ -7,11 +7,13 @@ import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class ThemeRepositoryImpl @Inject constructor(
-    private val context: Context
+    context: Context
 ) : ThemeRepository {
-    override fun isDarkTheme(): Flow<Boolean> = ThemePreferences.isDarkTheme(context)
+    private val themePreferences = ThemePreferences(context)
+
+    override fun isDarkTheme(): Flow<Boolean> = themePreferences.isDarkTheme
 
     override suspend fun setDarkTheme(enabled: Boolean) {
-        ThemePreferences.setDarkTheme(context, enabled)
+        themePreferences.setDarkTheme(enabled)
     }
 }

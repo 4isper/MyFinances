@@ -7,9 +7,8 @@ class RoomConventionPlugin : Plugin<Project> {
         pluginManager.apply("com.google.devtools.ksp")
 
         dependencies {
-            add("implementation", libs.findLibrary("androidx-room-runtime").get())
-            add("implementation", libs.findLibrary("androidx-room-ktx").get())
-            add("ksp", libs.findLibrary("androidx-room-compiler").get())
+            add("implementation", libs.findLibrary("androidx-room3-runtime").get())
+            add("ksp", libs.findLibrary("androidx-room3-compiler").get())
         }
     }
 }
