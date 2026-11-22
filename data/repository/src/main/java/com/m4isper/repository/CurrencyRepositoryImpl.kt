@@ -1,18 +1,20 @@
 package com.m4isper.repository
 
 import com.m4isper.domain.repository.CurrencyRepository
-import kotlinx.coroutines.flow.MutableStateFlow
+import com.m4isper.preferences.CurrencyPreferences
 import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class CurrencyRepositoryImpl @Inject constructor() : CurrencyRepository {
+class CurrencyRepositoryImpl
+    @Inject
+    constructor(
+        private val currencyPreferences: CurrencyPreferences,
+    ) : CurrencyRepository {
+        override val currency: StateFlow<String> = currencyPreferences.currency
 
-    private val _currency = MutableStateFlow("₽")
-    override val currency: StateFlow<String> = _currency
-
-    override fun setCurrency(currencyCode: String) {
-        _currency.value = currencyCode
+        override fun setCurrency(currencyCode: String) {
+            currencyPreferences.setCurrency(currencyCode)
+        }
     }
-}

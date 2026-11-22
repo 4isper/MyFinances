@@ -24,11 +24,12 @@ class MainActivity : ComponentActivity() {
 
         enableEdgeToEdge()
         setContent {
-
-            val factory = (application as MyFinancesApp).appComponent
-                .activityComponent()
-                .create()
-                .provideThemeViewModelFactory()
+            val factory =
+                (application as MyFinancesApp)
+                    .appComponent
+                    .activityComponent()
+                    .create()
+                    .provideThemeViewModelFactory()
 
             val viewModel: ThemeViewModel = viewModel(factory = factory)
             val isDarkTheme by viewModel.isDarkTheme.collectAsState()

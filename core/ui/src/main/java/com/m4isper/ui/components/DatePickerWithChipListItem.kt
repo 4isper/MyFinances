@@ -37,7 +37,7 @@ fun DatePickerWithChipListItem(
         onDateSelected = {
             selectedDate = it
             onDateChange(it)
-        }
+        },
     )
 
     CustomListItem(
@@ -45,20 +45,23 @@ fun DatePickerWithChipListItem(
         title = title,
         trail = {
             SuggestionChip(
-                onClick = {showDialog = true},
+                onClick = { showDialog = true },
                 shape = MaterialTheme.shapes.extraLarge,
-                colors = SuggestionChipDefaults.suggestionChipColors(
-                    MaterialTheme.colorScheme.primary
-                ),
+                colors =
+                    SuggestionChipDefaults.suggestionChipColors(
+                        MaterialTheme.colorScheme.primary,
+                    ),
                 border = null,
                 label = {
                     Text(
-                        text = selectedDate.format(dateFormatter)
-                            .replaceFirstChar { it.titlecase() },
-                        color = MaterialTheme.colorScheme.onSurface
+                        text =
+                            selectedDate
+                                .format(dateFormatter)
+                                .replaceFirstChar { it.titlecase() },
+                        color = MaterialTheme.colorScheme.onSurface,
                     )
-                }
+                },
             )
-        }
+        },
     )
 }

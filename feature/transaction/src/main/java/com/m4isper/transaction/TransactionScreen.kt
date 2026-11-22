@@ -32,6 +32,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -40,15 +41,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import com.m4isper.common.DateUtils.combineDateTimeToIsoUtc
 import com.m4isper.common.DateUtils.extractDate
 import com.m4isper.common.DateUtils.extractTime
+import com.m4isper.resources.R
 import com.m4isper.ui.components.CustomBasicTextField
 import com.m4isper.ui.components.CustomListItem
 import com.m4isper.ui.components.DatePickerListItem
 import com.m4isper.ui.components.TimePickerListItem
-import com.m4isper.resources.R
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalTime
@@ -58,8 +58,10 @@ import java.time.format.DateTimeFormatter
 @Composable
 fun TransactionScreen(
     modifier: Modifier = Modifier,
-    navController: NavController,
-    viewModelFactory: ViewModelProvider.Factory
+    // начальный тип формы: доход или расход; при редактировании перекрывается данными транзакции
+    isIncome: Boolean,
+    onBack: () -> Unit,
+    viewModelFactory: ViewModelProvider.Factory,
 ) {
     val viewModel: TransactionViewModel = viewModel(factory = viewModelFactory)
 
@@ -77,22 +79,23 @@ fun TransactionScreen(
     val timeNow = remember { LocalTime.now() }
 
     LaunchedEffect(Unit) {
-        if (viewModel.transactionId != -1)
+        if (viewModel.transactionId != -1) {
             viewModel.loadTransactionById()
+        }
         viewModel.loadAccount()
         viewModel.loadCategories()
     }
 
-    val categoryPairs = categories.map { it.name to it.id}
+    val categoryPairs = categories.map { it.name to it.id }
 
-    var comment: String? by remember { mutableStateOf("") }
-    var categoryName by remember { mutableStateOf("") }
-    var categoryId by remember { mutableIntStateOf(0) }
-    var amount by remember { mutableStateOf("0") }
+    var comment: String? by rememberSaveable { mutableStateOf("") }
+    var categoryName by rememberSaveable { mutableStateOf("") }
+    var categoryId by rememberSaveable { mutableIntStateOf(0) }
+    var amount by rememberSaveable { mutableStateOf("0") }
     var date by remember { mutableStateOf(today) }
     var time by remember { mutableStateOf(timeNow) }
 
-    var isIncome by remember { mutableStateOf(true) }
+    var isIncome by remember { mutableStateOf(isIncome) }
 
     var expanded by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
@@ -103,61 +106,70 @@ fun TransactionScreen(
             categoryName = transaction.categoryName
             categoryId = transaction.categoryId
             amount = transaction.amount
-            date =  extractDate(transaction.transactionDate)
+            date = extractDate(transaction.transactionDate)
             time = extractTime(transaction.transactionDate)
             isIncome = transaction.isIncome
         }
     }
 
-    val titleTextTopAppBar = if (isIncome)
-        stringResource(R.string.my_incomes) else stringResource(R.string.my_expenses)
+    val titleTextTopAppBar =
+        if (isIncome) {
+            stringResource(R.string.my_incomes)
+        } else {
+            stringResource(R.string.my_expenses)
+        }
 
     Box(
-        modifier = modifier
-            .fillMaxSize(),
-        contentAlignment = Alignment.TopCenter
+        modifier =
+            modifier
+                .fillMaxSize(),
+        contentAlignment = Alignment.TopCenter,
     ) {
         Column {
             CenterAlignedTopAppBar(
                 navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
+                    IconButton(onClick = { onBack() }) {
                         Icon(
                             Icons.Outlined.Close,
                             contentDescription = "Cancel",
-                            tint = MaterialTheme.colorScheme.onSurface
+                            tint = MaterialTheme.colorScheme.onSurface,
                         )
                     }
                 },
                 title = { Text(titleTextTopAppBar, color = MaterialTheme.colorScheme.onSurface) },
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary
-                ),
+                colors =
+                    TopAppBarDefaults.centerAlignedTopAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                    ),
                 actions = {
                     IconButton(onClick = {
-                        if (viewModel.transactionId == -1)
+                        if (viewModel.transactionId == -1) {
                             scope.launch {
-                                val result = viewModel.addTransaction(
-                                    categoryId = categoryId,
-                                    amount = amount,
-                                    transactionDate = combineDateTimeToIsoUtc(date, time),
-                                    comment = comment
-                                )
+                                val result =
+                                    viewModel.addTransaction(
+                                        categoryId = categoryId,
+                                        amount = amount,
+                                        transactionDate = combineDateTimeToIsoUtc(date, time),
+                                        comment = comment,
+                                    )
                                 if (result) {
-                                    navController.popBackStack()
+                                    onBack()
                                 } else {
                                     // можно показать Snackbar или ошибку
                                 }
                             }
-                        if (viewModel.transactionId != -1){
+                        }
+                        if (viewModel.transactionId != -1) {
                             scope.launch {
-                                val result = viewModel.updateTransaction(
-                                    categoryId = categoryId,
-                                    amount = amount,
-                                    transactionDate = combineDateTimeToIsoUtc(date, time),
-                                    comment = comment
-                                )
+                                val result =
+                                    viewModel.updateTransaction(
+                                        categoryId = categoryId,
+                                        amount = amount,
+                                        transactionDate = combineDateTimeToIsoUtc(date, time),
+                                        comment = comment,
+                                    )
                                 if (result) {
-                                    navController.popBackStack()
+                                    onBack()
                                 } else {
                                     // можно показать Snackbar или ошибку
                                 }
@@ -167,50 +179,51 @@ fun TransactionScreen(
                         Icon(
                             Icons.Outlined.Done,
                             contentDescription = "Done",
-                            tint = MaterialTheme.colorScheme.onSurface
+                            tint = MaterialTheme.colorScheme.onSurface,
                         )
                     }
                 },
             )
 
             CustomListItem(
-                modifier = Modifier
-                    .background(MaterialTheme.colorScheme.surface)
-                    .padding(vertical = 10.dp),
+                modifier =
+                    Modifier
+                        .background(MaterialTheme.colorScheme.surface)
+                        .padding(vertical = 10.dp),
                 title = stringResource(R.string.account),
                 trail = {
                     account?.name?.let { text ->
                         Text(
                             text = text,
-                            color = MaterialTheme.colorScheme.onSurface
+                            color = MaterialTheme.colorScheme.onSurface,
                         )
                     }
-                }
+                },
             )
 
             CustomListItem(
-                modifier = Modifier
-                    .background(MaterialTheme.colorScheme.surface)
-                    .padding(vertical = 10.dp)
-                    .clickable { expanded = true }
-                ,
+                modifier =
+                    Modifier
+                        .background(MaterialTheme.colorScheme.surface)
+                        .padding(vertical = 10.dp)
+                        .clickable { expanded = true },
                 title = stringResource(R.string.category),
                 trail = {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(
                             text = categoryName,
-                            color = MaterialTheme.colorScheme.onSurface
+                            color = MaterialTheme.colorScheme.onSurface,
                         )
                         Icon(
                             imageVector = Icons.Rounded.KeyboardArrowRight,
                             contentDescription = null,
-                            tint = MaterialTheme.colorScheme.tertiary
+                            tint = MaterialTheme.colorScheme.tertiary,
                         )
                     }
 
                     DropdownMenu(
                         expanded = expanded,
-                        onDismissRequest = { expanded = false }
+                        onDismissRequest = { expanded = false },
                     ) {
                         categoryPairs.forEach {
                             DropdownMenuItem(
@@ -219,17 +232,18 @@ fun TransactionScreen(
                                     categoryName = it.first
                                     categoryId = it.second
                                     expanded = false
-                                }
+                                },
                             )
                         }
                     }
-                }
+                },
             )
 
             CustomListItem(
-                modifier = Modifier
-                    .background(MaterialTheme.colorScheme.surface)
-                    .padding(vertical = 10.dp),
+                modifier =
+                    Modifier
+                        .background(MaterialTheme.colorScheme.surface)
+                        .padding(vertical = 10.dp),
                 title = stringResource(R.string.amount),
                 trail = {
                     CustomBasicTextField(
@@ -239,17 +253,18 @@ fun TransactionScreen(
                         trail = {
                             Text(
                                 text = " $currency",
-                                color = MaterialTheme.colorScheme.onSurface
+                                color = MaterialTheme.colorScheme.onSurface,
                             )
-                        }
+                        },
                     )
-                }
+                },
             )
 
             DatePickerListItem(
-                modifier = Modifier
-                    .background(MaterialTheme.colorScheme.surface)
-                    .padding(vertical = 10.dp),
+                modifier =
+                    Modifier
+                        .background(MaterialTheme.colorScheme.surface)
+                        .padding(vertical = 10.dp),
                 title = stringResource(R.string.date),
                 initialDate = date,
                 onDateChange = { date = it },
@@ -257,66 +272,70 @@ fun TransactionScreen(
             )
 
             TimePickerListItem(
-                modifier = Modifier
-                    .background(MaterialTheme.colorScheme.surface)
-                    .padding(vertical = 10.dp),
+                modifier =
+                    Modifier
+                        .background(MaterialTheme.colorScheme.surface)
+                        .padding(vertical = 10.dp),
                 title = stringResource(R.string.time),
                 initialTime = time,
-                onTimeChange = { time = it }
+                onTimeChange = { time = it },
             )
 
             CustomListItem(
-                modifier = Modifier
-                    .background(MaterialTheme.colorScheme.surface)
-                    .padding(vertical = 10.dp),
+                modifier =
+                    Modifier
+                        .background(MaterialTheme.colorScheme.surface)
+                        .padding(vertical = 10.dp),
                 lead = {
                     CustomBasicTextField(
                         text = comment,
                         onValueChange = { comment = it },
                         textPlaceholder = stringResource(R.string.enter_comment),
-                        textAlign = TextAlign.Start
+                        textAlign = TextAlign.Start,
                     )
                 },
                 title = null,
             )
 
-            if (viewModel.transactionId != -1){
+            if (viewModel.transactionId != -1) {
                 Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 15.dp, vertical = 20.dp)
-                        .size(50.dp)
-                        .background(color = MaterialTheme.colorScheme.surface)
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 15.dp, vertical = 20.dp)
+                            .size(50.dp)
+                            .background(color = MaterialTheme.colorScheme.surface),
                 ) {
                     Button(
-                        modifier = Modifier
-                            .fillMaxWidth(),
+                        modifier =
+                            Modifier
+                                .fillMaxWidth(),
                         onClick = {
                             scope.launch {
                                 val result = viewModel.deleteTransaction()
                                 if (result) {
-                                    navController.popBackStack()
+                                    onBack()
                                 } else {
                                     // можно показать Snackbar или ошибку
                                 }
                             }
                         },
-                        colors = ButtonDefaults.buttonColors(
-                            MaterialTheme.colorScheme.error
-                        )
+                        colors =
+                            ButtonDefaults.buttonColors(
+                                MaterialTheme.colorScheme.error,
+                            ),
                     ) {
                         Text(
                             text = stringResource(R.string.delete_transaction),
-                            color = MaterialTheme.colorScheme.surface
+                            color = MaterialTheme.colorScheme.surface,
                         )
                     }
                 }
             }
 
-            if (error != null) {
-                Text("${stringResource(R.string.error)}: $error", color = MaterialTheme.colorScheme.error)
+            error?.let { errorRes ->
+                Text(stringResource(errorRes), color = MaterialTheme.colorScheme.error)
             }
-
         }
     }
 }

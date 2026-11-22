@@ -18,7 +18,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import com.m4isper.resources.R
 import com.m4isper.ui.components.CustomListItem
 
@@ -26,59 +25,66 @@ import com.m4isper.ui.components.CustomListItem
 @Composable
 fun AppInfoScreen(
     modifier: Modifier = Modifier,
-    navController: NavController,
+    onBack: () -> Unit,
 ) {
     val viewModel: AppInfoViewModel = viewModel()
     val info = viewModel.appInfo
 
     Box(
-        modifier = modifier
-            .fillMaxSize(),
-        contentAlignment = Alignment.TopCenter
+        modifier =
+            modifier
+                .fillMaxSize(),
+        contentAlignment = Alignment.TopCenter,
     ) {
         Column {
             CenterAlignedTopAppBar(
                 navigationIcon = {
                     IconButton(
-                        onClick = { navController.popBackStack() }
+                        onClick = onBack,
                     ) {
                         Icon(
                             Icons.Default.ArrowBack,
                             contentDescription = "Back",
-                            tint = MaterialTheme.colorScheme.onSurface
+                            tint = MaterialTheme.colorScheme.onSurface,
                         )
                     }
                 },
-                title = { Text(
-                    text = stringResource(R.string.about_program),
-                    color = MaterialTheme.colorScheme.onSurface) },
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary
-                ),
+                title = {
+                    Text(
+                        text = stringResource(R.string.about_program),
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
+                },
+                colors =
+                    TopAppBarDefaults.centerAlignedTopAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                    ),
             )
 
             CustomListItem(
-                modifier = Modifier
-                    .background(MaterialTheme.colorScheme.surface),
+                modifier =
+                    Modifier
+                        .background(MaterialTheme.colorScheme.surface),
                 title = stringResource(R.string.version),
                 trail = {
                     Text(
                         text = info.versionName,
-                        color = MaterialTheme.colorScheme.onSurface
+                        color = MaterialTheme.colorScheme.onSurface,
                     )
-                }
+                },
             )
 
             CustomListItem(
-                modifier = Modifier
-                    .background(MaterialTheme.colorScheme.surface),
+                modifier =
+                    Modifier
+                        .background(MaterialTheme.colorScheme.surface),
                 title = stringResource(R.string.last_update),
                 trail = {
                     Text(
                         text = info.lastUpdateDate,
-                        color = MaterialTheme.colorScheme.onSurface
+                        color = MaterialTheme.colorScheme.onSurface,
                     )
-                }
+                },
             )
         }
     }

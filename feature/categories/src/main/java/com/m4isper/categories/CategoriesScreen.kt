@@ -31,16 +31,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.m4isper.resources.R
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.m4isper.resources.R
 import com.m4isper.ui.components.CustomListItem
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CategoriesScreen(
     modifier: Modifier = Modifier,
-    viewModelFactory: ViewModelProvider.Factory
+    viewModelFactory: ViewModelProvider.Factory,
 ) {
     val viewModel: CategoriesViewModel = viewModel(factory = viewModelFactory)
 
@@ -53,72 +53,79 @@ fun CategoriesScreen(
     }
 
     Box(
-        modifier = modifier
-            .fillMaxSize(),
-        contentAlignment = Alignment.TopCenter
+        modifier =
+            modifier
+                .fillMaxSize(),
+        contentAlignment = Alignment.TopCenter,
     ) {
         Column {
             CenterAlignedTopAppBar(
                 title = {
                     Text(
                         text = stringResource(R.string.my_categories),
-                        color = MaterialTheme.colorScheme.onSurface)
-                        },
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary
-                ),
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
+                },
+                colors =
+                    TopAppBarDefaults.centerAlignedTopAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                    ),
             )
 
             TextField(
                 value = searchQuery,
                 onValueChange = { viewModel.searchQuery.value = it },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .heightIn(min = 50.dp),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .heightIn(min = 50.dp),
                 placeholder = {
                     Text(
                         text = stringResource(R.string.find_category),
-                        color = MaterialTheme.colorScheme.onSurface
+                        color = MaterialTheme.colorScheme.onSurface,
                     )
                 },
                 singleLine = true,
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = Color.Transparent,
-                    unfocusedBorderColor = Color.Transparent,
-                    unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
-                    focusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh
-                ),
+                colors =
+                    OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = Color.Transparent,
+                        unfocusedBorderColor = Color.Transparent,
+                        unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                        focusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                    ),
                 trailingIcon = {
                     Icon(
-                        Icons.Rounded.Search, "",
-                        tint = MaterialTheme.colorScheme.onSurface
+                        Icons.Rounded.Search,
+                        "",
+                        tint = MaterialTheme.colorScheme.onSurface,
                     )
-                }
+                },
             )
 
             HorizontalDivider(
                 thickness = 1.3.dp,
-                color = MaterialTheme.colorScheme.outlineVariant
+                color = MaterialTheme.colorScheme.outlineVariant,
             )
 
-            if (error != null) {
-                Text("${stringResource(R.string.error)}: $error", color = MaterialTheme.colorScheme.error)
+            error?.let { errorRes ->
+                Text(stringResource(errorRes), color = MaterialTheme.colorScheme.error)
             }
 
             LazyColumn {
-                items (categories) { item ->
+                items(categories) { item ->
                     CustomListItem(
-                        modifier = Modifier
-                            .background(MaterialTheme.colorScheme.surface)
-                            .padding(vertical = 10.dp),
+                        modifier =
+                            Modifier
+                                .background(MaterialTheme.colorScheme.surface)
+                                .padding(vertical = 10.dp),
                         lead = {
                             Box(
-                                modifier = Modifier
-                                    .background(
-                                        MaterialTheme.colorScheme.secondary,
-                                        shape = CircleShape
-                                    )
-                                    .size(24.dp),
+                                modifier =
+                                    Modifier
+                                        .background(
+                                            MaterialTheme.colorScheme.secondary,
+                                            shape = CircleShape,
+                                        ).size(24.dp),
                                 contentAlignment = Alignment.Center,
                             ) {
                                 Text(

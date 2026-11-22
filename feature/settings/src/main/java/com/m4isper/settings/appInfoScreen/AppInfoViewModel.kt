@@ -9,11 +9,12 @@ import kotlin.getValue
 
 data class AppInfo(
     val versionName: String,
-    val lastUpdateDate: String
+    val lastUpdateDate: String,
 )
 
-class AppInfoViewModel(application: Application) : AndroidViewModel(application) {
-
+class AppInfoViewModel(
+    application: Application,
+) : AndroidViewModel(application) {
     val appInfo: AppInfo by lazy {
         val context = getApplication<Application>()
         val packageInfo = context.packageManager.getPackageInfo(context.packageName, 0)

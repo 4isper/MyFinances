@@ -1,6 +1,5 @@
 package com.m4isper.analysis
 
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -9,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -34,13 +34,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
-import com.m4isper.domain.BuildConfig
+import com.m4isper.domain.AppConfig
 import com.m4isper.domain.utils.calculateSumOfTransactions
 import com.m4isper.domain.utils.formatWithSpaces
 import com.m4isper.domain.utils.toCleanDecimal
-import com.m4isper.ui.components.CustomListItem
 import com.m4isper.resources.R
+import com.m4isper.ui.components.CustomListItem
 import com.m4isper.ui.components.DatePickerWithChipListItem
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -49,9 +48,10 @@ import java.time.format.DateTimeFormatter
 @Composable
 fun AnalysisScreen(
     modifier: Modifier = Modifier,
-    navController: NavController,
+    onBack: () -> Unit,
+    onTransactionClick: (id: Int, isIncome: Boolean) -> Unit,
     type: String,
-    viewModelFactory: ViewModelProvider.Factory
+    viewModelFactory: ViewModelProvider.Factory,
 ) {
     val viewModel: AnalysisScreenViewModel = viewModel(factory = viewModelFactory)
 
@@ -71,108 +71,123 @@ fun AnalysisScreen(
         val end = toDate.format(DateTimeFormatter.ISO_DATE)
 
         when (type) {
-            "income" -> viewModel.loadIncome(accountId = BuildConfig.ID_ACCOUNT, start = start, end = end)
-            "expenses" -> viewModel.loadExpenses(accountId = BuildConfig.ID_ACCOUNT, start = start, end = end)
+            "income" -> viewModel.loadIncome(accountId = AppConfig.LOCAL_ACCOUNT_ID, start = start, end = end)
+            "expenses" -> viewModel.loadExpenses(accountId = AppConfig.LOCAL_ACCOUNT_ID, start = start, end = end)
         }
     }
 
     val sumOfTransactions = calculateSumOfTransactions(transactions)
 
     Box(
-        modifier = modifier
-            .fillMaxSize(),
-        contentAlignment = Alignment.TopCenter
+        modifier =
+            modifier
+                .fillMaxSize(),
+        contentAlignment = Alignment.TopCenter,
     ) {
         Column {
             CenterAlignedTopAppBar(
                 navigationIcon = {
                     IconButton(
-                        onClick = { navController.popBackStack() }
+                        onClick = onBack,
                     ) {
                         Icon(
                             Icons.Default.ArrowBack,
                             contentDescription = "Back",
-                            tint = MaterialTheme.colorScheme.onSurface
+                            tint = MaterialTheme.colorScheme.onSurface,
                         )
                     }
                 },
-                title = { Text(
-                    text = stringResource(R.string.analysis),
-                    color = MaterialTheme.colorScheme.onSurface) },
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surface
-                ),
+                title = {
+                    Text(
+                        text = stringResource(R.string.analysis),
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
+                },
+                colors =
+                    TopAppBarDefaults.centerAlignedTopAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.surface,
+                    ),
             )
 
             DatePickerWithChipListItem(
-                modifier = Modifier
-                    .background(MaterialTheme.colorScheme.surface),
+                modifier =
+                    Modifier
+                        .background(MaterialTheme.colorScheme.surface),
                 title = stringResource(R.string.period_start),
                 initialDate = fromDate,
-                onDateChange = { fromDate = it }
+                onDateChange = { fromDate = it },
             )
             DatePickerWithChipListItem(
-                modifier = Modifier
-                    .background(MaterialTheme.colorScheme.surface),
+                modifier =
+                    Modifier
+                        .background(MaterialTheme.colorScheme.surface),
                 title = stringResource(R.string.period_end),
                 initialDate = toDate,
-                onDateChange = { toDate = it }
+                onDateChange = { toDate = it },
             )
 
             CustomListItem(
-                modifier = Modifier
-                    .background(MaterialTheme.colorScheme.surface),
+                modifier =
+                    Modifier
+                        .background(MaterialTheme.colorScheme.surface),
                 title = stringResource(R.string.amount),
-                trail = { Text(
-                    "$sumOfTransactions $currency",
-                    color = MaterialTheme.colorScheme.onSurface) }
+                trail = {
+                    Text(
+                        "$sumOfTransactions $currency",
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
+                },
             )
 
-            if (error != null) {
-                Text("${stringResource(R.string.error)}: $error", color = MaterialTheme.colorScheme.error)
+            error?.let { errorRes ->
+                Text(stringResource(errorRes), color = MaterialTheme.colorScheme.error)
             }
 
             LazyColumn {
-                items (transactions) { item ->
+                items(transactions) { item ->
                     CustomListItem(
                         lead = {
-                            if (item.emoji != ""){
+                            if (item.emoji != "") {
                                 Box(
-                                    modifier = Modifier
-                                        .background(
-                                            MaterialTheme.colorScheme.secondary,
-                                            shape = CircleShape
-                                        )
-                                        .size(24.dp),
+                                    modifier =
+                                        Modifier
+                                            .background(
+                                                MaterialTheme.colorScheme.secondary,
+                                                shape = CircleShape,
+                                            ).size(24.dp),
                                     contentAlignment = Alignment.Center,
                                 ) {
                                     Text(text = item.emoji)
                                 }
                             }
                         },
-                        modifier = Modifier
-                            .clickable(onClick = {
-                                navController.navigate("transaction/${item.id}")
-                            }
-                            )
-                            .background(MaterialTheme.colorScheme.surface)
-                            .padding(vertical = 10.dp),
+                        modifier =
+                            Modifier
+                                .clickable(
+                                    onClick = {
+                                        onTransactionClick(item.id, item.isIncome)
+                                    },
+                                ).background(MaterialTheme.colorScheme.surface)
+                                .padding(vertical = 10.dp),
                         title = item.categoryName,
                         subtitle = item.comment,
                         trail = {
                             Column(
-                                horizontalAlignment = Alignment.End
+                                horizontalAlignment = Alignment.End,
                             ) {
-                                Text(text = item.amount.toCleanDecimal().formatWithSpaces()
-                                        + " "+ item.currency,
-                                    color = MaterialTheme.colorScheme.onSurface)
+                                Text(
+                                    text =
+                                        item.amount.toCleanDecimal().formatWithSpaces() +
+                                            " " + item.currency,
+                                    color = MaterialTheme.colorScheme.onSurface,
+                                )
                             }
                             Icon(
                                 imageVector = Icons.Rounded.KeyboardArrowRight,
                                 contentDescription = "",
-                                tint = MaterialTheme.colorScheme.tertiary
+                                tint = MaterialTheme.colorScheme.tertiary,
                             )
-                        }
+                        },
                     )
                 }
             }

@@ -1,11 +1,11 @@
 package com.m4isper.local.entity
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
+import androidx.room3.Entity
+import androidx.room3.PrimaryKey
 
 @Entity(tableName = "transactions")
 data class TransactionEntity(
-    @PrimaryKey val id: Int,
+    @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val accountId: Int,
     val categoryId: Int,
     val amount: String,
@@ -15,6 +15,4 @@ data class TransactionEntity(
     val categoryName: String,
     val emoji: String,
     val currency: String,
-    val isSynced: Boolean = false,
-    val updatedAt: Long = System.currentTimeMillis()
 )

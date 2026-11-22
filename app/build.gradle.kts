@@ -1,65 +1,75 @@
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-
 plugins {
-    alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kotlin.compose)
-    id("org.jetbrains.kotlin.kapt")
+    id("myfinances.android.application")
+    id("myfinances.compose")
+    id("myfinances.dagger")
+    // NavKey-маршруты сериализуются для персистентности бэкстека
+    alias(libs.plugins.kotlin.serialization)
 }
+
+val appFileName = "MyFinances"
+
+// versionName ведётся руками, versionCode — число коммитов: растёт сам, ручной
+// бамп не нужен. Rebase или squash уменьшают счётчик, и следующий билд получит
+// меньший versionCode, чем уже выпущенный, — после переписывания истории
+// проверить счётчик перед релизом.
+val appVersionName = "1.0.0"
+
+fun git(vararg args: String): String =
+    providers
+        .exec {
+            workingDir(rootDir)
+            commandLine("git", *args)
+        }.standardOutput.asText
+        .get()
+        .trim()
+
+val commitCount = git("rev-list", "--count", "HEAD").toInt()
+val commitHash = git("rev-parse", "--short", "HEAD")
 
 android {
     namespace = "com.m4isper.myfinances"
-    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.m4isper.myfinances"
-        minSdk = 26
-        targetSdk = 36
-        versionCode = 1
-        versionName = "1.0"
-
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        targetSdk = 37
+        versionCode = commitCount
+        versionName = appVersionName
     }
 
     buildTypes {
+        debug {
+            // Суффикс виден в настройках телефона: сразу ясно, что стоит не
+            // релиз, и виден коммит этой сборки.
+            versionNameSuffix = "-dev-$commitHash"
+        }
+
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                "proguard-rules.pro",
             )
         }
     }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
-    }
-//    kotlinOptions {
-//        jvmTarget = "11"
-//    }
+
     buildFeatures {
-        compose = true
         buildConfig = true
     }
 }
 
-kotlin {
-    compilerOptions {
-        jvmTarget.set(JvmTarget.JVM_11)
-    }
-}
-
-kapt {
-    arguments {
-//        arg("dagger.reflectBindingGraphWritePath", layout.buildDirectory.dir("reports/dagger").get().asFile.absolutePath)
-        arg("dagger.fullBindingGraphValidation", "WARNING")
+androidComponents {
+    onVariants { variant ->
+        variant.outputs.forEach { output ->
+            output.outputFileName.set(
+                "$appFileName-${variant.name}-$appVersionName-$commitCount-$commitHash.apk",
+            )
+        }
     }
 }
 
 dependencies {
     implementation(project(":core:ui"))
-    implementation(project(":data:repository"))
-    implementation(project(":data:remote"))
     implementation(project(":domain"))
     implementation(project(":core:di"))
     implementation(project(":feature:account"))
@@ -73,28 +83,17 @@ dependencies {
     implementation(project(":feature:settings"))
     implementation(project(":core:resources"))
 
-    implementation(libs.dagger)
-    kapt(libs.dagger.compiler)
-    implementation(libs.dagger.spi)
-
-    implementation(libs.retrofit)
-    implementation(libs.retrofit.gson)
-
-    implementation(libs.androidx.core.splashscreen)
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
-    implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.ui)
-    implementation(libs.androidx.ui.graphics)
-    implementation(libs.androidx.ui.tooling.preview)
-    implementation(libs.androidx.material3)
-    implementation(libs.androidx.navigation.compose)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.ui.test.junit4)
+    implementation(libs.androidx.core.splashscreen)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    // Navigation 3 + Material3 Adaptive
+    implementation(libs.androidx.navigation3.runtime)
+    implementation(libs.androidx.navigation3.ui)
+    implementation(libs.androidx.lifecycle.viewmodel.navigation3)
+    implementation(libs.androidx.adaptive.layout)
+    implementation(libs.androidx.adaptive.navigation3)
+    implementation(libs.androidx.material3.adaptive.navigation.suite)
+    implementation(libs.kotlinx.serialization.core)
     debugImplementation(libs.androidx.ui.tooling)
-    debugImplementation(libs.androidx.ui.test.manifest)
 }

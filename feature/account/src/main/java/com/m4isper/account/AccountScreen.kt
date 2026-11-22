@@ -25,20 +25,18 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
-import com.m4isper.domain.BuildConfig
-import com.m4isper.resources.R
+import com.m4isper.domain.AppConfig
 import com.m4isper.domain.utils.formatWithSpaces
 import com.m4isper.domain.utils.toCleanDecimal
-import com.m4isper.ui.components.AddButton
+import com.m4isper.resources.R
 import com.m4isper.ui.components.CustomListItem
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AccountScreen(
     modifier: Modifier = Modifier,
-    navController: NavController,
-    viewModelFactory: ViewModelProvider.Factory
+    onEditAccount: () -> Unit,
+    viewModelFactory: ViewModelProvider.Factory,
 ) {
     val viewModel: AccountViewModel = viewModel(factory = viewModelFactory)
 
@@ -46,42 +44,48 @@ fun AccountScreen(
     val error by viewModel.error.collectAsState()
 
     LaunchedEffect(Unit) {
-        viewModel.loadAccounts(BuildConfig.ID_ACCOUNT)
+        viewModel.loadAccounts(AppConfig.LOCAL_ACCOUNT_ID)
     }
 
     Box(
-        modifier = modifier
-            .fillMaxSize(),
-        contentAlignment = Alignment.TopCenter
+        modifier =
+            modifier
+                .fillMaxSize(),
+        contentAlignment = Alignment.TopCenter,
     ) {
         Column {
             CenterAlignedTopAppBar(
-                title = { Text(
-                    text = stringResource(R.string.my_account),
-                    color = MaterialTheme.colorScheme.onSurface)
-                        },
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary
-                ),
+                title = {
+                    Text(
+                        text = stringResource(R.string.my_account),
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
+                },
+                colors =
+                    TopAppBarDefaults.centerAlignedTopAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                    ),
                 actions = {
-                    IconButton(onClick = { navController.navigate("account/edit") }) {
+                    IconButton(onClick = onEditAccount) {
                         Icon(
                             Icons.Outlined.Edit,
                             contentDescription = "Edit",
-                            tint = MaterialTheme.colorScheme.onSurface
+                            tint = MaterialTheme.colorScheme.onSurface,
                         )
                     }
                 },
             )
 
             CustomListItem(
-                modifier = Modifier
-                    .background(MaterialTheme.colorScheme.secondary),
+                modifier =
+                    Modifier
+                        .background(MaterialTheme.colorScheme.secondary),
                 lead = {
                     Box(
-                        modifier = Modifier
-                            .background(color = MaterialTheme.colorScheme.surface, shape = CircleShape)
-                            .size(24.dp),
+                        modifier =
+                            Modifier
+                                .background(color = MaterialTheme.colorScheme.surface, shape = CircleShape)
+                                .size(24.dp),
                         contentAlignment = Alignment.Center,
                     ) {
                         Text(text = "\uD83D\uDCB0")
@@ -91,18 +95,20 @@ fun AccountScreen(
                 trail = {
                     Text(
                         text = account?.balance.toCleanDecimal().formatWithSpaces() + " " + account?.currency,
-                        color = MaterialTheme.colorScheme.onSurface)
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
 //                    Icon(
 //                        imageVector = Icons.Rounded.KeyboardArrowRight,
 //                        contentDescription = "",
 //                        tint = MaterialTheme.colorScheme.tertiary
 //                    )
-                }
+                },
             )
 
             CustomListItem(
-                modifier = Modifier
-                    .background(MaterialTheme.colorScheme.secondary),
+                modifier =
+                    Modifier
+                        .background(MaterialTheme.colorScheme.secondary),
                 title = stringResource(R.string.currency),
                 trail = {
                     account?.currency?.let { Text(it, color = MaterialTheme.colorScheme.onSurface) }
@@ -111,11 +117,11 @@ fun AccountScreen(
 //                        contentDescription = "",
 //                        tint = MaterialTheme.colorScheme.tertiary
 //                    )
-                }
+                },
             )
 
-            if (error != null) {
-                Text("${stringResource(R.string.error)}: $error", color = MaterialTheme.colorScheme.error)
+            error?.let { errorRes ->
+                Text(stringResource(errorRes), color = MaterialTheme.colorScheme.error)
             }
         }
 

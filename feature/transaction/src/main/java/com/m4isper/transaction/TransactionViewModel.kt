@@ -2,6 +2,8 @@ package com.m4isper.transaction
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.m4isper.common.Result
+import com.m4isper.domain.AppConfig
 import com.m4isper.domain.model.AccountModel
 import com.m4isper.domain.model.CategoryModel
 import com.m4isper.domain.model.TransactionModel
@@ -12,13 +14,12 @@ import com.m4isper.domain.usecase.GetAccountByIdUseCase
 import com.m4isper.domain.usecase.GetCategoriesUseCase
 import com.m4isper.domain.usecase.GetTransactionByIdUseCase
 import com.m4isper.domain.usecase.UpdateTransactionUseCase
-import com.m4isper.domain.BuildConfig
-import com.m4isper.common.Result
+import com.m4isper.ui.components.toErrorRes
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class TransactionViewModel (
+class TransactionViewModel(
     private val getTransactionByIdUseCase: GetTransactionByIdUseCase,
     private val addTransactionUseCase: AddTransactionUseCase,
     private val getCategoriesUseCase: GetCategoriesUseCase,
@@ -26,13 +27,13 @@ class TransactionViewModel (
     private val updateTransactionUseCase: UpdateTransactionUseCase,
     private val deleteTransactionUseCase: DeleteTransactionUseCase,
     val transactionId: Int,
-    currencyRepository: CurrencyRepository
+    currencyRepository: CurrencyRepository,
 ) : ViewModel() {
     private val _transaction = MutableStateFlow<TransactionModel?>(null)
     val transaction = _transaction.asStateFlow()
     val currency = currencyRepository.currency
 
-    private val _error = MutableStateFlow<String?>(null)
+    private val _error = MutableStateFlow<Int?>(null)
     val error = _error.asStateFlow()
 
     fun loadTransactionById() {
@@ -41,7 +42,7 @@ class TransactionViewModel (
                 is Result.Success -> {
                     _transaction.value = result.data
                 }
-                is Result.Failure -> _error.value = result.exception.message
+                is Result.Failure -> _error.value = result.exception.toErrorRes()
             }
         }
     }
@@ -50,56 +51,62 @@ class TransactionViewModel (
         categoryId: Int,
         amount: String,
         transactionDate: String,
-        comment: String? = null
-    ): Boolean{
-        return when (val result = addTransactionUseCase(
-            accountId = BuildConfig.ID_ACCOUNT,
-            categoryId = categoryId,
-            amount = amount,
-            transactionDate = transactionDate,
-            comment = comment
-        )) {
+        comment: String? = null,
+    ): Boolean =
+        when (
+            val result =
+                addTransactionUseCase(
+                    accountId = AppConfig.LOCAL_ACCOUNT_ID,
+                    categoryId = categoryId,
+                    amount = amount,
+                    transactionDate = transactionDate,
+                    comment = comment,
+                )
+        ) {
             is Result.Success -> true
             is Result.Failure -> {
-                _error.value = result.exception.message
+                _error.value = result.exception.toErrorRes()
                 false
             }
         }
-    }
 
     suspend fun updateTransaction(
         categoryId: Int,
         amount: String,
         transactionDate: String,
-        comment: String? = null
-    ): Boolean {
-        return when (val result = updateTransactionUseCase(
-            transactionId = transactionId,
-            accountId = BuildConfig.ID_ACCOUNT,
-            categoryId = categoryId,
-            amount = amount,
-            transactionDate = transactionDate,
-            comment = comment
-        )) {
+        comment: String? = null,
+    ): Boolean =
+        when (
+            val result =
+                updateTransactionUseCase(
+                    transactionId = transactionId,
+                    accountId = AppConfig.LOCAL_ACCOUNT_ID,
+                    categoryId = categoryId,
+                    amount = amount,
+                    transactionDate = transactionDate,
+                    comment = comment,
+                )
+        ) {
             is Result.Success -> true
             is Result.Failure -> {
-                _error.value = result.exception.message
+                _error.value = result.exception.toErrorRes()
                 false
             }
         }
-    }
 
-    suspend fun deleteTransaction(): Boolean {
-        return when (val result = deleteTransactionUseCase(
-            transactionId = transactionId
-        )) {
+    suspend fun deleteTransaction(): Boolean =
+        when (
+            val result =
+                deleteTransactionUseCase(
+                    transactionId = transactionId,
+                )
+        ) {
             is Result.Success -> true
             is Result.Failure -> {
-                _error.value = result.exception.message
+                _error.value = result.exception.toErrorRes()
                 false
             }
         }
-    }
 
     private val _categories = MutableStateFlow<List<CategoryModel>>(emptyList())
     val categories = _categories.asStateFlow()
@@ -108,7 +115,7 @@ class TransactionViewModel (
         viewModelScope.launch {
             when (val result = getCategoriesUseCase()) {
                 is Result.Success -> _categories.value = result.data
-                is Result.Failure -> _error.value = result.exception.message
+                is Result.Failure -> _error.value = result.exception.toErrorRes()
             }
         }
     }
@@ -118,9 +125,9 @@ class TransactionViewModel (
 
     fun loadAccount() {
         viewModelScope.launch {
-            when (val result = getAccountByIdUseCase(BuildConfig.ID_ACCOUNT)) {
+            when (val result = getAccountByIdUseCase(AppConfig.LOCAL_ACCOUNT_ID)) {
                 is Result.Success -> _account.value = result.data
-                is Result.Failure -> _error.value = result.exception.message
+                is Result.Failure -> _error.value = result.exception.toErrorRes()
             }
         }
     }

@@ -8,9 +8,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class ThemeViewModel (
+class ThemeViewModel(
     private val getDarkTheme: GetDarkThemeUseCase,
-    private val setDarkTheme: SetDarkThemeUseCase
+    private val setDarkTheme: SetDarkThemeUseCase,
 ) : ViewModel() {
     private val _isDarkTheme = MutableStateFlow(false)
     val isDarkTheme: StateFlow<Boolean> = _isDarkTheme

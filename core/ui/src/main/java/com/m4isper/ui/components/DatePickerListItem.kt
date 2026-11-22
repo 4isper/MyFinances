@@ -37,7 +37,7 @@ fun DatePickerListItem(
         onDateSelected = {
             selectedDate = it
             onDateChange(it)
-        }
+        },
     )
 
     CustomListItem(
@@ -45,15 +45,18 @@ fun DatePickerListItem(
         title = title,
         trail = {
             Box(
-                modifier = Modifier
-                    .clickable { showDialog = true }
+                modifier =
+                    Modifier
+                        .clickable { showDialog = true },
             ) {
                 Text(
-                    text = selectedDate.format(dateFormatter)
-                        .replaceFirstChar { it.titlecase() },
-                    color = MaterialTheme.colorScheme.onSurface
+                    text =
+                        selectedDate
+                            .format(dateFormatter)
+                            .replaceFirstChar { it.titlecase() },
+                    color = MaterialTheme.colorScheme.onSurface,
                 )
             }
-        }
+        },
     )
 }

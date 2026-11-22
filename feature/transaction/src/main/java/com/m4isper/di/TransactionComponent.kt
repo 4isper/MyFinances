@@ -11,6 +11,8 @@ interface TransactionComponent {
 
     @Subcomponent.Factory
     interface Factory {
-        fun create(@BindsInstance @TransactionIdQualifier transactionId: Int): TransactionComponent
+        fun create(
+            @BindsInstance @TransactionIdQualifier transactionId: Int,
+        ): TransactionComponent
     }
 }
