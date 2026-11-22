@@ -1,6 +1,7 @@
 package com.m4isper.domain
 
 import com.m4isper.common.Result
+import com.m4isper.domain.utils.InvalidAmountException
 import com.m4isper.domain.usecase.AddTransactionUseCase
 import com.m4isper.domain.usecase.DeleteTransactionUseCase
 import com.m4isper.domain.usecase.GetExpenseTransactionsUseCase
@@ -33,6 +34,28 @@ class TransactionUseCasesTest {
             assertEquals("700", (result as Result.Success).data.amount)
             assertEquals(1, repository.added.size)
             assertEquals(3, repository.transactions.size)
+        }
+
+    @Test
+    fun `addTransaction fails for non-positive or garbage amount`() =
+        runTest {
+            val useCase = AddTransactionUseCase(repository)
+
+            for (amount in listOf("0", "-5", "abc", "")) {
+                val result = useCase(accountId = 1, categoryId = 4, amount = amount, transactionDate = "2026-11-22T09:00:00Z", comment = null)
+                assertTrue((result as Result.Failure).exception is InvalidAmountException)
+            }
+            assertEquals(0, repository.added.size)
+        }
+
+    @Test
+    fun `updateTransaction fails for non-positive amount`() =
+        runTest {
+            val useCase = UpdateTransactionUseCase(repository)
+
+            val result = useCase(transactionId = 1, accountId = 1, categoryId = 4, amount = "0", transactionDate = "2026-11-22T09:00:00Z", comment = null)
+
+            assertTrue((result as Result.Failure).exception is InvalidAmountException)
         }
 
     @Test

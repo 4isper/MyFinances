@@ -17,8 +17,9 @@ class UpdateTransactionUseCase
             amount: String,
             transactionDate: String,
             comment: String?,
-        ): Result<TransactionModel> =
-            repository.updateTransaction(
+        ): Result<TransactionModel> {
+            invalidAmountOrNull(amount)?.let { return Result.Failure(it) }
+            return repository.updateTransaction(
                 transactionId,
                 accountId,
                 categoryId,
@@ -26,4 +27,5 @@ class UpdateTransactionUseCase
                 transactionDate,
                 comment,
             )
+        }
     }

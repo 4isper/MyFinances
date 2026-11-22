@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.Done
@@ -115,7 +114,7 @@ fun EditAccountScreen(
                                     currency = currency,
                                 )
                             if (result) {
-                                onBack
+                                onBack()
                             } else {
                                 // можно показать Snackbar или ошибку
                             }
@@ -144,38 +143,7 @@ fun EditAccountScreen(
                 },
             )
 
-            CustomListItem(
-                modifier =
-                    Modifier
-                        .background(MaterialTheme.colorScheme.surface),
-                lead = {
-                    Box(
-                        modifier =
-                            Modifier
-                                .background(
-                                    color = MaterialTheme.colorScheme.secondary,
-                                    shape = CircleShape,
-                                ).size(24.dp),
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        Text(text = "\uD83D\uDCB0")
-                    }
-                },
-                title = stringResource(R.string.balance),
-                trail = {
-                    CustomBasicTextField(
-                        text = balance,
-                        onValueChange = { balance = it },
-                        textPlaceholder = stringResource(R.string.enter_balance),
-                        trail = {
-                            Text(
-                                text = " $currency",
-                                color = MaterialTheme.colorScheme.onSurface,
-                            )
-                        },
-                    )
-                },
-            )
+            // Balance не редактируется: он производная от транзакций (см. recalculateBalance)
 
             CustomListItem(
                 modifier =

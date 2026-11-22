@@ -4,15 +4,13 @@ import com.m4isper.common.Result
 import com.m4isper.common.safeCall
 import com.m4isper.domain.model.TransactionModel
 import com.m4isper.domain.repository.TransactionRepository
-import com.m4isper.domain.utils.formatWithSpaces
-import com.m4isper.domain.utils.toCleanDecimal
+import com.m4isper.domain.utils.calculateAccountBalance
 import com.m4isper.local.dao.AccountDao
 import com.m4isper.local.dao.CategoryDao
 import com.m4isper.local.dao.TransactionDao
 import com.m4isper.local.entity.TransactionEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import java.math.BigDecimal
 import javax.inject.Inject
 
 class TransactionRepositoryImpl
@@ -148,18 +146,12 @@ class TransactionRepositoryImpl
             }
 
         /**
-         * Баланс счёта — производная от всех его транзакций: доходы плюс, расходы минус.
          * Полный пересчёт вместо инкремента — дешевле и устойчивее к расхождениям.
+         * Само правило баланса живёт в домене (calculateAccountBalance).
          */
         private suspend fun recalculateBalance(accountId: Int) {
             val account = accountDao.getById(accountId) ?: return
-            val total =
-                transactionDao
-                    .getByAccount(accountId)
-                    .fold(BigDecimal.ZERO) { acc, transaction ->
-                        val amount = transaction.amount.toCleanDecimal()
-                        if (transaction.isIncome) acc + amount else acc - amount
-                    }
-            accountDao.upsert(account.copy(balance = total.formatWithSpaces()))
+            val total = calculateAccountBalance(transactionDao.getByAccount(accountId).map { it.toModel() })
+            accountDao.upsert(account.copy(balance = total))
         }
     }
