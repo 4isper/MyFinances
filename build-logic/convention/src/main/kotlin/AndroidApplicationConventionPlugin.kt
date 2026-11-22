@@ -7,6 +7,10 @@ import org.gradle.kotlin.dsl.dependencies
 class AndroidApplicationConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) = with(target) {
         pluginManager.apply("com.android.application")
+        // статический анализ и покрытие — во всех модулях через конвенции
+        pluginManager.apply("myfinances.ktlint")
+        pluginManager.apply("myfinances.detekt")
+        pluginManager.apply("myfinances.kover")
 
         extensions.configure<ApplicationExtension> {
             compileSdk = 37

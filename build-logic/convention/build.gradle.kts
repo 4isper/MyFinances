@@ -8,6 +8,9 @@ dependencies {
     implementation(libs.android.gradlePlugin)
     implementation(libs.compose.compiler.gradlePlugin)
     implementation(libs.ksp.gradlePlugin)
+    implementation(libs.ktlint.gradlePlugin)
+    implementation(libs.detekt.gradlePlugin)
+    implementation(libs.kover.gradlePlugin)
 }
 
 gradlePlugin {
@@ -31,6 +34,18 @@ gradlePlugin {
         register("room") {
             id = "myfinances.room"
             implementationClass = "RoomConventionPlugin"
+        }
+        register("ktlint") {
+            id = "myfinances.ktlint"
+            implementationClass = "KtlintConventionPlugin"
+        }
+        register("detekt") {
+            id = "myfinances.detekt"
+            implementationClass = "DetektConventionPlugin"
+        }
+        register("kover") {
+            id = "myfinances.kover"
+            implementationClass = "KoverConventionPlugin"
         }
     }
 }

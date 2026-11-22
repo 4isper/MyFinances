@@ -2,6 +2,8 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        // ktlint/detekt/kover публикуют plugin-маркеры в Gradle Plugin Portal
+        gradlePluginPortal()
     }
     versionCatalogs {
         create("libs") {

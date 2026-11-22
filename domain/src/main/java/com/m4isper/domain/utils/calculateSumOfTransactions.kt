@@ -13,13 +13,9 @@ fun calculateSumOfTransactions(transactions: List<TransactionModel>): String {
 }
 
 fun String?.toCleanDecimal(): BigDecimal {
-    return try {
-        this?.replace("\\s".toRegex(), "")
-            ?.toBigDecimal()
-            ?: BigDecimal.ZERO
-    } catch (e: Exception) {
-        BigDecimal.ZERO
-    } as BigDecimal
+    return this?.replace("\\s".toRegex(), "")
+        ?.toBigDecimalOrNull()
+        ?: BigDecimal.ZERO
 }
 
 fun BigDecimal.formatWithSpaces(): String {

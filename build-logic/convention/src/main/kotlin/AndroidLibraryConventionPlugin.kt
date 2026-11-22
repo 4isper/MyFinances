@@ -7,6 +7,10 @@ import org.gradle.kotlin.dsl.dependencies
 class AndroidLibraryConventionPlugin : Plugin<Project> {
     override fun apply(target: Project) = with(target) {
         pluginManager.apply("com.android.library")
+        // статический анализ и покрытие — во всех модулях через конвенции
+        pluginManager.apply("myfinances.ktlint")
+        pluginManager.apply("myfinances.detekt")
+        pluginManager.apply("myfinances.kover")
 
         extensions.configure<LibraryExtension> {
             compileSdk = 37

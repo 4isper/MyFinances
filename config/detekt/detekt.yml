@@ -1,0 +1,25 @@
+# Тюнинг detekt 2.0 поверх дефолтного набора (buildUponDefaultConfig = true в конвенции).
+# Отключаем то, что мешает в этом проекте: длину строк сторожит ktlint,
+# PascalCase-функции — норм для @Composable, файлы с несколькими декларациями — норм.
+complexity:
+  LongMethod:
+    active: false
+  LongParameterList:
+    active: false
+  LargeClass:
+    active: false
+  TooManyFunctions:
+    active: false
+naming:
+  FunctionNaming:
+    ignoreAnnotated:
+      - Composable
+  MatchingDeclarationName:
+    active: false
+style:
+  MagicNumber:
+    active: false
+  MaxLineLength:
+    active: false
+  NewLineAtEndOfFile:
+    active: false # форматирование — зона ktlint (final-newline)
