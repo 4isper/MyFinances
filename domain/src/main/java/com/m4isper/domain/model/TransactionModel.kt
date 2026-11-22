@@ -10,5 +10,5 @@ data class TransactionModel(
     val amount: String,
     val transactionDate: String,
     val comment: String?,
-    val currency: String
+    val currency: String,
 )

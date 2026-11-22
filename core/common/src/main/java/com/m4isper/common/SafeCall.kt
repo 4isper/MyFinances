@@ -5,8 +5,9 @@ package com.m4isper.common
  * Замена safeApiCall после удаления сетевого слоя.
  */
 @Suppress("TooGenericExceptionCaught") // осознанно: оборачиваем любой сбой хранилища в Result
-suspend fun <T> safeCall(block: suspend () -> T): Result<T> = try {
-    Result.Success(block())
-} catch (e: Exception) {
-    Result.Failure(e)
-}
+suspend fun <T> safeCall(block: suspend () -> T): Result<T> =
+    try {
+        Result.Success(block())
+    } catch (e: Exception) {
+        Result.Failure(e)
+    }

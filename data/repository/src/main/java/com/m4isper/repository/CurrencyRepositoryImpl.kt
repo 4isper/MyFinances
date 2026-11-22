@@ -7,13 +7,14 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class CurrencyRepositoryImpl @Inject constructor(
-    private val currencyPreferences: CurrencyPreferences
-) : CurrencyRepository {
+class CurrencyRepositoryImpl
+    @Inject
+    constructor(
+        private val currencyPreferences: CurrencyPreferences,
+    ) : CurrencyRepository {
+        override val currency: StateFlow<String> = currencyPreferences.currency
 
-    override val currency: StateFlow<String> = currencyPreferences.currency
-
-    override fun setCurrency(currencyCode: String) {
-        currencyPreferences.setCurrency(currencyCode)
+        override fun setCurrency(currencyCode: String) {
+            currencyPreferences.setCurrency(currencyCode)
+        }
     }
-}

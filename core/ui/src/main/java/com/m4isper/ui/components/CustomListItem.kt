@@ -21,19 +21,20 @@ fun CustomListItem(
     lead: @Composable (() -> Unit)? = null,
     title: String?,
     subtitle: String? = null,
-    trail: @Composable (() -> Unit)? = null
+    trail: @Composable (() -> Unit)? = null,
 ) {
     Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = 15.dp)
-            .size(50.dp),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .padding(horizontal = 15.dp)
+                .size(50.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Row(
             horizontalArrangement = Arrangement.spacedBy(13.dp),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             if (lead != null) {
                 lead()
@@ -42,22 +43,23 @@ fun CustomListItem(
                 if (title != null) {
                     Text(
                         text = title,
-                        color = MaterialTheme.colorScheme.onSurface
+                        color = MaterialTheme.colorScheme.onSurface,
                     )
                 }
-                if (subtitle != null)
+                if (subtitle != null) {
                     Text(
                         text = subtitle,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         lineHeight = 1.sp,
                         style = MaterialTheme.typography.bodyMedium,
                     )
+                }
             }
         }
 
         Row(
             horizontalArrangement = Arrangement.spacedBy(13.dp, Alignment.End),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             if (trail != null) {
                 trail()
@@ -66,6 +68,6 @@ fun CustomListItem(
     }
     HorizontalDivider(
         thickness = 1.3.dp,
-        color = MaterialTheme.colorScheme.outlineVariant
+        color = MaterialTheme.colorScheme.outlineVariant,
     )
 }

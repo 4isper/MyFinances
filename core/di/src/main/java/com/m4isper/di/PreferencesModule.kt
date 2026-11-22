@@ -11,17 +11,13 @@ import javax.inject.Singleton
 
 @Module
 object PreferencesModule {
-
     @Provides
     @Singleton
-    fun provideThemeRepository(context: Context): ThemeRepository =
-        ThemeRepositoryImpl(context)
+    fun provideThemeRepository(context: Context): ThemeRepository = ThemeRepositoryImpl(context)
 
     @Provides
-    fun provideGetDarkThemeUseCase(repository: ThemeRepository): GetDarkThemeUseCase =
-        GetDarkThemeUseCase(repository)
+    fun provideGetDarkThemeUseCase(repository: ThemeRepository): GetDarkThemeUseCase = GetDarkThemeUseCase(repository)
 
     @Provides
-    fun provideSetDarkThemeUseCase(repository: ThemeRepository): SetDarkThemeUseCase =
-        SetDarkThemeUseCase(repository)
+    fun provideSetDarkThemeUseCase(repository: ThemeRepository): SetDarkThemeUseCase = SetDarkThemeUseCase(repository)
 }

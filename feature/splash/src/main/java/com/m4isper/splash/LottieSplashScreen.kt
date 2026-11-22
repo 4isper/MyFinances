@@ -28,10 +28,11 @@ fun LottieSplashScreen(onFinished: () -> Unit) {
     }
 
     Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.surface),
-        contentAlignment = Alignment.Center
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.surface),
+        contentAlignment = Alignment.Center,
     ) {
         LottieAnimation(
             composition = composition,

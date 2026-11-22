@@ -6,7 +6,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
-class CurrencyPreferences(context: Context) {
+class CurrencyPreferences(
+    context: Context,
+) {
     private val ksafe = KSafe(context)
 
     private val _currency = MutableStateFlow(ksafe.getDirect("currency", "₽"))

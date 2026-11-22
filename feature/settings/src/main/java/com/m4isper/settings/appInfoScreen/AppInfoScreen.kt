@@ -32,53 +32,60 @@ fun AppInfoScreen(
     val info = viewModel.appInfo
 
     Box(
-        modifier = modifier
-            .fillMaxSize(),
-        contentAlignment = Alignment.TopCenter
+        modifier =
+            modifier
+                .fillMaxSize(),
+        contentAlignment = Alignment.TopCenter,
     ) {
         Column {
             CenterAlignedTopAppBar(
                 navigationIcon = {
                     IconButton(
-                        onClick = { navController.popBackStack() }
+                        onClick = { navController.popBackStack() },
                     ) {
                         Icon(
                             Icons.Default.ArrowBack,
                             contentDescription = "Back",
-                            tint = MaterialTheme.colorScheme.onSurface
+                            tint = MaterialTheme.colorScheme.onSurface,
                         )
                     }
                 },
-                title = { Text(
-                    text = stringResource(R.string.about_program),
-                    color = MaterialTheme.colorScheme.onSurface) },
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary
-                ),
+                title = {
+                    Text(
+                        text = stringResource(R.string.about_program),
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
+                },
+                colors =
+                    TopAppBarDefaults.centerAlignedTopAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                    ),
             )
 
             CustomListItem(
-                modifier = Modifier
-                    .background(MaterialTheme.colorScheme.surface),
+                modifier =
+                    Modifier
+                        .background(MaterialTheme.colorScheme.surface),
                 title = stringResource(R.string.version),
                 trail = {
                     Text(
                         text = info.versionName,
-                        color = MaterialTheme.colorScheme.onSurface
+                        color = MaterialTheme.colorScheme.onSurface,
                     )
-                }
+                },
             )
 
             CustomListItem(
-                modifier = Modifier
-                    .background(MaterialTheme.colorScheme.surface),
+                modifier =
+                    Modifier
+                        .background(MaterialTheme.colorScheme.surface),
                 title = stringResource(R.string.last_update),
                 trail = {
                     Text(
                         text = info.lastUpdateDate,
-                        color = MaterialTheme.colorScheme.onSurface
+                        color = MaterialTheme.colorScheme.onSurface,
                     )
-                }
+                },
             )
         }
     }

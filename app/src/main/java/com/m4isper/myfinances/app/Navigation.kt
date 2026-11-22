@@ -59,11 +59,11 @@ enum class Destination(
     SETTINGS(SETTINGS_GRAPH_ROUTE, R.string.settings, R.drawable.ic_settings, "Settings"),
 }
 
-//private fun resolveCurrentTopLevelDestination(currentRoute: String?): Destination? {
+// private fun resolveCurrentTopLevelDestination(currentRoute: String?): Destination? {
 //    return Destination.entries.firstOrNull { destination ->
 //        currentRoute?.startsWith(destination.route) == true
 //    }
-//}
+// }
 
 @Composable
 private fun resolveCurrentTopLevelDestination(navController: NavHostController): Destination? {
@@ -75,43 +75,43 @@ private fun resolveCurrentTopLevelDestination(navController: NavHostController):
     }
 }
 
-
 @Composable
 fun AppNavHost(
     navController: NavHostController,
     startDestination: Destination,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
-    val activityComponent = remember {
-        (context.applicationContext as MyFinancesApp)
-            .appComponent
-            .activityComponent()
-            .create()
-    }
+    val activityComponent =
+        remember {
+            (context.applicationContext as MyFinancesApp)
+                .appComponent
+                .activityComponent()
+                .create()
+        }
 
     NavHost(
         navController = navController,
-        startDestination = startDestination.route
+        startDestination = startDestination.route,
     ) {
         Destination.entries.forEach { destination ->
             composable(destination.route) {
-                when(destination) {
+                when (destination) {
                     Destination.EXPENSES -> {
                         val factory = activityComponent.provideExpensesViewModelFactory()
                         ExpensesScreen(modifier, navController, factory)
                     }
                     Destination.INCOME -> {
                         val factory = activityComponent.provideIncomeViewModelFactory()
-                        IncomeScreen(modifier, navController,  factory)
+                        IncomeScreen(modifier, navController, factory)
                     }
                     Destination.ACCOUNT -> {
                         val factory = activityComponent.provideAccountViewModelFactory()
-                        AccountScreen(modifier, navController,  factory)
+                        AccountScreen(modifier, navController, factory)
                     }
                     Destination.CATEGORIES -> {
                         val factory = activityComponent.provideCategoriesViewModelFactory()
-                        CategoriesScreen(modifier,  factory)
+                        CategoriesScreen(modifier, factory)
                     }
                     Destination.SETTINGS -> {
 //                        val factory = activityComponent.provideThemeViewModelFactory()
@@ -124,9 +124,8 @@ fun AppNavHost(
         settingsNavGraph(
             modifier = modifier,
             navController = navController,
-            themeViewModelFactory = activityComponent.provideThemeViewModelFactory()
+            themeViewModelFactory = activityComponent.provideThemeViewModelFactory(),
         )
-
 
         composable("income/history") {
             val factory = activityComponent.provideHistoryViewModelFactory()
@@ -156,10 +155,11 @@ fun AppNavHost(
         composable("transaction/{id}") { backStackEntry ->
             val transactionId = backStackEntry.arguments?.getString("id")?.toIntOrNull()
             transactionId?.let {
-                val factory = activityComponent
-                    .transactionComponent()
-                    .create(it)
-                    .transactionViewModelFactory()
+                val factory =
+                    activityComponent
+                        .transactionComponent()
+                        .create(it)
+                        .transactionViewModelFactory()
 
                 TransactionScreen(modifier, navController, factory)
             }
@@ -180,7 +180,6 @@ fun AppRoot() {
     }
 }
 
-
 @Composable
 fun MainNavigationBar(modifier: Modifier = Modifier) {
     val navController = rememberNavController()
@@ -195,12 +194,13 @@ fun MainNavigationBar(modifier: Modifier = Modifier) {
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
         bottomBar = {
             NavigationBar(
-                windowInsets = WindowInsets(
-                    left = 16,
-                    right = 16,
-                    bottom = NavigationBarDefaults.windowInsets.getBottom(LocalDensity.current)
-                ),
-                containerColor = MaterialTheme.colorScheme.surfaceContainer
+                windowInsets =
+                    WindowInsets(
+                        left = 16,
+                        right = 16,
+                        bottom = NavigationBarDefaults.windowInsets.getBottom(LocalDensity.current),
+                    ),
+                containerColor = MaterialTheme.colorScheme.surfaceContainer,
             ) {
                 Destination.entries.forEachIndexed { index, destination ->
                     val isSelected = destination == currentTopLevelDestination
@@ -221,27 +221,29 @@ fun MainNavigationBar(modifier: Modifier = Modifier) {
                         icon = {
                             Icon(
                                 ImageVector.vectorResource(destination.iconId),
-                                contentDescription = destination.contentDescription
+                                contentDescription = destination.contentDescription,
                             )
                         },
                         label = {
                             Text(stringResource(destination.label))
                         },
-                        colors = NavigationBarItemDefaults.colors(
-                            selectedIconColor = MaterialTheme.colorScheme.primary,
-                            indicatorColor = MaterialTheme.colorScheme.secondary
-                        )
+                        colors =
+                            NavigationBarItemDefaults.colors(
+                                selectedIconColor = MaterialTheme.colorScheme.primary,
+                                indicatorColor = MaterialTheme.colorScheme.secondary,
+                            ),
                     )
                 }
             }
-        }
+        },
     ) { contentPadding ->
         AppNavHost(
             navController = navController,
             startDestination = startDestination,
-            modifier = Modifier
-                .padding(contentPadding)
-                .background(MaterialTheme.colorScheme.surface)
+            modifier =
+                Modifier
+                    .padding(contentPadding)
+                    .background(MaterialTheme.colorScheme.surface),
         )
     }
 }

@@ -3,6 +3,10 @@ package com.m4isper.di
 import android.content.Context
 import androidx.room3.Room
 import androidx.sqlite.driver.bundled.BundledSQLiteDriver
+import com.m4isper.domain.repository.AccountsRepository
+import com.m4isper.domain.repository.CategoriesRepository
+import com.m4isper.domain.repository.CurrencyRepository
+import com.m4isper.domain.repository.TransactionRepository
 import com.m4isper.domain.usecase.AddTransactionUseCase
 import com.m4isper.domain.usecase.DeleteTransactionUseCase
 import com.m4isper.domain.usecase.GetAccountByIdUseCase
@@ -13,10 +17,6 @@ import com.m4isper.domain.usecase.GetIncomeTransactionsUseCase
 import com.m4isper.domain.usecase.GetTransactionByIdUseCase
 import com.m4isper.domain.usecase.UpdateAccountUseCase
 import com.m4isper.domain.usecase.UpdateTransactionUseCase
-import com.m4isper.domain.repository.AccountsRepository
-import com.m4isper.domain.repository.CategoriesRepository
-import com.m4isper.domain.repository.CurrencyRepository
-import com.m4isper.domain.repository.TransactionRepository
 import com.m4isper.local.AppDatabase
 import com.m4isper.local.dao.AccountDao
 import com.m4isper.local.dao.CategoryDao
@@ -31,12 +31,14 @@ import dagger.Provides
 import javax.inject.Singleton
 
 @Module
-class AppModule(private val context: Context) {
-
+class AppModule(
+    private val context: Context,
+) {
     @Provides
     @Singleton
     fun provideDatabase(): AppDatabase =
-        Room.databaseBuilder(context, AppDatabase::class.java, "myfinances_db")
+        Room
+            .databaseBuilder(context, AppDatabase::class.java, "myfinances_db")
             .setDriver(BundledSQLiteDriver())
             .build()
 
@@ -51,80 +53,54 @@ class AppModule(private val context: Context) {
 
     @Provides
     @Singleton
-    fun provideCurrencyPreferences(context: Context): CurrencyPreferences =
-        CurrencyPreferences(context)
+    fun provideCurrencyPreferences(context: Context): CurrencyPreferences = CurrencyPreferences(context)
 
     @Provides
     @Singleton
-    fun provideTransactionRepository(
-        impl: TransactionRepositoryImpl
-    ): TransactionRepository = impl
+    fun provideTransactionRepository(impl: TransactionRepositoryImpl): TransactionRepository = impl
 
     @Provides
     @Singleton
-    fun provideCategoriesRepository(
-        impl: CategoriesRepositoryImpl
-    ): CategoriesRepository = impl
+    fun provideCategoriesRepository(impl: CategoriesRepositoryImpl): CategoriesRepository = impl
 
     @Provides
     @Singleton
-    fun provideAccountsRepository(
-        impl: AccountsRepositoryImpl
-    ): AccountsRepository = impl
+    fun provideAccountsRepository(impl: AccountsRepositoryImpl): AccountsRepository = impl
 
     @Provides
     @Singleton
-    fun provideCurrencyRepository(
-        impl: CurrencyRepositoryImpl
-    ): CurrencyRepository = impl
+    fun provideCurrencyRepository(impl: CurrencyRepositoryImpl): CurrencyRepository = impl
 
     @Provides
-    fun provideGetAccountsUseCase(
-        repository: AccountsRepository
-    ): GetAccountsUseCase = GetAccountsUseCase(repository)
+    fun provideGetAccountsUseCase(repository: AccountsRepository): GetAccountsUseCase = GetAccountsUseCase(repository)
 
     @Provides
-    fun provideGetAccountByIdUseCase(
-        repository: AccountsRepository
-    ): GetAccountByIdUseCase = GetAccountByIdUseCase(repository)
+    fun provideGetAccountByIdUseCase(repository: AccountsRepository): GetAccountByIdUseCase = GetAccountByIdUseCase(repository)
 
     @Provides
-    fun provideUpdateAccountUseCase(
-        repository: AccountsRepository
-    ): UpdateAccountUseCase = UpdateAccountUseCase(repository)
+    fun provideUpdateAccountUseCase(repository: AccountsRepository): UpdateAccountUseCase = UpdateAccountUseCase(repository)
 
     @Provides
-    fun provideGetCategoriesUseCase(
-        repository: CategoriesRepository
-    ): GetCategoriesUseCase = GetCategoriesUseCase(repository)
+    fun provideGetCategoriesUseCase(repository: CategoriesRepository): GetCategoriesUseCase = GetCategoriesUseCase(repository)
 
     @Provides
-    fun provideGetIncomeTransactionsUseCase(
-        repository: TransactionRepository
-    ): GetIncomeTransactionsUseCase = GetIncomeTransactionsUseCase(repository)
+    fun provideGetIncomeTransactionsUseCase(repository: TransactionRepository): GetIncomeTransactionsUseCase =
+        GetIncomeTransactionsUseCase(repository)
 
     @Provides
-    fun provideGetExpenseTransactionsUseCase(
-        repository: TransactionRepository
-    ): GetExpenseTransactionsUseCase = GetExpenseTransactionsUseCase(repository)
+    fun provideGetExpenseTransactionsUseCase(repository: TransactionRepository): GetExpenseTransactionsUseCase =
+        GetExpenseTransactionsUseCase(repository)
 
     @Provides
-    fun provideGetTransactionByIdUseCase(
-        repository: TransactionRepository
-    ): GetTransactionByIdUseCase = GetTransactionByIdUseCase(repository)
+    fun provideGetTransactionByIdUseCase(repository: TransactionRepository): GetTransactionByIdUseCase =
+        GetTransactionByIdUseCase(repository)
 
     @Provides
-    fun provideAddTransactionUseCase(
-        repository: TransactionRepository
-    ): AddTransactionUseCase = AddTransactionUseCase(repository)
+    fun provideAddTransactionUseCase(repository: TransactionRepository): AddTransactionUseCase = AddTransactionUseCase(repository)
 
     @Provides
-    fun provideUpdateTransactionUseCase(
-        repository: TransactionRepository
-    ): UpdateTransactionUseCase = UpdateTransactionUseCase(repository)
+    fun provideUpdateTransactionUseCase(repository: TransactionRepository): UpdateTransactionUseCase = UpdateTransactionUseCase(repository)
 
     @Provides
-    fun provideDeleteTransactionUseCase(
-        repository: TransactionRepository
-    ): DeleteTransactionUseCase = DeleteTransactionUseCase(repository)
+    fun provideDeleteTransactionUseCase(repository: TransactionRepository): DeleteTransactionUseCase = DeleteTransactionUseCase(repository)
 }

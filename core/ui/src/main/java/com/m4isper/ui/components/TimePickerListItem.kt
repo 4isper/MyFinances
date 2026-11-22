@@ -21,7 +21,7 @@ fun TimePickerListItem(
     title: String,
     initialTime: LocalTime = LocalTime.now(),
     onTimeChange: (LocalTime) -> Unit,
-    timeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm")
+    timeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm"),
 ) {
     var showDialog by remember { mutableStateOf(false) }
     var selectedTime by rememberSaveable { mutableStateOf(initialTime) }
@@ -37,7 +37,7 @@ fun TimePickerListItem(
         onTimeSelected = {
             selectedTime = it
             onTimeChange(it)
-        }
+        },
     )
 
     CustomListItem(
@@ -47,9 +47,9 @@ fun TimePickerListItem(
             Box(modifier = Modifier.clickable { showDialog = true }) {
                 Text(
                     text = selectedTime.format(timeFormatter),
-                    color = MaterialTheme.colorScheme.onSurface
+                    color = MaterialTheme.colorScheme.onSurface,
                 )
             }
-        }
+        },
     )
 }

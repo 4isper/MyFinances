@@ -5,22 +5,23 @@ import com.m4isper.domain.model.TransactionModel
 import com.m4isper.domain.repository.TransactionRepository
 import javax.inject.Inject
 
-class AddTransactionUseCase @Inject constructor(
-    private val repository: TransactionRepository
-) {
-    suspend operator fun invoke(
-        accountId: Int,
-        categoryId: Int,
-        amount: String,
-        transactionDate: String,
-        comment: String?
-    ): Result<TransactionModel> {
-        return repository.addTransaction(
-            accountId,
-            categoryId,
-            amount,
-            transactionDate,
-            comment
-        )
+class AddTransactionUseCase
+    @Inject
+    constructor(
+        private val repository: TransactionRepository,
+    ) {
+        suspend operator fun invoke(
+            accountId: Int,
+            categoryId: Int,
+            amount: String,
+            transactionDate: String,
+            comment: String?,
+        ): Result<TransactionModel> =
+            repository.addTransaction(
+                accountId,
+                categoryId,
+                amount,
+                transactionDate,
+                comment,
+            )
     }
-}

@@ -37,12 +37,12 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.m4isper.domain.AppConfig
-import com.m4isper.resources.R
 import com.m4isper.common.DateUtils.extractTime
+import com.m4isper.domain.AppConfig
 import com.m4isper.domain.utils.calculateSumOfTransactions
 import com.m4isper.domain.utils.formatWithSpaces
 import com.m4isper.domain.utils.toCleanDecimal
+import com.m4isper.resources.R
 import com.m4isper.ui.components.CustomListItem
 import com.m4isper.ui.components.DatePickerListItem
 import java.time.LocalDate
@@ -54,7 +54,7 @@ fun HistoryScreen(
     modifier: Modifier = Modifier,
     navController: NavController,
     type: String,
-    viewModelFactory: ViewModelProvider.Factory
+    viewModelFactory: ViewModelProvider.Factory,
 ) {
     val viewModel: HistoryViewModel = viewModel(factory = viewModelFactory)
 
@@ -82,64 +82,75 @@ fun HistoryScreen(
     val sumOfTransactions = calculateSumOfTransactions(transactions)
 
     Box(
-        modifier = modifier
-            .fillMaxSize(),
-        contentAlignment = Alignment.TopCenter
+        modifier =
+            modifier
+                .fillMaxSize(),
+        contentAlignment = Alignment.TopCenter,
     ) {
         Column {
             CenterAlignedTopAppBar(
                 navigationIcon = {
                     IconButton(
-                        onClick = { navController.popBackStack() }
+                        onClick = { navController.popBackStack() },
                     ) {
                         Icon(
                             Icons.Default.ArrowBack,
                             contentDescription = "Back",
-                            tint = MaterialTheme.colorScheme.onSurface
+                            tint = MaterialTheme.colorScheme.onSurface,
                         )
                     }
                 },
-                title = { Text(
-                    text = stringResource(R.string.my_history),
-                    color = MaterialTheme.colorScheme.onSurface) },
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary
-                ),
+                title = {
+                    Text(
+                        text = stringResource(R.string.my_history),
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
+                },
+                colors =
+                    TopAppBarDefaults.centerAlignedTopAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                    ),
                 actions = {
                     IconButton(onClick = {
-                        navController.navigate("${type}/analysis")
+                        navController.navigate("$type/analysis")
                     }) {
                         Icon(
                             imageVector = ImageVector.vectorResource(R.drawable.ic_analysis),
                             contentDescription = "Period",
-                            tint = MaterialTheme.colorScheme.onSurface
+                            tint = MaterialTheme.colorScheme.onSurface,
                         )
                     }
                 },
             )
 
             DatePickerListItem(
-                modifier = Modifier
-                    .background(MaterialTheme.colorScheme.secondary),
+                modifier =
+                    Modifier
+                        .background(MaterialTheme.colorScheme.secondary),
                 title = stringResource(R.string.start),
                 initialDate = fromDate,
-                onDateChange = { fromDate = it }
+                onDateChange = { fromDate = it },
             )
             DatePickerListItem(
-                modifier = Modifier
-                    .background(MaterialTheme.colorScheme.secondary),
+                modifier =
+                    Modifier
+                        .background(MaterialTheme.colorScheme.secondary),
                 title = stringResource(R.string.end),
                 initialDate = toDate,
-                onDateChange = { toDate = it }
+                onDateChange = { toDate = it },
             )
 
             CustomListItem(
-                modifier = Modifier
-                    .background(MaterialTheme.colorScheme.secondary),
+                modifier =
+                    Modifier
+                        .background(MaterialTheme.colorScheme.secondary),
                 title = stringResource(R.string.amount),
-                trail = { Text(
-                    "$sumOfTransactions $currency",
-                    color = MaterialTheme.colorScheme.onSurface) }
+                trail = {
+                    Text(
+                        "$sumOfTransactions $currency",
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
+                },
             )
 
             if (error != null) {
@@ -147,51 +158,56 @@ fun HistoryScreen(
             }
 
             LazyColumn {
-                items (transactions) { item ->
+                items(transactions) { item ->
                     CustomListItem(
                         lead = {
-                            if (item.emoji != ""){
+                            if (item.emoji != "") {
                                 Box(
-                                    modifier = Modifier
-                                        .background(
-                                            MaterialTheme.colorScheme.secondary,
-                                            shape = CircleShape
-                                        )
-                                        .size(24.dp),
+                                    modifier =
+                                        Modifier
+                                            .background(
+                                                MaterialTheme.colorScheme.secondary,
+                                                shape = CircleShape,
+                                            ).size(24.dp),
                                     contentAlignment = Alignment.Center,
                                 ) {
                                     Text(text = item.emoji)
                                 }
                             }
                         },
-                        modifier = Modifier
-                            .clickable(onClick = {
-                                navController.navigate("transaction/${item.id}")
-                            }
-                            )
-                            .background(MaterialTheme.colorScheme.surface)
-                            .padding(vertical = 10.dp),
+                        modifier =
+                            Modifier
+                                .clickable(
+                                    onClick = {
+                                        navController.navigate("transaction/${item.id}")
+                                    },
+                                ).background(MaterialTheme.colorScheme.surface)
+                                .padding(vertical = 10.dp),
                         title = item.categoryName,
                         subtitle = item.comment,
                         trail = {
                             Column(
-                                horizontalAlignment = Alignment.End
+                                horizontalAlignment = Alignment.End,
                             ) {
-                                Text(text = item.amount.toCleanDecimal().formatWithSpaces()
-                                        + " "+ item.currency,
-                                    color = MaterialTheme.colorScheme.onSurface)
                                 Text(
-                                    text = extractTime(item.transactionDate)
-                                        .format(DateTimeFormatter.ofPattern("HH:mm")),
-                                    color = MaterialTheme.colorScheme.onSurface
+                                    text =
+                                        item.amount.toCleanDecimal().formatWithSpaces() +
+                                            " " + item.currency,
+                                    color = MaterialTheme.colorScheme.onSurface,
+                                )
+                                Text(
+                                    text =
+                                        extractTime(item.transactionDate)
+                                            .format(DateTimeFormatter.ofPattern("HH:mm")),
+                                    color = MaterialTheme.colorScheme.onSurface,
                                 )
                             }
                             Icon(
                                 imageVector = Icons.Rounded.KeyboardArrowRight,
                                 contentDescription = "",
-                                tint = MaterialTheme.colorScheme.tertiary
+                                tint = MaterialTheme.colorScheme.tertiary,
                             )
-                        }
+                        },
                     )
                 }
             }

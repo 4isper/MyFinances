@@ -19,17 +19,17 @@ fun TimePickerLauncher(
     showDialog: Boolean,
     initialTime: LocalTime,
     onDismiss: () -> Unit,
-    onTimeSelected: (LocalTime) -> Unit
+    onTimeSelected: (LocalTime) -> Unit,
 ) {
-    val state = rememberTimePickerState(
-        initialHour = initialTime.hour,
-        initialMinute = initialTime.minute,
-        is24Hour = true
-    )
+    val state =
+        rememberTimePickerState(
+            initialHour = initialTime.hour,
+            initialMinute = initialTime.minute,
+            is24Hour = true,
+        )
 
     if (showDialog) {
         AlertDialog(
-
             onDismissRequest = onDismiss,
             confirmButton = {
                 TextButton(onClick = {
@@ -49,13 +49,12 @@ fun TimePickerLauncher(
             text = {
                 TimePicker(
                     state = state,
-                    colors = TimePickerDefaults.colors(
-                        containerColor = MaterialTheme.colorScheme.secondary,
-
-                    )
+                    colors =
+                        TimePickerDefaults.colors(
+                            containerColor = MaterialTheme.colorScheme.secondary,
+                        ),
                 )
-            }
+            },
         )
     }
 }
-

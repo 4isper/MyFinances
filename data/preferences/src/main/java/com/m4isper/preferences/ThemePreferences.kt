@@ -6,13 +6,15 @@ import eu.anifantakis.lib.ksafe.KSafeWriteMode
 import eu.anifantakis.lib.ksafe.asWritableFlow
 import kotlinx.coroutines.flow.Flow
 
-class ThemePreferences(context: Context) {
+class ThemePreferences(
+    context: Context,
+) {
     private val ksafe = KSafe(context)
 
     private val darkTheme by ksafe.asWritableFlow(
         false,
         key = "dark_theme_enabled",
-        mode = KSafeWriteMode.Plain
+        mode = KSafeWriteMode.Plain,
     )
 
     val isDarkTheme: Flow<Boolean> get() = darkTheme

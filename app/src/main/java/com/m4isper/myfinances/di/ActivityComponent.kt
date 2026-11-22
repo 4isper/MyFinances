@@ -17,11 +17,17 @@ interface ActivityComponent {
     fun inject(activity: MainActivity)
 
     fun provideAccountViewModelFactory(): AccountViewModelFactory
+
     fun provideIncomeViewModelFactory(): IncomeViewModelFactory
+
     fun provideExpensesViewModelFactory(): ExpensesViewModelFactory
+
     fun provideHistoryViewModelFactory(): HistoryViewModelFactory
+
     fun provideAnalysisViewModelFactory(): AnalysisScreenViewModelFactory
+
     fun provideCategoriesViewModelFactory(): CategoriesViewModelFactory
+
     fun transactionComponent(): TransactionComponent.Factory
 
     fun provideThemeViewModelFactory(): ThemeViewModelFactory

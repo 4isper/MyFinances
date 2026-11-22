@@ -10,8 +10,8 @@ import javax.inject.Singleton
 @Component(
     modules = [
         AppModule::class,
-        PreferencesModule::class
-    ]
+        PreferencesModule::class,
+    ],
 )
 @Singleton
 interface AppComponent {
@@ -21,7 +21,7 @@ interface AppComponent {
     interface Factory {
         fun create(
             @BindsInstance context: Context,
-            appModule: AppModule
+            appModule: AppModule,
         ): AppComponent
     }
 }

@@ -13,12 +13,12 @@ interface TransactionDao {
     @Query(
         "SELECT * FROM transactions " +
             "WHERE accountId = :accountId " +
-            "AND date(transactionDate) BETWEEN date(:startDate) AND date(:endDate)"
+            "AND date(transactionDate) BETWEEN date(:startDate) AND date(:endDate)",
     )
     suspend fun getByAccountAndPeriod(
         accountId: Int,
         startDate: String,
-        endDate: String
+        endDate: String,
     ): List<TransactionEntity>
 
     @Query("SELECT * FROM transactions WHERE id = :id")

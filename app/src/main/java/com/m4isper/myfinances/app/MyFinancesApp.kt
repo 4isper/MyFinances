@@ -12,9 +12,10 @@ class MyFinancesApp : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        appComponent = DaggerAppComponent.factory().create(
-            this,
-            AppModule(this)
-        )
+        appComponent =
+            DaggerAppComponent.factory().create(
+                this,
+                AppModule(this),
+            )
     }
 }

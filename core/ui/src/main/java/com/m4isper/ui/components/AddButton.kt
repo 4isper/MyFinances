@@ -16,18 +16,22 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun AddButton(
     modifier: Modifier = Modifier,
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
     FloatingActionButton(
         onClick = onClick,
         shape = CircleShape,
         containerColor = MaterialTheme.colorScheme.primary,
         elevation = FloatingActionButtonDefaults.elevation(0.dp),
-        modifier = modifier
-            .padding(16.dp)
-    ){
-        Icon(Icons.Rounded.Add, "",
+        modifier =
+            modifier
+                .padding(16.dp),
+    ) {
+        Icon(
+            Icons.Rounded.Add,
+            "",
             tint = MaterialTheme.colorScheme.surface,
-            modifier = Modifier.size(30.dp))
+            modifier = Modifier.size(30.dp),
+        )
     }
 }

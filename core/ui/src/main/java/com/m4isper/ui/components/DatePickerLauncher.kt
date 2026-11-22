@@ -22,26 +22,30 @@ fun DatePickerLauncher(
     showDialog: Boolean,
     initialDate: LocalDate,
     onDismiss: () -> Unit,
-    onDateSelected: (LocalDate) -> Unit
+    onDateSelected: (LocalDate) -> Unit,
 ) {
     val zoneId = ZoneId.systemDefault()
-    val millis = remember(initialDate) {
-        initialDate.atStartOfDay(zoneId).toInstant().toEpochMilli()
-    }
+    val millis =
+        remember(initialDate) {
+            initialDate.atStartOfDay(zoneId).toInstant().toEpochMilli()
+        }
     val state = rememberDatePickerState(initialSelectedDateMillis = millis)
 
     if (showDialog) {
         DatePickerDialog(
-            colors = DatePickerDefaults.colors(
-                containerColor = MaterialTheme.colorScheme.secondary,
-            ),
+            colors =
+                DatePickerDefaults.colors(
+                    containerColor = MaterialTheme.colorScheme.secondary,
+                ),
             onDismissRequest = onDismiss,
             confirmButton = {
                 TextButton(onClick = {
                     state.selectedDateMillis?.let {
-                        val selected = Instant.ofEpochMilli(it)
-                            .atZone(zoneId)
-                            .toLocalDate()
+                        val selected =
+                            Instant
+                                .ofEpochMilli(it)
+                                .atZone(zoneId)
+                                .toLocalDate()
                         onDateSelected(selected)
                     }
                     onDismiss()
@@ -53,19 +57,19 @@ fun DatePickerLauncher(
                 TextButton(
                     onClick = {
                         onDismiss()
-                    }
+                    },
                 ) {
                     Text(stringResource(R.string.cancel), color = MaterialTheme.colorScheme.onSurface)
                 }
-            }
+            },
         ) {
             DatePicker(
                 state = state,
-                colors = DatePickerDefaults.colors(
-                    containerColor = MaterialTheme.colorScheme.secondary
-                )
+                colors =
+                    DatePickerDefaults.colors(
+                        containerColor = MaterialTheme.colorScheme.secondary,
+                    ),
             )
         }
     }
 }
-

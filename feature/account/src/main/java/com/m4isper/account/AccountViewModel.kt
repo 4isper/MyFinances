@@ -2,6 +2,7 @@ package com.m4isper.account
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.m4isper.common.Result
 import com.m4isper.domain.model.AccountModel
 import com.m4isper.domain.repository.CurrencyRepository
 import com.m4isper.domain.usecase.GetAccountByIdUseCase
@@ -9,12 +10,11 @@ import com.m4isper.domain.usecase.UpdateAccountUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import com.m4isper.common.Result
 
-class AccountViewModel (
+class AccountViewModel(
     private val getAccountByIdUseCase: GetAccountByIdUseCase,
     private val updateAccountUseCase: UpdateAccountUseCase,
-    private val currencyRepository: CurrencyRepository
+    private val currencyRepository: CurrencyRepository,
 ) : ViewModel() {
     private val _account = MutableStateFlow<AccountModel?>(null)
     val account = _account.asStateFlow()
@@ -35,7 +35,12 @@ class AccountViewModel (
         }
     }
 
-    suspend fun updateAccount(id: Int, name: String, balance: String, currency: String): Boolean {
+    suspend fun updateAccount(
+        id: Int,
+        name: String,
+        balance: String,
+        currency: String,
+    ): Boolean {
         // currency здесь — символ (₽/$/€); в код его переведёт репозиторий
         return when (val result = updateAccountUseCase(id, name, balance, currency)) {
             is Result.Success -> {

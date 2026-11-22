@@ -1,10 +1,10 @@
 package com.m4isper.settings.navigation
 
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import androidx.navigation.NavController
 import com.m4isper.settings.SettingsScreen
 import com.m4isper.settings.ThemeViewModelFactory
 import com.m4isper.settings.appInfoScreen.AppInfoScreen
@@ -17,17 +17,17 @@ const val SETTINGS_LOCALE = "settings/locale"
 fun NavGraphBuilder.settingsNavGraph(
     modifier: Modifier = Modifier,
     navController: NavController,
-    themeViewModelFactory: ThemeViewModelFactory
+    themeViewModelFactory: ThemeViewModelFactory,
 ) {
     navigation(
         startDestination = SETTINGS_ROOT,
-        route = SETTINGS_GRAPH_ROUTE
+        route = SETTINGS_GRAPH_ROUTE,
     ) {
         composable(SETTINGS_ROOT) {
             SettingsScreen(
                 modifier = modifier,
                 navController = navController,
-                viewModelFactory = themeViewModelFactory
+                viewModelFactory = themeViewModelFactory,
             )
         }
         composable(SETTINGS_APP_INFO) {

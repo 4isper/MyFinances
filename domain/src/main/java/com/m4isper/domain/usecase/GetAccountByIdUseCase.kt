@@ -5,10 +5,10 @@ import com.m4isper.domain.model.AccountModel
 import com.m4isper.domain.repository.AccountsRepository
 import javax.inject.Inject
 
-class GetAccountByIdUseCase @Inject constructor(
-    private val accountsRepository: AccountsRepository
-) {
-    suspend operator fun invoke(accountId: Int): Result<AccountModel> {
-        return accountsRepository.getAccountById(accountId)
+class GetAccountByIdUseCase
+    @Inject
+    constructor(
+        private val accountsRepository: AccountsRepository,
+    ) {
+        suspend operator fun invoke(accountId: Int): Result<AccountModel> = accountsRepository.getAccountById(accountId)
     }
-}

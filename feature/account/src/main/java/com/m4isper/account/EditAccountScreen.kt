@@ -48,7 +48,7 @@ import kotlinx.coroutines.launch
 fun EditAccountScreen(
     modifier: Modifier = Modifier,
     navController: NavController,
-    viewModelFactory: ViewModelProvider.Factory
+    viewModelFactory: ViewModelProvider.Factory,
 ) {
     val viewModel: AccountViewModel = viewModel(factory = viewModelFactory)
 
@@ -78,38 +78,42 @@ fun EditAccountScreen(
     }
 
     Box(
-        modifier = modifier
-            .fillMaxSize(),
-        contentAlignment = Alignment.TopCenter
+        modifier =
+            modifier
+                .fillMaxSize(),
+        contentAlignment = Alignment.TopCenter,
     ) {
         Column {
             CenterAlignedTopAppBar(
                 title = {
                     Text(
                         text = stringResource(com.m4isper.resources.R.string.my_account),
-                        color = MaterialTheme.colorScheme.onSurface)
-                        },
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary
-                ),
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
+                },
+                colors =
+                    TopAppBarDefaults.centerAlignedTopAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                    ),
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
                             Icons.Outlined.Close,
                             contentDescription = "Cancel",
-                            tint = MaterialTheme.colorScheme.onSurface
+                            tint = MaterialTheme.colorScheme.onSurface,
                         )
                     }
                 },
                 actions = {
                     IconButton(onClick = {
                         scope.launch {
-                            val result = viewModel.updateAccount(
-                                id = AppConfig.LOCAL_ACCOUNT_ID,
-                                name = name,
-                                balance = balance,
-                                currency = currency
-                            )
+                            val result =
+                                viewModel.updateAccount(
+                                    id = AppConfig.LOCAL_ACCOUNT_ID,
+                                    name = name,
+                                    balance = balance,
+                                    currency = currency,
+                                )
                             if (result) {
                                 navController.popBackStack()
                             } else {
@@ -120,36 +124,38 @@ fun EditAccountScreen(
                         Icon(
                             Icons.Outlined.Done,
                             contentDescription = "Done",
-                            tint = MaterialTheme.colorScheme.onSurface
+                            tint = MaterialTheme.colorScheme.onSurface,
                         )
                     }
                 },
             )
 
             CustomListItem(
-                modifier = Modifier
-                    .background(MaterialTheme.colorScheme.surface),
+                modifier =
+                    Modifier
+                        .background(MaterialTheme.colorScheme.surface),
                 title = stringResource(R.string.name),
                 trail = {
                     CustomBasicTextField(
                         text = name,
                         onValueChange = { name = it },
-                        textPlaceholder = stringResource(R.string.enter_name)
+                        textPlaceholder = stringResource(R.string.enter_name),
                     )
-                }
+                },
             )
 
             CustomListItem(
-                modifier = Modifier
-                    .background(MaterialTheme.colorScheme.surface),
+                modifier =
+                    Modifier
+                        .background(MaterialTheme.colorScheme.surface),
                 lead = {
                     Box(
-                        modifier = Modifier
-                            .background(
-                                color = MaterialTheme.colorScheme.secondary,
-                                shape = CircleShape
-                            )
-                            .size(24.dp),
+                        modifier =
+                            Modifier
+                                .background(
+                                    color = MaterialTheme.colorScheme.secondary,
+                                    shape = CircleShape,
+                                ).size(24.dp),
                         contentAlignment = Alignment.Center,
                     ) {
                         Text(text = "\uD83D\uDCB0")
@@ -164,28 +170,30 @@ fun EditAccountScreen(
                         trail = {
                             Text(
                                 text = " $currency",
-                                color = MaterialTheme.colorScheme.onSurface
+                                color = MaterialTheme.colorScheme.onSurface,
                             )
-                        }
+                        },
                     )
-                }
+                },
             )
 
             CustomListItem(
-                modifier = Modifier
-                    .background(MaterialTheme.colorScheme.surface)
-                    .clickable(onClick = { showBottomSheet = true }),
+                modifier =
+                    Modifier
+                        .background(MaterialTheme.colorScheme.surface)
+                        .clickable(onClick = { showBottomSheet = true }),
                 title = stringResource(R.string.currency),
                 trail = {
                     Text(
                         text = currency,
-                        color = MaterialTheme.colorScheme.onSurface)
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
                     Icon(
                         imageVector = Icons.Rounded.KeyboardArrowRight,
                         contentDescription = "",
-                        tint = MaterialTheme.colorScheme.tertiary
+                        tint = MaterialTheme.colorScheme.tertiary,
                     )
-                }
+                },
             )
 
             if (error != null) {
@@ -198,32 +206,34 @@ fun EditAccountScreen(
                     onDismissRequest = {
                         showBottomSheet = false
                     },
-                    sheetState = sheetState
+                    sheetState = sheetState,
                 ) {
-                    val currencies = listOf(
-                        "₽" to stringResource(R.string.rub),
-                        "$" to stringResource(R.string.usd),
-                        "€" to stringResource(R.string.eur)
-                    )
+                    val currencies =
+                        listOf(
+                            "₽" to stringResource(R.string.rub),
+                            "$" to stringResource(R.string.usd),
+                            "€" to stringResource(R.string.eur),
+                        )
 
                     currencies.forEach { (symbol, title) ->
                         CustomListItem(
-                            modifier = Modifier
-                                .background(MaterialTheme.colorScheme.surface)
-                                .clickable {
-                                    currency = symbol
-                                    showBottomSheet = false
-                                }
-                                .padding(vertical = 10.dp),
+                            modifier =
+                                Modifier
+                                    .background(MaterialTheme.colorScheme.surface)
+                                    .clickable {
+                                        currency = symbol
+                                        showBottomSheet = false
+                                    }.padding(vertical = 10.dp),
                             lead = {
                                 Box(
-                                    modifier = Modifier
-                                        .size(24.dp),
+                                    modifier =
+                                        Modifier
+                                            .size(24.dp),
                                     contentAlignment = Alignment.Center,
                                 ) {
                                     Text(
                                         text = symbol,
-                                        fontSize = 24.sp
+                                        fontSize = 24.sp,
                                     )
                                 }
                             },
@@ -232,25 +242,27 @@ fun EditAccountScreen(
                     }
 
                     CustomListItem(
-                        modifier = Modifier
-                            .background(MaterialTheme.colorScheme.error)
-                            .clickable { showBottomSheet = false }
-                            .padding(vertical = 10.dp),
+                        modifier =
+                            Modifier
+                                .background(MaterialTheme.colorScheme.error)
+                                .clickable { showBottomSheet = false }
+                                .padding(vertical = 10.dp),
                         lead = {
                             Box(
-                                modifier = Modifier
-                                    .size(24.dp),
+                                modifier =
+                                    Modifier
+                                        .size(24.dp),
                                 contentAlignment = Alignment.Center,
                             ) {
                                 Icon(
                                     Icons.Outlined.Close,
                                     contentDescription = stringResource(R.string.cancel),
-                                    tint = MaterialTheme.colorScheme.surface
+                                    tint = MaterialTheme.colorScheme.surface,
                                 )
                             }
                             Text(
                                 text = stringResource(R.string.cancel),
-                                color = MaterialTheme.colorScheme.surface
+                                color = MaterialTheme.colorScheme.surface,
                             )
                         },
                         title = null,

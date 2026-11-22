@@ -4,3 +4,6 @@ root = true
 max_line_length = 140
 ij_kotlin_allow_trailing_comma = true
 ij_kotlin_allow_trailing_comma_on_call_site = true
+# PascalCase-функции — норм для @Composable; naming сторожит detekt
+# (FunctionNaming c ignoreAnnotated: [Composable])
+ktlint_standard_function-naming = disabled

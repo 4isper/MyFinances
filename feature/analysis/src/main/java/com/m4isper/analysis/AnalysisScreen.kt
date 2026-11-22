@@ -1,6 +1,5 @@
 package com.m4isper.analysis
 
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -9,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -39,8 +39,8 @@ import com.m4isper.domain.AppConfig
 import com.m4isper.domain.utils.calculateSumOfTransactions
 import com.m4isper.domain.utils.formatWithSpaces
 import com.m4isper.domain.utils.toCleanDecimal
-import com.m4isper.ui.components.CustomListItem
 import com.m4isper.resources.R
+import com.m4isper.ui.components.CustomListItem
 import com.m4isper.ui.components.DatePickerWithChipListItem
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -51,7 +51,7 @@ fun AnalysisScreen(
     modifier: Modifier = Modifier,
     navController: NavController,
     type: String,
-    viewModelFactory: ViewModelProvider.Factory
+    viewModelFactory: ViewModelProvider.Factory,
 ) {
     val viewModel: AnalysisScreenViewModel = viewModel(factory = viewModelFactory)
 
@@ -79,53 +79,64 @@ fun AnalysisScreen(
     val sumOfTransactions = calculateSumOfTransactions(transactions)
 
     Box(
-        modifier = modifier
-            .fillMaxSize(),
-        contentAlignment = Alignment.TopCenter
+        modifier =
+            modifier
+                .fillMaxSize(),
+        contentAlignment = Alignment.TopCenter,
     ) {
         Column {
             CenterAlignedTopAppBar(
                 navigationIcon = {
                     IconButton(
-                        onClick = { navController.popBackStack() }
+                        onClick = { navController.popBackStack() },
                     ) {
                         Icon(
                             Icons.Default.ArrowBack,
                             contentDescription = "Back",
-                            tint = MaterialTheme.colorScheme.onSurface
+                            tint = MaterialTheme.colorScheme.onSurface,
                         )
                     }
                 },
-                title = { Text(
-                    text = stringResource(R.string.analysis),
-                    color = MaterialTheme.colorScheme.onSurface) },
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.surface
-                ),
+                title = {
+                    Text(
+                        text = stringResource(R.string.analysis),
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
+                },
+                colors =
+                    TopAppBarDefaults.centerAlignedTopAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.surface,
+                    ),
             )
 
             DatePickerWithChipListItem(
-                modifier = Modifier
-                    .background(MaterialTheme.colorScheme.surface),
+                modifier =
+                    Modifier
+                        .background(MaterialTheme.colorScheme.surface),
                 title = stringResource(R.string.period_start),
                 initialDate = fromDate,
-                onDateChange = { fromDate = it }
+                onDateChange = { fromDate = it },
             )
             DatePickerWithChipListItem(
-                modifier = Modifier
-                    .background(MaterialTheme.colorScheme.surface),
+                modifier =
+                    Modifier
+                        .background(MaterialTheme.colorScheme.surface),
                 title = stringResource(R.string.period_end),
                 initialDate = toDate,
-                onDateChange = { toDate = it }
+                onDateChange = { toDate = it },
             )
 
             CustomListItem(
-                modifier = Modifier
-                    .background(MaterialTheme.colorScheme.surface),
+                modifier =
+                    Modifier
+                        .background(MaterialTheme.colorScheme.surface),
                 title = stringResource(R.string.amount),
-                trail = { Text(
-                    "$sumOfTransactions $currency",
-                    color = MaterialTheme.colorScheme.onSurface) }
+                trail = {
+                    Text(
+                        "$sumOfTransactions $currency",
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
+                },
             )
 
             if (error != null) {
@@ -133,46 +144,50 @@ fun AnalysisScreen(
             }
 
             LazyColumn {
-                items (transactions) { item ->
+                items(transactions) { item ->
                     CustomListItem(
                         lead = {
-                            if (item.emoji != ""){
+                            if (item.emoji != "") {
                                 Box(
-                                    modifier = Modifier
-                                        .background(
-                                            MaterialTheme.colorScheme.secondary,
-                                            shape = CircleShape
-                                        )
-                                        .size(24.dp),
+                                    modifier =
+                                        Modifier
+                                            .background(
+                                                MaterialTheme.colorScheme.secondary,
+                                                shape = CircleShape,
+                                            ).size(24.dp),
                                     contentAlignment = Alignment.Center,
                                 ) {
                                     Text(text = item.emoji)
                                 }
                             }
                         },
-                        modifier = Modifier
-                            .clickable(onClick = {
-                                navController.navigate("transaction/${item.id}")
-                            }
-                            )
-                            .background(MaterialTheme.colorScheme.surface)
-                            .padding(vertical = 10.dp),
+                        modifier =
+                            Modifier
+                                .clickable(
+                                    onClick = {
+                                        navController.navigate("transaction/${item.id}")
+                                    },
+                                ).background(MaterialTheme.colorScheme.surface)
+                                .padding(vertical = 10.dp),
                         title = item.categoryName,
                         subtitle = item.comment,
                         trail = {
                             Column(
-                                horizontalAlignment = Alignment.End
+                                horizontalAlignment = Alignment.End,
                             ) {
-                                Text(text = item.amount.toCleanDecimal().formatWithSpaces()
-                                        + " "+ item.currency,
-                                    color = MaterialTheme.colorScheme.onSurface)
+                                Text(
+                                    text =
+                                        item.amount.toCleanDecimal().formatWithSpaces() +
+                                            " " + item.currency,
+                                    color = MaterialTheme.colorScheme.onSurface,
+                                )
                             }
                             Icon(
                                 imageVector = Icons.Rounded.KeyboardArrowRight,
                                 contentDescription = "",
-                                tint = MaterialTheme.colorScheme.tertiary
+                                tint = MaterialTheme.colorScheme.tertiary,
                             )
-                        }
+                        },
                     )
                 }
             }

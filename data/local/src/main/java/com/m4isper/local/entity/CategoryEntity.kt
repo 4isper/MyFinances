@@ -8,5 +8,5 @@ data class CategoryEntity(
     @PrimaryKey val id: Int,
     val name: String,
     val emoji: String,
-    val isIncome: Boolean
+    val isIncome: Boolean,
 )

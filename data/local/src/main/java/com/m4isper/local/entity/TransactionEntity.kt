@@ -14,5 +14,5 @@ data class TransactionEntity(
     val isIncome: Boolean,
     val categoryName: String,
     val emoji: String,
-    val currency: String
+    val currency: String,
 )
