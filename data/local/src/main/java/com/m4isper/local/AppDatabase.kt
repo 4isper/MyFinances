@@ -12,7 +12,7 @@ import com.m4isper.local.entity.TransactionEntity
 @Database(
     entities = [AccountEntity::class, CategoryEntity::class, TransactionEntity::class],
     version = 1,
-    exportSchema = false,
+    exportSchema = true,
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun accountDao(): AccountDao
