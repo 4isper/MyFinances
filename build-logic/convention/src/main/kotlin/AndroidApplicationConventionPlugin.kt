@@ -23,6 +23,7 @@ class AndroidApplicationConventionPlugin : Plugin<Project> {
 
         dependencies {
             add("testImplementation", libs.findLibrary("junit").get())
+            add("testImplementation", libs.findLibrary("kotlinx.coroutines.test").get())
         }
     }
 }

@@ -27,6 +27,7 @@ dependencyResolutionManagement {
 rootProject.name = "MyFinances"
 include(":app")
 include(":core:ui", ":core:common", ":core:di")
+include(":core:testing")
 include(":domain")
 include(":data:repository", ":data:local")
 
