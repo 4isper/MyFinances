@@ -17,7 +17,7 @@ class AccountViewModelTest {
     val mainDispatcherRule = MainDispatcherRule()
 
     @Test
-    fun loadAccountsSetsAccountAndSyncsCurrency() =
+    fun loadAccountsDoesNotTouchGlobalCurrency() =
         runTest {
             val accountsRepository = FakeAccountsRepository()
             val currencyRepository = FakeCurrencyRepository(initial = "$")
@@ -32,8 +32,8 @@ class AccountViewModelTest {
 
             assertNotNull(viewModel.account.value)
             assertEquals("Основной счёт", viewModel.account.value?.name)
-            // валюта аккаунта (₽) синхронизируется в глобальную валюту приложения
-            assertEquals(listOf("₽"), currencyRepository.setCurrencyCalls)
+            // глобальная валюта (выбор пользователя в KSafe) не перезаписывается из Room
+            assertEquals(emptyList<String>(), currencyRepository.setCurrencyCalls)
         }
 
     @Test

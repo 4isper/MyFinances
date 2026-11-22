@@ -26,10 +26,7 @@ class AccountViewModel(
     fun loadAccounts(accountId: Int) {
         viewModelScope.launch {
             when (val result = getAccountByIdUseCase(accountId)) {
-                is Result.Success -> {
-                    _account.value = result.data
-                    account.value?.let { currencyRepository.setCurrency(it.currency) }
-                }
+                is Result.Success -> _account.value = result.data
                 is Result.Failure -> _error.value = result.exception.message
             }
         }
