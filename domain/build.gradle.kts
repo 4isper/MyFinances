@@ -1,9 +1,5 @@
 plugins {
-    id("myfinances.android.library")
-}
-
-android {
-    namespace = "com.m4isper.domain"
+    id("myfinances.kotlin.library")
 }
 
 dependencies {

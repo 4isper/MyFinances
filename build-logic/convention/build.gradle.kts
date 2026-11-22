@@ -6,6 +6,7 @@ group = "com.m4isper.buildlogic"
 
 dependencies {
     implementation(libs.android.gradlePlugin)
+    implementation(libs.kotlin.gradlePlugin)
     implementation(libs.compose.compiler.gradlePlugin)
     implementation(libs.ksp.gradlePlugin)
     implementation(libs.ktlint.gradlePlugin)
@@ -34,6 +35,10 @@ gradlePlugin {
         register("room") {
             id = "myfinances.room"
             implementationClass = "RoomConventionPlugin"
+        }
+        register("kotlinLibrary") {
+            id = "myfinances.kotlin.library"
+            implementationClass = "KotlinLibraryConventionPlugin"
         }
         register("ktlint") {
             id = "myfinances.ktlint"

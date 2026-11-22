@@ -65,6 +65,7 @@ lottie-compose = { module = "com.airbnb.android:lottie-compose", version.ref = "
 # Gradle-плагины для build-logic (convention plugins)
 android-gradlePlugin = { module = "com.android.tools.build:gradle", version.ref = "agp" }
 compose-compiler-gradlePlugin = { module = "org.jetbrains.kotlin:compose-compiler-gradle-plugin", version.ref = "kotlin" }
+kotlin-gradlePlugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 ksp-gradlePlugin = { module = "com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
 ktlint-gradlePlugin = { module = "org.jlleitschuh.gradle.ktlint:org.jlleitschuh.gradle.ktlint.gradle.plugin", version.ref = "ktlint-gradle" }
 detekt-gradlePlugin = { module = "dev.detekt:dev.detekt.gradle.plugin", version.ref = "detekt" }

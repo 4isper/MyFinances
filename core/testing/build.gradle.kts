@@ -1,9 +1,5 @@
 plugins {
-    id("myfinances.android.library")
-}
-
-android {
-    namespace = "com.m4isper.testing"
+    id("myfinances.kotlin.library")
 }
 
 // Тестовые фейки репозиториев общие для всех feature-модулей;
