@@ -183,4 +183,55 @@ class TransactionRepositoryImplTest {
             assertEquals(Result.Success(Unit), result)
             assertTrue(transactionDao.rows.none { it.id == 3 })
         }
+
+    @Test
+    fun addTransactionRecalculatesAccountBalance() =
+        runTest {
+            categoryDao.rows.add(category())
+            categoryDao.rows.add(category(id = 1, name = "Зарплата", emoji = "💰", isIncome = true))
+            accountDao.rows.add(account())
+
+            repository.addTransaction(1, 1, "5 000", "2026-11-22T10:00:00Z", null)
+            repository.addTransaction(1, 4, "1 000", "2026-11-22T11:00:00Z", null)
+
+            assertEquals("4 000", accountDao.rows.first { it.id == 1 }.balance)
+        }
+
+    @Test
+    fun deleteTransactionRestoresBalance() =
+        runTest {
+            categoryDao.rows.add(category())
+            accountDao.rows.add(account())
+            val created = repository.addTransaction(1, 4, "1 000", "2026-11-22T10:00:00Z", null)
+            val createdId = (created as Result.Success).data.id
+
+            repository.deleteTransaction(createdId)
+
+            assertEquals("0", accountDao.rows.first { it.id == 1 }.balance)
+        }
+
+    @Test
+    fun updateTransactionRecalculatesBalanceWithTypeChange() =
+        runTest {
+            categoryDao.rows.add(category())
+            categoryDao.rows.add(category(id = 1, name = "Зарплата", emoji = "💰", isIncome = true))
+            accountDao.rows.add(account())
+            val created = repository.addTransaction(1, 4, "1 000", "2026-11-22T10:00:00Z", null)
+            val createdId = (created as Result.Success).data.id
+
+            repository.updateTransaction(createdId, 1, 1, "3 000", "2026-11-22T10:00:00Z", null)
+
+            assertEquals("3 000", accountDao.rows.first { it.id == 1 }.balance)
+        }
+
+    @Test
+    fun balanceIgnoresTransactionsOfOtherAccounts() =
+        runTest {
+            categoryDao.rows.add(category())
+            accountDao.rows.add(account(id = 1))
+            accountDao.rows.add(account(id = 2, currency = "USD"))
+            repository.addTransaction(2, 4, "9 000", "2026-11-22T10:00:00Z", null)
+
+            assertEquals("0", accountDao.rows.first { it.id == 1 }.balance)
+        }
 }

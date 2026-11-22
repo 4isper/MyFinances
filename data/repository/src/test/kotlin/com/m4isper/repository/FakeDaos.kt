@@ -29,6 +29,9 @@ class FakeTransactionDao : TransactionDao {
 
     override suspend fun getById(id: Int): TransactionEntity? = rows.firstOrNull { it.id == id }
 
+    override suspend fun getByAccount(accountId: Int): List<TransactionEntity> =
+        rows.filter { it.accountId == accountId }.sortedBy { it.id }
+
     override suspend fun insert(transaction: TransactionEntity): Long {
         val id = nextId++
         rows.add(transaction.copy(id = id))

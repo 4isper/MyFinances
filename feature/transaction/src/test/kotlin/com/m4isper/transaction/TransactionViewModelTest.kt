@@ -15,6 +15,7 @@ import com.m4isper.testing.MainDispatcherRule
 import com.m4isper.testing.transactionModel
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Rule
@@ -83,6 +84,43 @@ class TransactionViewModelTest {
             assertEquals(1, repository.transactions.size)
             assertEquals("1000", repository.transactions.first().amount)
             assertEquals(null, viewModel.error.value)
+        }
+
+    @Test
+    fun addTransactionRejectsNonPositiveAmount() =
+        runTest {
+            val repository = FakeTransactionRepository()
+            val viewModel = viewModel(repository)
+
+            val result =
+                viewModel.addTransaction(
+                    categoryId = 4,
+                    amount = "0",
+                    transactionDate = "2026-11-22T10:00:00Z",
+                    comment = null,
+                )
+
+            assertFalse(result)
+            assertEquals(0, repository.transactions.size)
+            assertNotNull(viewModel.error.value)
+        }
+
+    @Test
+    fun addTransactionRejectsGarbageAmount() =
+        runTest {
+            val repository = FakeTransactionRepository()
+            val viewModel = viewModel(repository)
+
+            val result =
+                viewModel.addTransaction(
+                    categoryId = 4,
+                    amount = "абв",
+                    transactionDate = "2026-11-22T10:00:00Z",
+                    comment = null,
+                )
+
+            assertFalse(result)
+            assertEquals(0, repository.transactions.size)
         }
 
     @Test

@@ -3,6 +3,7 @@ package com.m4isper.expenses
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.m4isper.domain.repository.CurrencyRepository
+import com.m4isper.domain.usecase.DeleteTransactionUseCase
 import com.m4isper.domain.usecase.GetExpenseTransactionsUseCase
 import javax.inject.Inject
 
@@ -10,6 +11,7 @@ class ExpensesViewModelFactory
     @Inject
     constructor(
         private val getExpenseTransactionsUseCase: GetExpenseTransactionsUseCase,
+        private val deleteTransactionUseCase: DeleteTransactionUseCase,
         private val currencyRepository: CurrencyRepository,
     ) : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")
@@ -17,6 +19,7 @@ class ExpensesViewModelFactory
             if (modelClass.isAssignableFrom(ExpensesViewModel::class.java)) {
                 return ExpensesViewModel(
                     getExpenseTransactionsUseCase,
+                    deleteTransactionUseCase,
                     currencyRepository,
                 ) as T
             }

@@ -53,7 +53,7 @@ fun HistoryScreen(
     modifier: Modifier = Modifier,
     onBack: () -> Unit,
     onAnalysis: () -> Unit,
-    onTransactionClick: (Int) -> Unit,
+    onTransactionClick: (id: Int, isIncome: Boolean) -> Unit,
     type: String,
     viewModelFactory: ViewModelProvider.Factory,
 ) {
@@ -180,7 +180,7 @@ fun HistoryScreen(
                             Modifier
                                 .clickable(
                                     onClick = {
-                                        onTransactionClick(item.id)
+                                        onTransactionClick(item.id, item.isIncome)
                                     },
                                 ).background(MaterialTheme.colorScheme.surface)
                                 .padding(vertical = 10.dp),

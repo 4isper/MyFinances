@@ -14,9 +14,11 @@ import com.m4isper.domain.usecase.GetAccountByIdUseCase
 import com.m4isper.domain.usecase.GetCategoriesUseCase
 import com.m4isper.domain.usecase.GetTransactionByIdUseCase
 import com.m4isper.domain.usecase.UpdateTransactionUseCase
+import com.m4isper.domain.utils.toCleanDecimal
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.math.BigDecimal
 
 class TransactionViewModel(
     private val getTransactionByIdUseCase: GetTransactionByIdUseCase,
@@ -51,8 +53,13 @@ class TransactionViewModel(
         amount: String,
         transactionDate: String,
         comment: String? = null,
-    ): Boolean =
-        when (
+    ): Boolean {
+        val cleanedAmount = amount.toCleanDecimal()
+        if (cleanedAmount <= BigDecimal.ZERO) {
+            _error.value = "Amount must be greater than zero"
+            return false
+        }
+        return when (
             val result =
                 addTransactionUseCase(
                     accountId = AppConfig.LOCAL_ACCOUNT_ID,
@@ -68,6 +75,7 @@ class TransactionViewModel(
                 false
             }
         }
+    }
 
     suspend fun updateTransaction(
         categoryId: Int,

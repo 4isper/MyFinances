@@ -80,6 +80,18 @@ class TransactionDaoTest {
         }
 
     @Test
+    fun getByAccountReturnsOnlyAccountRows() =
+        runTest {
+            dao.insert(transaction(accountId = 1))
+            dao.insert(transaction(accountId = 2, date = "2026-11-23T10:00:00Z"))
+
+            val rows = dao.getByAccount(1)
+
+            assertEquals(1, rows.size)
+            assertEquals(1, rows.first().accountId)
+        }
+
+    @Test
     fun insertGeneratesIdAndGetByIdReturnsSavedRow() =
         runTest {
             val id = dao.insert(transaction()).toInt()

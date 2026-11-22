@@ -4,12 +4,15 @@ import com.m4isper.common.Result
 import com.m4isper.common.safeCall
 import com.m4isper.domain.model.TransactionModel
 import com.m4isper.domain.repository.TransactionRepository
+import com.m4isper.domain.utils.formatWithSpaces
+import com.m4isper.domain.utils.toCleanDecimal
 import com.m4isper.local.dao.AccountDao
 import com.m4isper.local.dao.CategoryDao
 import com.m4isper.local.dao.TransactionDao
 import com.m4isper.local.entity.TransactionEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.math.BigDecimal
 import javax.inject.Inject
 
 class TransactionRepositoryImpl
@@ -92,6 +95,7 @@ class TransactionRepositoryImpl
                             currency = account?.currency ?: "RUB",
                         )
                     val newId = transactionDao.insert(entity).toInt()
+                    recalculateBalance(accountId)
                     transactionDao.getById(newId)?.toModel()
                         ?: throw IllegalStateException("Транзакция не сохранилась")
                 }
@@ -126,6 +130,7 @@ class TransactionRepositoryImpl
                             emoji = category.emoji,
                         )
                     transactionDao.upsert(entity)
+                    recalculateBalance(accountId)
                     entity.toModel()
                 }
             }
@@ -133,7 +138,28 @@ class TransactionRepositoryImpl
         override suspend fun deleteTransaction(transactionId: Int): Result<Unit> =
             withContext(Dispatchers.IO) {
                 safeCall {
+                    // accountId нужен до удаления, чтобы пересчитать баланс счёта
+                    val accountId = transactionDao.getById(transactionId)?.accountId
                     transactionDao.deleteById(transactionId)
+                    if (accountId != null) {
+                        recalculateBalance(accountId)
+                    }
                 }
             }
+
+        /**
+         * Баланс счёта — производная от всех его транзакций: доходы плюс, расходы минус.
+         * Полный пересчёт вместо инкремента — дешевле и устойчивее к расхождениям.
+         */
+        private suspend fun recalculateBalance(accountId: Int) {
+            val account = accountDao.getById(accountId) ?: return
+            val total =
+                transactionDao
+                    .getByAccount(accountId)
+                    .fold(BigDecimal.ZERO) { acc, transaction ->
+                        val amount = transaction.amount.toCleanDecimal()
+                        if (transaction.isIncome) acc + amount else acc - amount
+                    }
+            accountDao.upsert(account.copy(balance = total.formatWithSpaces()))
+        }
     }

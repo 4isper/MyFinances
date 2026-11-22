@@ -32,6 +32,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -57,6 +58,8 @@ import java.time.format.DateTimeFormatter
 @Composable
 fun TransactionScreen(
     modifier: Modifier = Modifier,
+    // начальный тип формы: доход или расход; при редактировании перекрывается данными транзакции
+    isIncome: Boolean,
     onBack: () -> Unit,
     viewModelFactory: ViewModelProvider.Factory,
 ) {
@@ -85,14 +88,14 @@ fun TransactionScreen(
 
     val categoryPairs = categories.map { it.name to it.id }
 
-    var comment: String? by remember { mutableStateOf("") }
-    var categoryName by remember { mutableStateOf("") }
-    var categoryId by remember { mutableIntStateOf(0) }
-    var amount by remember { mutableStateOf("0") }
+    var comment: String? by rememberSaveable { mutableStateOf("") }
+    var categoryName by rememberSaveable { mutableStateOf("") }
+    var categoryId by rememberSaveable { mutableIntStateOf(0) }
+    var amount by rememberSaveable { mutableStateOf("0") }
     var date by remember { mutableStateOf(today) }
     var time by remember { mutableStateOf(timeNow) }
 
-    var isIncome by remember { mutableStateOf(true) }
+    var isIncome by remember { mutableStateOf(isIncome) }
 
     var expanded by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()

@@ -97,7 +97,7 @@ fun AppNavigation(modifier: Modifier = Modifier) {
                 ExpensesScreen(
                     modifier = modifier,
                     onHistory = { navigator.navigate(ExpensesHistory) },
-                    onTransactionClick = { id -> navigator.navigate(TransactionKey(id)) },
+                    onTransactionClick = { id, isIncome -> navigator.navigate(TransactionKey(id, isIncome)) },
                     viewModelFactory = factory,
                 )
             }
@@ -114,7 +114,7 @@ fun AppNavigation(modifier: Modifier = Modifier) {
                 IncomeScreen(
                     modifier = modifier,
                     onHistory = { navigator.navigate(IncomeHistory) },
-                    onTransactionClick = { id -> navigator.navigate(TransactionKey(id)) },
+                    onTransactionClick = { id, isIncome -> navigator.navigate(TransactionKey(id, isIncome)) },
                     viewModelFactory = factory,
                 )
             }
@@ -156,7 +156,7 @@ fun AppNavigation(modifier: Modifier = Modifier) {
                     type = "expenses",
                     onBack = { navigator.goBack() },
                     onAnalysis = { navigator.navigate(ExpensesAnalysis) },
-                    onTransactionClick = { id -> navigator.navigate(TransactionKey(id)) },
+                    onTransactionClick = { id, isIncome -> navigator.navigate(TransactionKey(id, isIncome)) },
                     viewModelFactory = factory,
                 )
             }
@@ -175,7 +175,7 @@ fun AppNavigation(modifier: Modifier = Modifier) {
                     type = "income",
                     onBack = { navigator.goBack() },
                     onAnalysis = { navigator.navigate(IncomeAnalysis) },
-                    onTransactionClick = { id -> navigator.navigate(TransactionKey(id)) },
+                    onTransactionClick = { id, isIncome -> navigator.navigate(TransactionKey(id, isIncome)) },
                     viewModelFactory = factory,
                 )
             }
@@ -186,7 +186,7 @@ fun AppNavigation(modifier: Modifier = Modifier) {
                     modifier = modifier,
                     type = "expenses",
                     onBack = { navigator.goBack() },
-                    onTransactionClick = { id -> navigator.navigate(TransactionKey(id)) },
+                    onTransactionClick = { id, isIncome -> navigator.navigate(TransactionKey(id, isIncome)) },
                     viewModelFactory = factory,
                 )
             }
@@ -197,7 +197,7 @@ fun AppNavigation(modifier: Modifier = Modifier) {
                     modifier = modifier,
                     type = "income",
                     onBack = { navigator.goBack() },
-                    onTransactionClick = { id -> navigator.navigate(TransactionKey(id)) },
+                    onTransactionClick = { id, isIncome -> navigator.navigate(TransactionKey(id, isIncome)) },
                     viewModelFactory = factory,
                 )
             }
@@ -225,6 +225,7 @@ fun AppNavigation(modifier: Modifier = Modifier) {
                         .transactionViewModelFactory()
                 TransactionScreen(
                     modifier = modifier,
+                    isIncome = key.isIncome,
                     onBack = { navigator.goBack() },
                     viewModelFactory = factory,
                 )

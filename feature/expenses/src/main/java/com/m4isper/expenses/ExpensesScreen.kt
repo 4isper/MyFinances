@@ -42,6 +42,7 @@ import com.m4isper.domain.utils.toCleanDecimal
 import com.m4isper.resources.R
 import com.m4isper.ui.components.AddButton
 import com.m4isper.ui.components.CustomListItem
+import com.m4isper.ui.components.SwipeToDismissListItem
 import com.m4isper.ui.theme.MyFinancesTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -49,7 +50,7 @@ import com.m4isper.ui.theme.MyFinancesTheme
 fun ExpensesScreen(
     modifier: Modifier = Modifier,
     onHistory: () -> Unit,
-    onTransactionClick: (Int) -> Unit,
+    onTransactionClick: (id: Int, isIncome: Boolean) -> Unit,
     viewModelFactory: ViewModelProvider.Factory,
 ) {
     val viewModel: ExpensesViewModel = viewModel(factory = viewModelFactory)
@@ -119,48 +120,52 @@ fun ExpensesScreen(
             }
 
             LazyColumn {
-                items(expenses) { item ->
-                    CustomListItem(
-                        modifier =
-                            Modifier
-                                .clickable(
-                                    onClick = {
-                                        onTransactionClick(item.id)
-                                    },
-                                ).background(MaterialTheme.colorScheme.surface)
-                                .padding(vertical = 10.dp),
-                        lead = {
-                            Box(
-                                modifier =
-                                    Modifier
-                                        .background(MaterialTheme.colorScheme.secondary, shape = CircleShape)
-                                        .size(24.dp),
-                                contentAlignment = Alignment.Center,
-                            ) {
-                                Text(text = item.emoji)
-                            }
-                        },
-                        title = item.categoryName,
-                        subtitle = item.comment,
-                        trail = {
-                            Text(
-                                text = item.amount.toCleanDecimal().formatWithSpaces() + " " + item.currency,
-                                color = MaterialTheme.colorScheme.onSurface,
-                            )
-                            Icon(
-                                imageVector = Icons.Rounded.KeyboardArrowRight,
-                                contentDescription = "",
-                                tint = MaterialTheme.colorScheme.tertiary,
-                            )
-                        },
-                    )
+                items(expenses, key = { it.id }) { item ->
+                    SwipeToDismissListItem(
+                        onDelete = { viewModel.deleteTransaction(item.id) },
+                    ) {
+                        CustomListItem(
+                            modifier =
+                                Modifier
+                                    .clickable(
+                                        onClick = {
+                                            onTransactionClick(item.id, item.isIncome)
+                                        },
+                                    ).background(MaterialTheme.colorScheme.surface)
+                                    .padding(vertical = 10.dp),
+                            lead = {
+                                Box(
+                                    modifier =
+                                        Modifier
+                                            .background(MaterialTheme.colorScheme.secondary, shape = CircleShape)
+                                            .size(24.dp),
+                                    contentAlignment = Alignment.Center,
+                                ) {
+                                    Text(text = item.emoji)
+                                }
+                            },
+                            title = item.categoryName,
+                            subtitle = item.comment,
+                            trail = {
+                                Text(
+                                    text = item.amount.toCleanDecimal().formatWithSpaces() + " " + item.currency,
+                                    color = MaterialTheme.colorScheme.onSurface,
+                                )
+                                Icon(
+                                    imageVector = Icons.Rounded.KeyboardArrowRight,
+                                    contentDescription = "",
+                                    tint = MaterialTheme.colorScheme.tertiary,
+                                )
+                            },
+                        )
+                    }
                 }
             }
         }
         AddButton(
             modifier = Modifier.align(Alignment.BottomEnd),
             onClick = {
-                onTransactionClick(-1)
+                onTransactionClick(-1, false)
             },
         )
     }

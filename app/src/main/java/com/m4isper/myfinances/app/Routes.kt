@@ -44,6 +44,8 @@ data object SettingsAppInfo : NavKey
 @Serializable
 data class TransactionKey(
     val id: Int,
+    // id = -1 — «новая транзакция»: тип приходит из контекста экрана-источника
+    val isIncome: Boolean,
 ) : NavKey
 
 /**

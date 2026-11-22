@@ -49,7 +49,7 @@ import java.time.format.DateTimeFormatter
 fun AnalysisScreen(
     modifier: Modifier = Modifier,
     onBack: () -> Unit,
-    onTransactionClick: (Int) -> Unit,
+    onTransactionClick: (id: Int, isIncome: Boolean) -> Unit,
     type: String,
     viewModelFactory: ViewModelProvider.Factory,
 ) {
@@ -165,7 +165,7 @@ fun AnalysisScreen(
                             Modifier
                                 .clickable(
                                     onClick = {
-                                        onTransactionClick(item.id)
+                                        onTransactionClick(item.id, item.isIncome)
                                     },
                                 ).background(MaterialTheme.colorScheme.surface)
                                 .padding(vertical = 10.dp),

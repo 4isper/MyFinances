@@ -44,7 +44,6 @@ fun SettingsScreen(
             SettingItem.Static(stringResource(R.string.sounds)),
             SettingItem.Static(stringResource(R.string.haptics)),
             SettingItem.Static(stringResource(R.string.password_code)),
-            SettingItem.Static(stringResource(R.string.synchronization)),
             SettingItem.Static(stringResource(R.string.language)),
             SettingItem.Navigable(stringResource(R.string.about_program)),
         )
