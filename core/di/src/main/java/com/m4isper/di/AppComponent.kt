@@ -1,8 +1,6 @@
-package com.m4isper.myfinances.di
+package com.m4isper.di
 
 import android.content.Context
-import com.m4isper.di.AppModule
-import com.m4isper.di.PreferencesModule
 import dagger.BindsInstance
 import dagger.Component
 import javax.inject.Singleton

@@ -70,9 +70,6 @@ androidComponents {
 
 dependencies {
     implementation(project(":core:ui"))
-    implementation(project(":data:repository"))
-    implementation(project(":data:local"))
-    implementation(project(":data:preferences"))
     implementation(project(":domain"))
     implementation(project(":core:di"))
     implementation(project(":feature:account"))

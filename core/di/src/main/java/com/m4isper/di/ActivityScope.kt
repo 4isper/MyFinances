@@ -1,4 +1,4 @@
-package com.m4isper.myfinances.di
+package com.m4isper.di
 
 import javax.inject.Scope
 
