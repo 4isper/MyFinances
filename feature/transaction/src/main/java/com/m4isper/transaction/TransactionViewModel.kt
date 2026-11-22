@@ -12,7 +12,7 @@ import com.m4isper.domain.usecase.GetAccountByIdUseCase
 import com.m4isper.domain.usecase.GetCategoriesUseCase
 import com.m4isper.domain.usecase.GetTransactionByIdUseCase
 import com.m4isper.domain.usecase.UpdateTransactionUseCase
-import com.m4isper.domain.BuildConfig
+import com.m4isper.domain.AppConfig
 import com.m4isper.common.Result
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -53,7 +53,7 @@ class TransactionViewModel (
         comment: String? = null
     ): Boolean{
         return when (val result = addTransactionUseCase(
-            accountId = BuildConfig.ID_ACCOUNT,
+            accountId = AppConfig.LOCAL_ACCOUNT_ID,
             categoryId = categoryId,
             amount = amount,
             transactionDate = transactionDate,
@@ -75,7 +75,7 @@ class TransactionViewModel (
     ): Boolean {
         return when (val result = updateTransactionUseCase(
             transactionId = transactionId,
-            accountId = BuildConfig.ID_ACCOUNT,
+            accountId = AppConfig.LOCAL_ACCOUNT_ID,
             categoryId = categoryId,
             amount = amount,
             transactionDate = transactionDate,
@@ -118,7 +118,7 @@ class TransactionViewModel (
 
     fun loadAccount() {
         viewModelScope.launch {
-            when (val result = getAccountByIdUseCase(BuildConfig.ID_ACCOUNT)) {
+            when (val result = getAccountByIdUseCase(AppConfig.LOCAL_ACCOUNT_ID)) {
                 is Result.Success -> _account.value = result.data
                 is Result.Failure -> _error.value = result.exception.message
             }

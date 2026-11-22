@@ -8,6 +8,4 @@ android {
 
 dependencies {
     implementation(libs.kotlinx.coroutines.core)
-    implementation(libs.retrofit)
-    implementation(libs.retrofit.gson)
 }

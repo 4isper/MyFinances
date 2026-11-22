@@ -5,7 +5,7 @@ import androidx.room3.PrimaryKey
 
 @Entity(tableName = "transactions")
 data class TransactionEntity(
-    @PrimaryKey val id: Int,
+    @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val accountId: Int,
     val categoryId: Int,
     val amount: String,
@@ -14,7 +14,5 @@ data class TransactionEntity(
     val isIncome: Boolean,
     val categoryName: String,
     val emoji: String,
-    val currency: String,
-    val isSynced: Boolean = false,
-    val updatedAt: Long = System.currentTimeMillis()
+    val currency: String
 )

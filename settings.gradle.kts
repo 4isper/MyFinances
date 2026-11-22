@@ -28,7 +28,7 @@ rootProject.name = "MyFinances"
 include(":app")
 include(":core:ui", ":core:common", ":core:di")
 include(":domain")
-include(":data:repository", ":data:local", ":data:remote")
+include(":data:repository", ":data:local")
 
 include(":feature:account")
 include(":feature:income")

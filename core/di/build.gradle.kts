@@ -8,9 +8,12 @@ android {
 }
 
 dependencies {
+    implementation(project(":data:local"))
+    implementation(libs.androidx.room3.runtime)
+    implementation(libs.androidx.sqlite.bundled)
     implementation(project(":domain"))
     implementation(project(":data:repository"))
-    implementation(project(":data:remote"))
+    implementation(project(":data:preferences"))
     implementation(project(":feature:account"))
     implementation(project(":feature:analysis"))
     implementation(project(":feature:categories"))
@@ -20,6 +23,4 @@ dependencies {
     implementation(project(":feature:splash"))
     implementation(project(":feature:transaction"))
     implementation(project(":feature:settings"))
-    implementation(libs.retrofit)
-    implementation(libs.retrofit.gson)
 }

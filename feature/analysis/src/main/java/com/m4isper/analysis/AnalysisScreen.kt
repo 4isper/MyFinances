@@ -35,7 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.m4isper.domain.BuildConfig
+import com.m4isper.domain.AppConfig
 import com.m4isper.domain.utils.calculateSumOfTransactions
 import com.m4isper.domain.utils.formatWithSpaces
 import com.m4isper.domain.utils.toCleanDecimal
@@ -71,8 +71,8 @@ fun AnalysisScreen(
         val end = toDate.format(DateTimeFormatter.ISO_DATE)
 
         when (type) {
-            "income" -> viewModel.loadIncome(accountId = BuildConfig.ID_ACCOUNT, start = start, end = end)
-            "expenses" -> viewModel.loadExpenses(accountId = BuildConfig.ID_ACCOUNT, start = start, end = end)
+            "income" -> viewModel.loadIncome(accountId = AppConfig.LOCAL_ACCOUNT_ID, start = start, end = end)
+            "expenses" -> viewModel.loadExpenses(accountId = AppConfig.LOCAL_ACCOUNT_ID, start = start, end = end)
         }
     }
 

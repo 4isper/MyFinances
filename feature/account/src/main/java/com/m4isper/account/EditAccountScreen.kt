@@ -37,7 +37,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.m4isper.domain.BuildConfig
+import com.m4isper.domain.AppConfig
 import com.m4isper.resources.R
 import com.m4isper.ui.components.CustomBasicTextField
 import com.m4isper.ui.components.CustomListItem
@@ -58,7 +58,7 @@ fun EditAccountScreen(
     val error by viewModel.error.collectAsState()
 
     LaunchedEffect(Unit) {
-        viewModel.loadAccounts(BuildConfig.ID_ACCOUNT)
+        viewModel.loadAccounts(AppConfig.LOCAL_ACCOUNT_ID)
     }
 
     val sheetState = rememberModalBottomSheetState()
@@ -105,7 +105,7 @@ fun EditAccountScreen(
                     IconButton(onClick = {
                         scope.launch {
                             val result = viewModel.updateAccount(
-                                id = BuildConfig.ID_ACCOUNT,
+                                id = AppConfig.LOCAL_ACCOUNT_ID,
                                 name = name,
                                 balance = balance,
                                 currency = currency

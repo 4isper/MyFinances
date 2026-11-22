@@ -6,3 +6,7 @@ plugins {
 android {
     namespace = "com.m4isper.local"
 }
+
+dependencies {
+    implementation(libs.androidx.sqlite.bundled)
+}

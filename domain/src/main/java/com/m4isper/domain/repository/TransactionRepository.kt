@@ -1,8 +1,7 @@
 package com.m4isper.domain.repository
 
-import com.m4isper.domain.model.TransactionModel
-import com.m4isper.domain.model.TransactionResponseModel
 import com.m4isper.common.Result
+import com.m4isper.domain.model.TransactionModel
 
 interface TransactionRepository {
     suspend fun getTransactions(accountId: Int, startDate: String, endDate: String): Result<List<TransactionModel>>
@@ -23,7 +22,7 @@ interface TransactionRepository {
         amount: String,
         transactionDate: String,
         comment: String?
-    ): Result<TransactionResponseModel>
+    ): Result<TransactionModel>
 
     suspend fun updateTransaction(
         transactionId: Int,
@@ -37,10 +36,4 @@ interface TransactionRepository {
     suspend fun deleteTransaction(
         transactionId: Int
     ): Result<Unit>
-
-//
-//    suspend fun addTransactionLocal(transaction: TransactionModel)
-//    suspend fun getTransactionsLocal(): List<TransactionModel>
-//    suspend fun getUnsyncedTransactions(): List<TransactionModel>
-//    suspend fun markAsSynced(id: Int)
 }

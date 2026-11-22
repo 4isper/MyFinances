@@ -69,7 +69,8 @@ androidComponents {
 dependencies {
     implementation(project(":core:ui"))
     implementation(project(":data:repository"))
-    implementation(project(":data:remote"))
+    implementation(project(":data:local"))
+    implementation(project(":data:preferences"))
     implementation(project(":domain"))
     implementation(project(":core:di"))
     implementation(project(":feature:account"))
@@ -87,7 +88,5 @@ dependencies {
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.navigation.compose)
-    implementation(libs.retrofit)
-    implementation(libs.retrofit.gson)
     debugImplementation(libs.androidx.ui.tooling)
 }

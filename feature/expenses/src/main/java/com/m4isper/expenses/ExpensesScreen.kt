@@ -35,7 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.m4isper.domain.BuildConfig
+import com.m4isper.domain.AppConfig
 import com.m4isper.ui.theme.MyFinancesTheme
 import com.m4isper.resources.R
 import com.m4isper.common.DateUtils
@@ -64,7 +64,7 @@ fun ExpensesScreen(
     LaunchedEffect(Unit) {
         val today = DateUtils.today()
         viewModel.loadExpenses(
-            accountId = BuildConfig.ID_ACCOUNT,
+            accountId = AppConfig.LOCAL_ACCOUNT_ID,
             start = today,
             end = today
         )

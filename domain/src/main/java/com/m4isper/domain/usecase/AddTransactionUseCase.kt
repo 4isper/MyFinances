@@ -1,7 +1,7 @@
 package com.m4isper.domain.usecase
 
 import com.m4isper.common.Result
-import com.m4isper.domain.model.TransactionResponseModel
+import com.m4isper.domain.model.TransactionModel
 import com.m4isper.domain.repository.TransactionRepository
 import javax.inject.Inject
 
@@ -14,7 +14,7 @@ class AddTransactionUseCase @Inject constructor(
         amount: String,
         transactionDate: String,
         comment: String?
-    ): Result<TransactionResponseModel>{
+    ): Result<TransactionModel> {
         return repository.addTransaction(
             accountId,
             categoryId,

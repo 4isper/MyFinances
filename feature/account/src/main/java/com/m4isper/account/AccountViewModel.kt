@@ -36,16 +36,10 @@ class AccountViewModel (
     }
 
     suspend fun updateAccount(id: Int, name: String, balance: String, currency: String): Boolean {
-        val currencyCode = when (currency) {
-            "₽" -> "RUB"
-            "$" -> "USD"
-            "€" -> "EUR"
-            else -> "UNKNOWN"
-        }
-
-        return when (val result = updateAccountUseCase(id, name, balance, currencyCode)) {
+        // currency здесь — символ (₽/$/€); в код его переведёт репозиторий
+        return when (val result = updateAccountUseCase(id, name, balance, currency)) {
             is Result.Success -> {
-                currencyRepository.setCurrency(currencyCode)
+                currencyRepository.setCurrency(currency)
                 true
             }
             is Result.Failure -> {

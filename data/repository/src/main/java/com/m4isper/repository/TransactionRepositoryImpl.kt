@@ -1,20 +1,21 @@
 package com.m4isper.repository
 
-import com.m4isper.common.safeApiCall
-import com.m4isper.domain.model.TransactionModel
-import com.m4isper.domain.model.TransactionResponseModel
-import com.m4isper.domain.repository.TransactionRepository
-//import com.m4isper.local.dao.TransactionDao
 import com.m4isper.common.Result
-import com.m4isper.remote.SHMRFinanceApi
-import com.m4isper.remote.TransactionRequestDto
+import com.m4isper.common.safeCall
+import com.m4isper.domain.model.TransactionModel
+import com.m4isper.domain.repository.TransactionRepository
+import com.m4isper.local.dao.AccountDao
+import com.m4isper.local.dao.CategoryDao
+import com.m4isper.local.dao.TransactionDao
+import com.m4isper.local.entity.TransactionEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class TransactionRepositoryImpl @Inject constructor(
-    private val api: SHMRFinanceApi,
-//    private val transactionDao: TransactionDao
+    private val transactionDao: TransactionDao,
+    private val categoryDao: CategoryDao,
+    private val accountDao: AccountDao
 ) : TransactionRepository {
 
     override suspend fun getTransactions(
@@ -22,43 +23,28 @@ class TransactionRepositoryImpl @Inject constructor(
         startDate: String,
         endDate: String
     ): Result<List<TransactionModel>> = withContext(Dispatchers.IO) {
-        val result = safeApiCall {
-            api.getTransactions(accountId, startDate, endDate)
-        }
-
-        when (result) {
-            is Result.Success -> {
-                val data = result.data.map { it.toDomain()}
-                Result.Success(data)
-            }
-            is Result.Failure -> result
+        safeCall {
+            transactionDao
+                .getByAccountAndPeriod(accountId, startDate, endDate)
+                .map { it.toModel() }
         }
     }
 
-    override suspend fun getTransactionById(
-        transactionId: Int
-    ): Result<TransactionModel> = withContext(Dispatchers.IO) {
-        val result = safeApiCall {
-            api.getTransactionById(transactionId)
-        }
-
-        when (result) {
-            is Result.Success -> {
-                val data = result.data.toDomain()
-                Result.Success(data)
+    override suspend fun getTransactionById(transactionId: Int): Result<TransactionModel> =
+        withContext(Dispatchers.IO) {
+            safeCall {
+                transactionDao.getById(transactionId)?.toModel()
+                    ?: throw NoSuchElementException("Транзакция $transactionId не найдена")
             }
-            is Result.Failure -> result
         }
-    }
 
     override suspend fun getIncomeTransactions(
         accountId: Int,
         startDate: String,
         endDate: String
     ): Result<List<TransactionModel>> = withContext(Dispatchers.IO) {
-         when (val result = getTransactions(accountId, startDate, endDate)) {
-            is Result.Success -> Result.Success(result.data
-                .filter { it.isIncome })
+        when (val result = getTransactions(accountId, startDate, endDate)) {
+            is Result.Success -> Result.Success(result.data.filter { it.isIncome })
             is Result.Failure -> result
         }
     }
@@ -67,8 +53,8 @@ class TransactionRepositoryImpl @Inject constructor(
         accountId: Int,
         startDate: String,
         endDate: String
-    ): Result<List<TransactionModel>>  = withContext(Dispatchers.IO) {
-         when (val result = getTransactions(accountId, startDate, endDate)) {
+    ): Result<List<TransactionModel>> = withContext(Dispatchers.IO) {
+        when (val result = getTransactions(accountId, startDate, endDate)) {
             is Result.Success -> Result.Success(result.data.filter { !it.isIncome })
             is Result.Failure -> result
         }
@@ -80,25 +66,27 @@ class TransactionRepositoryImpl @Inject constructor(
         amount: String,
         transactionDate: String,
         comment: String?
-    ): Result<TransactionResponseModel> = withContext(Dispatchers.IO) {
-        val dto = TransactionRequestDto(
-            accountId = accountId,
-            categoryId = categoryId,
-            amount = amount,
-            transactionDate = transactionDate,
-            comment = comment
-        )
+    ): Result<TransactionModel> = withContext(Dispatchers.IO) {
+        safeCall {
+            val category = categoryDao.getById(categoryId)
+                ?: throw NoSuchElementException("Категория $categoryId не найдена")
+            val account = accountDao.getById(accountId)
 
-        val result = safeApiCall {
-            api.addTransaction(dto)
-        }
-
-        when (result){
-            is Result.Success -> {
-                val data = result.data.toDomain()
-                Result.Success(data)
-            }
-            is Result.Failure -> result
+            val entity = TransactionEntity(
+                id = 0,
+                accountId = accountId,
+                categoryId = categoryId,
+                amount = amount,
+                comment = comment,
+                transactionDate = transactionDate,
+                isIncome = category.isIncome,
+                categoryName = category.name,
+                emoji = category.emoji,
+                currency = account?.currency ?: "RUB"
+            )
+            val newId = transactionDao.insert(entity).toInt()
+            transactionDao.getById(newId)?.toModel()
+                ?: throw IllegalStateException("Транзакция не сохранилась")
         }
     }
 
@@ -110,51 +98,30 @@ class TransactionRepositoryImpl @Inject constructor(
         transactionDate: String,
         comment: String?
     ): Result<TransactionModel> = withContext(Dispatchers.IO) {
-        val dto = TransactionRequestDto(
-            accountId = accountId,
-            categoryId = categoryId,
-            amount = amount,
-            transactionDate = transactionDate,
-            comment = comment
-        )
+        safeCall {
+            val existing = transactionDao.getById(transactionId)
+                ?: throw NoSuchElementException("Транзакция $transactionId не найдена")
+            val category = categoryDao.getById(categoryId)
+                ?: throw NoSuchElementException("Категория $categoryId не найдена")
 
-        val result = safeApiCall {
-            api.updateTransaction(transactionId,dto)
-        }
-
-        when (result) {
-            is Result.Success -> {
-                val data = result.data.toDomain()
-                Result.Success(data)
-            }
-
-            is Result.Failure -> result
-        }
-    }
-
-    override suspend fun deleteTransaction(
-        transactionId: Int
-    ): Result<Unit> = withContext(Dispatchers.IO) {
-        when (val result = safeApiCall { api.deleteTransaction(transactionId) }) {
-            is Result.Success -> Result.Success(Unit)
-            is Result.Failure -> result
+            val entity = existing.copy(
+                accountId = accountId,
+                categoryId = categoryId,
+                amount = amount,
+                comment = comment,
+                transactionDate = transactionDate,
+                isIncome = category.isIncome,
+                categoryName = category.name,
+                emoji = category.emoji
+            )
+            transactionDao.upsert(entity)
+            entity.toModel()
         }
     }
 
-//    override suspend fun addTransactionLocal(transaction: TransactionModel) {
-//        transactionDao.insert(transaction.toEntity())
-//    }
-//
-//    override suspend fun getTransactionsLocal(): List<TransactionModel> {
-//        return transactionDao.getAll().map { it.toModel() }
-//    }
-//
-//    override suspend fun getUnsyncedTransactions(): List<TransactionModel> {
-//        return transactionDao.getUnsynced().map { it.toModel() }
-//    }
-//
-//    override suspend fun markAsSynced(id: Int) {
-//        val tx = transactionDao.getById(id) ?: return
-//        transactionDao.insert(tx.copy(isSynced = true))
-//    }
+    override suspend fun deleteTransaction(transactionId: Int): Result<Unit> = withContext(Dispatchers.IO) {
+        safeCall {
+            transactionDao.deleteById(transactionId)
+        }
+    }
 }

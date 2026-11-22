@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.m4isper.domain.BuildConfig
+import com.m4isper.domain.AppConfig
 import com.m4isper.resources.R
 import com.m4isper.domain.utils.formatWithSpaces
 import com.m4isper.domain.utils.toCleanDecimal
@@ -46,7 +46,7 @@ fun AccountScreen(
     val error by viewModel.error.collectAsState()
 
     LaunchedEffect(Unit) {
-        viewModel.loadAccounts(BuildConfig.ID_ACCOUNT)
+        viewModel.loadAccounts(AppConfig.LOCAL_ACCOUNT_ID)
     }
 
     Box(

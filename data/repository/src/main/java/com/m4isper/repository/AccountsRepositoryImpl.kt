@@ -1,43 +1,32 @@
 package com.m4isper.repository
 
-import com.m4isper.common.safeApiCall
+import com.m4isper.common.Result
+import com.m4isper.common.safeCall
+import com.m4isper.domain.AppConfig
 import com.m4isper.domain.model.AccountModel
 import com.m4isper.domain.repository.AccountsRepository
-import com.m4isper.remote.AccountDto
-import com.m4isper.remote.SHMRFinanceApi
-import com.m4isper.common.Result
+import com.m4isper.local.dao.AccountDao
+import com.m4isper.local.entity.AccountEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class AccountsRepositoryImpl @Inject constructor(
-    private val api: SHMRFinanceApi
+    private val accountDao: AccountDao
 ) : AccountsRepository {
-    override suspend fun getAccounts(): Result<List<AccountModel>> = withContext(Dispatchers.IO) {
-        val result = safeApiCall {
-            api.getAccounts()
-        }
 
-        when (result) {
-            is Result.Success -> {
-                val data = result.data.map { it.toDomain()}
-                Result.Success(data)
-            }
-            is Result.Failure -> result
+    override suspend fun getAccounts(): Result<List<AccountModel>> = withContext(Dispatchers.IO) {
+        safeCall {
+            ensureAccountExists()
+            accountDao.getAll().map { it.toModel() }
         }
     }
 
     override suspend fun getAccountById(accountId: Int): Result<AccountModel> = withContext(Dispatchers.IO) {
-        val result = safeApiCall {
-            api.getAccountById(accountId)
-        }
-
-        when (result) {
-            is Result.Success -> {
-                val data = result.data.toDomain()
-                Result.Success(data)
-            }
-            is Result.Failure -> result
+        safeCall {
+            ensureAccountExists()
+            accountDao.getById(accountId)?.toModel()
+                ?: throw NoSuchElementException("Счёт $accountId не найден")
         }
     }
 
@@ -47,23 +36,28 @@ class AccountsRepositoryImpl @Inject constructor(
         balance: String,
         currency: String
     ): Result<AccountModel> = withContext(Dispatchers.IO) {
-        val dto = AccountDto(
-            id = accountId,
-            name = name,
-            balance = balance,
-            currency = currency
-        )
-
-        val result = safeApiCall {
-            api.updateAccount(accountId, dto)
+        safeCall {
+            val entity = AccountEntity(
+                id = accountId,
+                name = name,
+                balance = balance,
+                currency = currency.toCurrencyCode()
+            )
+            accountDao.upsert(entity)
+            entity.toModel()
         }
+    }
 
-        when (result) {
-            is Result.Success -> {
-                val data = result.data.toDomain()
-                Result.Success(data)
-            }
-            is Result.Failure -> result
+    private suspend fun ensureAccountExists() {
+        if (accountDao.count() == 0) {
+            accountDao.upsert(
+                AccountEntity(
+                    id = AppConfig.LOCAL_ACCOUNT_ID,
+                    name = "Основной счёт",
+                    balance = "0",
+                    currency = "RUB"
+                )
+            )
         }
     }
 }
