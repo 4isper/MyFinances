@@ -36,7 +36,6 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import com.m4isper.common.DateUtils.extractTime
 import com.m4isper.domain.AppConfig
 import com.m4isper.domain.utils.calculateSumOfTransactions
@@ -52,7 +51,9 @@ import java.time.format.DateTimeFormatter
 @Composable
 fun HistoryScreen(
     modifier: Modifier = Modifier,
-    navController: NavController,
+    onBack: () -> Unit,
+    onAnalysis: () -> Unit,
+    onTransactionClick: (Int) -> Unit,
     type: String,
     viewModelFactory: ViewModelProvider.Factory,
 ) {
@@ -91,7 +92,7 @@ fun HistoryScreen(
             CenterAlignedTopAppBar(
                 navigationIcon = {
                     IconButton(
-                        onClick = { navController.popBackStack() },
+                        onClick = onBack,
                     ) {
                         Icon(
                             Icons.Default.ArrowBack,
@@ -112,7 +113,7 @@ fun HistoryScreen(
                     ),
                 actions = {
                     IconButton(onClick = {
-                        navController.navigate("$type/analysis")
+                        onAnalysis()
                     }) {
                         Icon(
                             imageVector = ImageVector.vectorResource(R.drawable.ic_analysis),
@@ -179,7 +180,7 @@ fun HistoryScreen(
                             Modifier
                                 .clickable(
                                     onClick = {
-                                        navController.navigate("transaction/${item.id}")
+                                        onTransactionClick(item.id)
                                     },
                                 ).background(MaterialTheme.colorScheme.surface)
                                 .padding(vertical = 10.dp),

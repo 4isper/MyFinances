@@ -2,6 +2,8 @@ plugins {
     id("myfinances.android.application")
     id("myfinances.compose")
     id("myfinances.dagger")
+    // NavKey-маршруты сериализуются для персистентности бэкстека
+    alias(libs.plugins.kotlin.serialization)
 }
 
 val appFileName = "MyFinances"
@@ -87,6 +89,14 @@ dependencies {
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    // Navigation 3 + Material3 Adaptive
+    implementation(libs.androidx.navigation3.runtime)
+    implementation(libs.androidx.navigation3.ui)
+    implementation(libs.androidx.lifecycle.viewmodel.navigation3)
+    implementation(libs.androidx.adaptive.layout)
+    implementation(libs.androidx.adaptive.navigation3)
+    implementation(libs.androidx.material3.adaptive.navigation.suite)
+    implementation(libs.kotlinx.serialization.core)
     debugImplementation(libs.androidx.ui.tooling)
 }

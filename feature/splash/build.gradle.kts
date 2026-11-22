@@ -15,6 +15,6 @@ dependencies {
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.javax.inject)
     implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.lottie.compose)
 }

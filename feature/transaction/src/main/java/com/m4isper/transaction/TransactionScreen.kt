@@ -40,7 +40,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import com.m4isper.common.DateUtils.combineDateTimeToIsoUtc
 import com.m4isper.common.DateUtils.extractDate
 import com.m4isper.common.DateUtils.extractTime
@@ -58,7 +57,7 @@ import java.time.format.DateTimeFormatter
 @Composable
 fun TransactionScreen(
     modifier: Modifier = Modifier,
-    navController: NavController,
+    onBack: () -> Unit,
     viewModelFactory: ViewModelProvider.Factory,
 ) {
     val viewModel: TransactionViewModel = viewModel(factory = viewModelFactory)
@@ -126,7 +125,7 @@ fun TransactionScreen(
         Column {
             CenterAlignedTopAppBar(
                 navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
+                    IconButton(onClick = { onBack() }) {
                         Icon(
                             Icons.Outlined.Close,
                             contentDescription = "Cancel",
@@ -151,7 +150,7 @@ fun TransactionScreen(
                                         comment = comment,
                                     )
                                 if (result) {
-                                    navController.popBackStack()
+                                    onBack()
                                 } else {
                                     // можно показать Snackbar или ошибку
                                 }
@@ -167,7 +166,7 @@ fun TransactionScreen(
                                         comment = comment,
                                     )
                                 if (result) {
-                                    navController.popBackStack()
+                                    onBack()
                                 } else {
                                     // можно показать Snackbar или ошибку
                                 }
@@ -312,7 +311,7 @@ fun TransactionScreen(
                             scope.launch {
                                 val result = viewModel.deleteTransaction()
                                 if (result) {
-                                    navController.popBackStack()
+                                    onBack()
                                 } else {
                                     // можно показать Snackbar или ошибку
                                 }

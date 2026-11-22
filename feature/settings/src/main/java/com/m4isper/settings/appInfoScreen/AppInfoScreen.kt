@@ -18,7 +18,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import com.m4isper.resources.R
 import com.m4isper.ui.components.CustomListItem
 
@@ -26,7 +25,7 @@ import com.m4isper.ui.components.CustomListItem
 @Composable
 fun AppInfoScreen(
     modifier: Modifier = Modifier,
-    navController: NavController,
+    onBack: () -> Unit,
 ) {
     val viewModel: AppInfoViewModel = viewModel()
     val info = viewModel.appInfo
@@ -41,7 +40,7 @@ fun AppInfoScreen(
             CenterAlignedTopAppBar(
                 navigationIcon = {
                     IconButton(
-                        onClick = { navController.popBackStack() },
+                        onClick = onBack,
                     ) {
                         Icon(
                             Icons.Default.ArrowBack,

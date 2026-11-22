@@ -26,16 +26,14 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import com.m4isper.resources.R
-import com.m4isper.settings.navigation.SETTINGS_APP_INFO
 import com.m4isper.ui.components.CustomListItem
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
     modifier: Modifier = Modifier,
-    navController: NavController,
+    onAppInfo: () -> Unit,
     viewModelFactory: ViewModelProvider.Factory,
 ) {
     val viewModel: ThemeViewModel = viewModel(factory = viewModelFactory)
@@ -48,7 +46,7 @@ fun SettingsScreen(
             SettingItem.Static(stringResource(R.string.password_code)),
             SettingItem.Static(stringResource(R.string.synchronization)),
             SettingItem.Static(stringResource(R.string.language)),
-            SettingItem.Navigable(stringResource(R.string.about_program), SETTINGS_APP_INFO),
+            SettingItem.Navigable(stringResource(R.string.about_program)),
         )
 
     val isDarkTheme by viewModel.isDarkTheme.collectAsState()
@@ -100,7 +98,7 @@ fun SettingsScreen(
                             Modifier
                                 .let {
                                     if (item is SettingItem.Navigable) {
-                                        it.clickable { navController.navigate(item.route) }
+                                        it.clickable { onAppInfo() }
                                     } else {
                                         it
                                     }

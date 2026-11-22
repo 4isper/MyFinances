@@ -9,6 +9,5 @@ sealed class SettingItem(
 
     data class Navigable(
         val label: String,
-        val route: String,
     ) : SettingItem(label)
 }

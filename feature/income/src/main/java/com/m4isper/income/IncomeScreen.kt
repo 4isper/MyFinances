@@ -32,7 +32,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import com.m4isper.common.DateUtils
 import com.m4isper.domain.AppConfig
 import com.m4isper.domain.utils.calculateSumOfTransactions
@@ -47,7 +46,8 @@ import com.m4isper.ui.theme.MyFinancesTheme
 @Composable
 fun IncomeScreen(
     modifier: Modifier = Modifier,
-    navController: NavController,
+    onHistory: () -> Unit,
+    onTransactionClick: (Int) -> Unit,
     viewModelFactory: ViewModelProvider.Factory,
 ) {
     val viewModel: IncomeViewModel = viewModel(factory = viewModelFactory)
@@ -88,7 +88,7 @@ fun IncomeScreen(
                     ),
                 actions = {
                     IconButton(onClick = {
-                        navController.navigate("income/history")
+                        onHistory()
                     }) {
                         Icon(
                             imageVector = ImageVector.vectorResource(R.drawable.ic_history),
@@ -123,7 +123,7 @@ fun IncomeScreen(
                             Modifier
                                 .clickable(
                                     onClick = {
-                                        navController.navigate("transaction/${item.id}")
+                                        onTransactionClick(item.id)
                                     },
                                 ).background(MaterialTheme.colorScheme.surface)
                                 .padding(vertical = 10.dp),
@@ -158,7 +158,7 @@ fun IncomeScreen(
         AddButton(
             modifier = Modifier.align(Alignment.BottomEnd),
             onClick = {
-                navController.navigate("transaction/-1")
+                onTransactionClick(-1)
             },
         )
     }

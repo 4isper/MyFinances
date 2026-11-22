@@ -36,7 +36,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import com.m4isper.domain.AppConfig
 import com.m4isper.resources.R
 import com.m4isper.ui.components.CustomBasicTextField
@@ -47,7 +46,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun EditAccountScreen(
     modifier: Modifier = Modifier,
-    navController: NavController,
+    onBack: () -> Unit,
     viewModelFactory: ViewModelProvider.Factory,
 ) {
     val viewModel: AccountViewModel = viewModel(factory = viewModelFactory)
@@ -96,7 +95,7 @@ fun EditAccountScreen(
                         containerColor = MaterialTheme.colorScheme.primary,
                     ),
                 navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
+                    IconButton(onClick = onBack) {
                         Icon(
                             Icons.Outlined.Close,
                             contentDescription = "Cancel",
@@ -115,7 +114,7 @@ fun EditAccountScreen(
                                     currency = currency,
                                 )
                             if (result) {
-                                navController.popBackStack()
+                                onBack
                             } else {
                                 // можно показать Snackbar или ошибку
                             }

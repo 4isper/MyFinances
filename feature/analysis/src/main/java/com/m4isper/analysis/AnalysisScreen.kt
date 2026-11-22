@@ -34,7 +34,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import com.m4isper.domain.AppConfig
 import com.m4isper.domain.utils.calculateSumOfTransactions
 import com.m4isper.domain.utils.formatWithSpaces
@@ -49,7 +48,8 @@ import java.time.format.DateTimeFormatter
 @Composable
 fun AnalysisScreen(
     modifier: Modifier = Modifier,
-    navController: NavController,
+    onBack: () -> Unit,
+    onTransactionClick: (Int) -> Unit,
     type: String,
     viewModelFactory: ViewModelProvider.Factory,
 ) {
@@ -88,7 +88,7 @@ fun AnalysisScreen(
             CenterAlignedTopAppBar(
                 navigationIcon = {
                     IconButton(
-                        onClick = { navController.popBackStack() },
+                        onClick = onBack,
                     ) {
                         Icon(
                             Icons.Default.ArrowBack,
@@ -165,7 +165,7 @@ fun AnalysisScreen(
                             Modifier
                                 .clickable(
                                     onClick = {
-                                        navController.navigate("transaction/${item.id}")
+                                        onTransactionClick(item.id)
                                     },
                                 ).background(MaterialTheme.colorScheme.surface)
                                 .padding(vertical = 10.dp),

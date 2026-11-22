@@ -25,7 +25,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import com.m4isper.domain.AppConfig
 import com.m4isper.domain.utils.formatWithSpaces
 import com.m4isper.domain.utils.toCleanDecimal
@@ -36,7 +35,7 @@ import com.m4isper.ui.components.CustomListItem
 @Composable
 fun AccountScreen(
     modifier: Modifier = Modifier,
-    navController: NavController,
+    onEditAccount: () -> Unit,
     viewModelFactory: ViewModelProvider.Factory,
 ) {
     val viewModel: AccountViewModel = viewModel(factory = viewModelFactory)
@@ -67,7 +66,7 @@ fun AccountScreen(
                         containerColor = MaterialTheme.colorScheme.primary,
                     ),
                 actions = {
-                    IconButton(onClick = { navController.navigate("account/edit") }) {
+                    IconButton(onClick = onEditAccount) {
                         Icon(
                             Icons.Outlined.Edit,
                             contentDescription = "Edit",
