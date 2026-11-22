@@ -7,6 +7,7 @@ import com.m4isper.domain.model.TransactionModel
 import com.m4isper.domain.repository.CurrencyRepository
 import com.m4isper.domain.usecase.DeleteTransactionUseCase
 import com.m4isper.domain.usecase.GetExpenseTransactionsUseCase
+import com.m4isper.ui.components.toErrorRes
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -20,7 +21,7 @@ class ExpensesViewModel(
     val expenses = _expenses.asStateFlow()
     val currency = currencyRepository.currency
 
-    private val _error = MutableStateFlow<String?>(null)
+    private val _error = MutableStateFlow<Int?>(null)
     val error = _error.asStateFlow()
 
     // параметры последней загрузки — чтобы после свайп-удаления перезагрузить тот же период
@@ -41,7 +42,7 @@ class ExpensesViewModel(
                 is Result.Success -> {
                     _expenses.value = result.data
                 }
-                is Result.Failure -> _error.value = result.exception.message
+                is Result.Failure -> _error.value = result.exception.toErrorRes()
             }
         }
     }
@@ -50,7 +51,7 @@ class ExpensesViewModel(
         viewModelScope.launch {
             when (val result = deleteTransactionUseCase(transactionId)) {
                 is Result.Success -> loadExpenses(lastAccountId, lastStart, lastEnd)
-                is Result.Failure -> _error.value = result.exception.message
+                is Result.Failure -> _error.value = result.exception.toErrorRes()
             }
         }
     }

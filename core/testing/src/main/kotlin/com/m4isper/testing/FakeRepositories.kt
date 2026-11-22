@@ -1,6 +1,7 @@
 package com.m4isper.testing
 
 import com.m4isper.common.Result
+import com.m4isper.common.error.DomainError
 import com.m4isper.domain.model.AccountModel
 import com.m4isper.domain.model.CategoryModel
 import com.m4isper.domain.model.TransactionModel
@@ -104,7 +105,7 @@ class FakeTransactionRepository(
     override suspend fun getTransactionById(transactionId: Int): Result<TransactionModel> {
         val transaction =
             transactions.firstOrNull { it.id == transactionId }
-                ?: return Result.Failure(NoSuchElementException("Транзакция $transactionId не найдена"))
+                ?: return Result.Failure(DomainError.NotFound("Транзакция", transactionId))
         return Result.Success(transaction)
     }
 

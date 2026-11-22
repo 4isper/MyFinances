@@ -1,6 +1,7 @@
 package com.m4isper.repository
 
 import com.m4isper.common.Result
+import com.m4isper.common.error.DomainError
 import com.m4isper.common.safeCall
 import com.m4isper.domain.model.TransactionModel
 import com.m4isper.domain.repository.TransactionRepository
@@ -37,7 +38,7 @@ class TransactionRepositoryImpl
             withContext(Dispatchers.IO) {
                 safeCall {
                     transactionDao.getById(transactionId)?.toModel()
-                        ?: throw NoSuchElementException("Транзакция $transactionId не найдена")
+                        ?: throw DomainError.NotFound("Транзакция", transactionId)
                 }
             }
 
@@ -76,7 +77,7 @@ class TransactionRepositoryImpl
                 safeCall {
                     val category =
                         categoryDao.getById(categoryId)
-                            ?: throw NoSuchElementException("Категория $categoryId не найдена")
+                            ?: throw DomainError.NotFound("Категория", categoryId)
                     val account = accountDao.getById(accountId)
 
                     val entity =
@@ -111,10 +112,10 @@ class TransactionRepositoryImpl
                 safeCall {
                     val existing =
                         transactionDao.getById(transactionId)
-                            ?: throw NoSuchElementException("Транзакция $transactionId не найдена")
+                            ?: throw DomainError.NotFound("Транзакция", transactionId)
                     val category =
                         categoryDao.getById(categoryId)
-                            ?: throw NoSuchElementException("Категория $categoryId не найдена")
+                            ?: throw DomainError.NotFound("Категория", categoryId)
 
                     val entity =
                         existing.copy(

@@ -10,4 +10,5 @@ android {
 dependencies {
     api(libs.androidx.material.icons.core)
     implementation(project(":core:resources"))
+    implementation(project(":core:common"))
 }

@@ -1,5 +1,6 @@
 package com.m4isper.common
 
+import com.m4isper.common.error.DomainError
 import kotlin.coroutines.cancellation.CancellationException
 
 /**
@@ -13,6 +14,9 @@ suspend fun <T> safeCall(block: suspend () -> T): Result<T> =
     } catch (e: CancellationException) {
         // отмену корутины нельзя проглатывать — structured concurrency перестанет работать
         throw e
-    } catch (e: Exception) {
+    } catch (e: DomainError) {
+        // типизированные ошибки домена не заворачиваем — их семантика нужна UI
         Result.Failure(e)
+    } catch (e: Exception) {
+        Result.Failure(DomainError.Storage(e))
     }

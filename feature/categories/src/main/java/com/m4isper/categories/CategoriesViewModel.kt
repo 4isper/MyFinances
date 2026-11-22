@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.m4isper.common.Result
 import com.m4isper.domain.model.CategoryModel
 import com.m4isper.domain.usecase.GetCategoriesUseCase
+import com.m4isper.ui.components.toErrorRes
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
@@ -18,7 +19,7 @@ class CategoriesViewModel(
     private val _categories = MutableStateFlow<List<CategoryModel>>(emptyList())
     val categories = _categories.asStateFlow()
 
-    private val _error = MutableStateFlow<String?>(null)
+    private val _error = MutableStateFlow<Int?>(null)
     val error = _error.asStateFlow()
 
     val searchQuery = MutableStateFlow("")
@@ -36,7 +37,7 @@ class CategoriesViewModel(
         viewModelScope.launch {
             when (val result = getCategoriesUseCase()) {
                 is Result.Success -> _categories.value = result.data
-                is Result.Failure -> _error.value = result.exception.message
+                is Result.Failure -> _error.value = result.exception.toErrorRes()
             }
         }
     }

@@ -7,6 +7,7 @@ import com.m4isper.domain.model.AccountModel
 import com.m4isper.domain.repository.CurrencyRepository
 import com.m4isper.domain.usecase.GetAccountByIdUseCase
 import com.m4isper.domain.usecase.UpdateAccountUseCase
+import com.m4isper.ui.components.toErrorRes
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -20,14 +21,14 @@ class AccountViewModel(
     val account = _account.asStateFlow()
     val currency = currencyRepository.currency
 
-    private val _error = MutableStateFlow<String?>(null)
+    private val _error = MutableStateFlow<Int?>(null)
     val error = _error.asStateFlow()
 
     fun loadAccounts(accountId: Int) {
         viewModelScope.launch {
             when (val result = getAccountByIdUseCase(accountId)) {
                 is Result.Success -> _account.value = result.data
-                is Result.Failure -> _error.value = result.exception.message
+                is Result.Failure -> _error.value = result.exception.toErrorRes()
             }
         }
     }
@@ -45,7 +46,7 @@ class AccountViewModel(
                 true
             }
             is Result.Failure -> {
-                _error.value = result.exception.message
+                _error.value = result.exception.toErrorRes()
                 false
             }
         }

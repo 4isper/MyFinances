@@ -1,8 +1,8 @@
 package com.m4isper.myfinances.app
 
 import android.app.Application
-import com.m4isper.di.AppModule
 import com.m4isper.di.AppComponent
+import com.m4isper.di.AppModule
 import com.m4isper.di.DaggerAppComponent
 
 class MyFinancesApp : Application() {

@@ -333,8 +333,8 @@ fun TransactionScreen(
                 }
             }
 
-            if (error != null) {
-                Text("${stringResource(R.string.error)}: $error", color = MaterialTheme.colorScheme.error)
+            error?.let { errorRes ->
+                Text(stringResource(errorRes), color = MaterialTheme.colorScheme.error)
             }
         }
     }

@@ -37,6 +37,9 @@
     <string name="enter_comment">Введите комментарий</string>
     <string name="delete_transaction">Удалить транзакцию</string>
     <string name="select_transaction">Выберите транзакцию из списка</string>
+    <string name="error_not_found">Элемент не найден</string>
+    <string name="error_invalid_amount">Сумма должна быть больше нуля</string>
+    <string name="error_storage">Ошибка хранилища</string>
     <string name="dark_theme">Тёмная тема</string>
     <string name="primary_color">Основной цвет</string>
     <string name="sounds">Звуки</string>

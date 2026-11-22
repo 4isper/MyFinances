@@ -1,6 +1,7 @@
 package com.m4isper.domain
 
 import com.m4isper.common.Result
+import com.m4isper.common.error.DomainError
 import com.m4isper.domain.model.AccountModel
 import com.m4isper.domain.model.CategoryModel
 import com.m4isper.domain.model.TransactionModel
@@ -55,7 +56,7 @@ class FakeTransactionRepository(
     override suspend fun getTransactionById(transactionId: Int): Result<TransactionModel> {
         val transaction =
             transactions.firstOrNull { it.id == transactionId }
-                ?: return Result.Failure(NoSuchElementException("Транзакция $transactionId не найдена"))
+                ?: return Result.Failure(DomainError.NotFound("Транзакция", transactionId))
         return Result.Success(transaction)
     }
 
@@ -140,7 +141,7 @@ class FakeAccountsRepository(
     override suspend fun getAccountById(accountId: Int): Result<AccountModel> {
         val account =
             accounts[accountId]
-                ?: return Result.Failure(NoSuchElementException("Счёт $accountId не найден"))
+                ?: return Result.Failure(DomainError.NotFound("Счёт", accountId))
         return Result.Success(account)
     }
 

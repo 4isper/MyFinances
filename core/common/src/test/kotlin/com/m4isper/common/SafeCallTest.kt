@@ -1,5 +1,6 @@
 package com.m4isper.common
 
+import com.m4isper.common.error.DomainError
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -17,13 +18,24 @@ class SafeCallTest {
         }
 
     @Test
-    fun `wraps exception into Failure`() =
+    fun `wraps unknown exception into Storage failure`() =
         runTest {
-            val failure = IOException("db is gone")
+            val cause = IOException("db is gone")
 
-            val result = safeCall { throw failure }
+            val result = safeCall { throw cause }
 
-            assertEquals(Result.Failure(failure), result)
+            val error = (result as Result.Failure).exception as DomainError.Storage
+            assertEquals(cause, error.cause)
+        }
+
+    @Test
+    fun `keeps typed domain error as is`() =
+        runTest {
+            val notFound = DomainError.NotFound("Транзакция", 5)
+
+            val result = safeCall { throw notFound }
+
+            assertEquals(Result.Failure(notFound), result)
         }
 
     @Test

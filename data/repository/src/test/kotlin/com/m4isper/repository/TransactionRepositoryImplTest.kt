@@ -1,6 +1,7 @@
 package com.m4isper.repository
 
 import com.m4isper.common.Result
+import com.m4isper.common.error.DomainError
 import com.m4isper.local.entity.AccountEntity
 import com.m4isper.local.entity.CategoryEntity
 import kotlinx.coroutines.test.runTest
@@ -141,7 +142,7 @@ class TransactionRepositoryImplTest {
             val result = repository.addTransaction(1, 999, "100", "2026-11-22T10:00:00Z", null)
 
             assertTrue(result is Result.Failure)
-            assertTrue((result as Result.Failure).exception is NoSuchElementException)
+            assertTrue((result as Result.Failure).exception is DomainError.NotFound)
         }
 
     @Test

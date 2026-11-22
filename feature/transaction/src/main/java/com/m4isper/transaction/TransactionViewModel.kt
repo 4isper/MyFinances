@@ -14,6 +14,7 @@ import com.m4isper.domain.usecase.GetAccountByIdUseCase
 import com.m4isper.domain.usecase.GetCategoriesUseCase
 import com.m4isper.domain.usecase.GetTransactionByIdUseCase
 import com.m4isper.domain.usecase.UpdateTransactionUseCase
+import com.m4isper.ui.components.toErrorRes
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -32,7 +33,7 @@ class TransactionViewModel(
     val transaction = _transaction.asStateFlow()
     val currency = currencyRepository.currency
 
-    private val _error = MutableStateFlow<String?>(null)
+    private val _error = MutableStateFlow<Int?>(null)
     val error = _error.asStateFlow()
 
     fun loadTransactionById() {
@@ -41,7 +42,7 @@ class TransactionViewModel(
                 is Result.Success -> {
                     _transaction.value = result.data
                 }
-                is Result.Failure -> _error.value = result.exception.message
+                is Result.Failure -> _error.value = result.exception.toErrorRes()
             }
         }
     }
@@ -64,7 +65,7 @@ class TransactionViewModel(
         ) {
             is Result.Success -> true
             is Result.Failure -> {
-                _error.value = result.exception.message
+                _error.value = result.exception.toErrorRes()
                 false
             }
         }
@@ -88,7 +89,7 @@ class TransactionViewModel(
         ) {
             is Result.Success -> true
             is Result.Failure -> {
-                _error.value = result.exception.message
+                _error.value = result.exception.toErrorRes()
                 false
             }
         }
@@ -102,7 +103,7 @@ class TransactionViewModel(
         ) {
             is Result.Success -> true
             is Result.Failure -> {
-                _error.value = result.exception.message
+                _error.value = result.exception.toErrorRes()
                 false
             }
         }
@@ -114,7 +115,7 @@ class TransactionViewModel(
         viewModelScope.launch {
             when (val result = getCategoriesUseCase()) {
                 is Result.Success -> _categories.value = result.data
-                is Result.Failure -> _error.value = result.exception.message
+                is Result.Failure -> _error.value = result.exception.toErrorRes()
             }
         }
     }
@@ -126,7 +127,7 @@ class TransactionViewModel(
         viewModelScope.launch {
             when (val result = getAccountByIdUseCase(AppConfig.LOCAL_ACCOUNT_ID)) {
                 is Result.Success -> _account.value = result.data
-                is Result.Failure -> _error.value = result.exception.message
+                is Result.Failure -> _error.value = result.exception.toErrorRes()
             }
         }
     }

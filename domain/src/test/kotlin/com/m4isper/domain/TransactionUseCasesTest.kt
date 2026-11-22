@@ -1,7 +1,7 @@
 package com.m4isper.domain
 
 import com.m4isper.common.Result
-import com.m4isper.domain.utils.InvalidAmountException
+import com.m4isper.common.error.DomainError
 import com.m4isper.domain.usecase.AddTransactionUseCase
 import com.m4isper.domain.usecase.DeleteTransactionUseCase
 import com.m4isper.domain.usecase.GetExpenseTransactionsUseCase
@@ -42,8 +42,9 @@ class TransactionUseCasesTest {
             val useCase = AddTransactionUseCase(repository)
 
             for (amount in listOf("0", "-5", "abc", "")) {
-                val result = useCase(accountId = 1, categoryId = 4, amount = amount, transactionDate = "2026-11-22T09:00:00Z", comment = null)
-                assertTrue((result as Result.Failure).exception is InvalidAmountException)
+                val result =
+                    useCase(accountId = 1, categoryId = 4, amount = amount, transactionDate = "2026-11-22T09:00:00Z", comment = null)
+                assertTrue((result as Result.Failure).exception is DomainError.InvalidAmount)
             }
             assertEquals(0, repository.added.size)
         }
@@ -53,9 +54,17 @@ class TransactionUseCasesTest {
         runTest {
             val useCase = UpdateTransactionUseCase(repository)
 
-            val result = useCase(transactionId = 1, accountId = 1, categoryId = 4, amount = "0", transactionDate = "2026-11-22T09:00:00Z", comment = null)
+            val result =
+                useCase(
+                    transactionId = 1,
+                    accountId = 1,
+                    categoryId = 4,
+                    amount = "0",
+                    transactionDate = "2026-11-22T09:00:00Z",
+                    comment = null,
+                )
 
-            assertTrue((result as Result.Failure).exception is InvalidAmountException)
+            assertTrue((result as Result.Failure).exception is DomainError.InvalidAmount)
         }
 
     @Test

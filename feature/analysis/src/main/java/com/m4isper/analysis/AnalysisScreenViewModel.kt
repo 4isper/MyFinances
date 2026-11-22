@@ -8,6 +8,7 @@ import com.m4isper.domain.model.TransactionModel
 import com.m4isper.domain.repository.CurrencyRepository
 import com.m4isper.domain.usecase.GetExpenseTransactionsUseCase
 import com.m4isper.domain.usecase.GetIncomeTransactionsUseCase
+import com.m4isper.ui.components.toErrorRes
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -21,7 +22,7 @@ class AnalysisScreenViewModel(
     val transactions = _transactions.asStateFlow()
     val currency = currencyRepository.currency
 
-    private val _error = MutableStateFlow<String?>(null)
+    private val _error = MutableStateFlow<Int?>(null)
     val error = _error.asStateFlow()
 
     fun loadIncome(
@@ -35,7 +36,7 @@ class AnalysisScreenViewModel(
                     val sorted = result.data.sortedByDescending { parseDate(it.transactionDate) }
                     _transactions.value = sorted
                 }
-                is Result.Failure -> _error.value = result.exception.message
+                is Result.Failure -> _error.value = result.exception.toErrorRes()
             }
         }
     }
@@ -51,7 +52,7 @@ class AnalysisScreenViewModel(
                     val sorted = result.data.sortedByDescending { parseDate(it.transactionDate) }
                     _transactions.value = sorted
                 }
-                is Result.Failure -> _error.value = result.exception.message
+                is Result.Failure -> _error.value = result.exception.toErrorRes()
             }
         }
     }

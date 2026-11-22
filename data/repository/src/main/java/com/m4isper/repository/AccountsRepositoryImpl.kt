@@ -1,6 +1,7 @@
 package com.m4isper.repository
 
 import com.m4isper.common.Result
+import com.m4isper.common.error.DomainError
 import com.m4isper.common.safeCall
 import com.m4isper.domain.AppConfig
 import com.m4isper.domain.model.AccountModel
@@ -29,7 +30,7 @@ class AccountsRepositoryImpl
                 safeCall {
                     ensureAccountExists()
                     accountDao.getById(accountId)?.toModel()
-                        ?: throw NoSuchElementException("Счёт $accountId не найден")
+                        ?: throw DomainError.NotFound("Счёт", accountId)
                 }
             }
 
